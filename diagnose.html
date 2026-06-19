@@ -222,9 +222,9 @@ let vision=null,detector=null,landmarker=null;
 async function loadVision(){ if(vision)return vision; const mod=await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14');
   vision={mod,fileset:await mod.FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm')}; return vision; }
 async function getDetector(){ if(detector)return detector; const {mod,fileset}=await loadVision();
-  detector=await mod.FaceDetector.createFromOptions(fileset,{baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite',delegate:'GPU'},runningMode:'VIDEO',minDetectionConfidence:0.6}); return detector; }
+  detector=await mod.FaceDetector.createFromOptions(fileset,{baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite',delegate:'GPU'},runningMode:'VIDEO',minDetectionConfidence:0.4}); return detector; }
 async function getLandmarker(){ if(landmarker)return landmarker; const {mod,fileset}=await loadVision();
-  landmarker=await mod.FaceLandmarker.createFromOptions(fileset,{baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task',delegate:'GPU'},runningMode:'IMAGE',numFaces:2}); return landmarker; }
+  landmarker=await mod.FaceLandmarker.createFromOptions(fileset,{baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task',delegate:'GPU'},runningMode:'IMAGE',numFaces:2,minFaceDetectionConfidence:0.3,minFacePresenceConfidence:0.3}); return landmarker; }
 
 /* ===== image helpers ===== */
 function brightnessOf(d){let s=0;for(let i=0;i<d.length;i+=4)s+=0.299*d[i]+0.587*d[i+1]+0.114*d[i+2];return s/(d.length/4);}
@@ -251,16 +251,14 @@ async function analyzePhoto(c){
   const pts=faces[0],W=c.width,H=c.height; let mnx=1,mny=1,mxx=0,mxy=0;
   for(const p of pts){if(p.x<mnx)mnx=p.x;if(p.y<mny)mny=p.y;if(p.x>mxx)mxx=p.x;if(p.y>mxy)mxy=p.y;}
   const fx=mnx*W,fy=mny*H,fw=(mxx-mnx)*W,fh=(mxy-mny)*H,areaFrac=(fw*fh)/(W*H);
-  const nose=pts[1],le=pts[33],re=pts[263];const yaw=Math.abs((nose.x-(le.x+re.x)/2)/(Math.abs(re.x-le.x)||0.01));const frontal=yaw<0.22;
+  const nose=pts[1],le=pts[33],re=pts[263];const yaw=Math.abs((nose.x-(le.x+re.x)/2)/(Math.abs(re.x-le.x)||0.01));const frontal=yaw<0.40;
   const ctx=c.getContext('2d',{willReadFrequently:true});
   const cx=clamp(Math.floor(fx),0,W-1),cy=clamp(Math.floor(fy),0,H-1),cw=clamp(Math.floor(fw),2,W-cx),ch=clamp(Math.floor(fh),2,H-cy);
   const fd=ctx.getImageData(cx,cy,cw,ch);const bright=brightnessOf(fd.data);const sharp=laplacianVar(toGray(fd.data,cw,ch),cw,ch);const wb=wbFactors(fd.data);
   const tz=analyzeROI(ctx,fx,fy,fw,fh,[0.34,0.06,0.32,0.55],wb),lc=analyzeROI(ctx,fx,fy,fw,fh,[0.08,0.45,0.24,0.26],wb),rc=analyzeROI(ctx,fx,fy,fw,fh,[0.68,0.45,0.24,0.26],wb);
   const cheekShine=(lc.shine+rc.shine)/2,shineDiff=Math.max(0,tz.shine-cheekShine*0.6),redness=Math.max(lc.redness,rc.redness),glare=Math.max(tz.clip,(lc.clip+rc.clip)/2);
-  // 재촬영 사유 판정(순서)
+  // 얼굴이 잡혔으면 통과. 품질이 낮으면 막지 않고 q(가중치)만 낮춰 설문 위주로 본다.
   let reason=null;
-  if(!frontal)reason='pose'; else if(areaFrac<0.10)reason='small'; else if(bright<55)reason='dark';
-  else if(bright>218||glare>0.32)reason='bright'; else if(sharp<50)reason='blur';
   const light_ok=clamp((bright-45)/35,0,1)*clamp((215-bright)/35,0,1)*clamp((0.22-glare)/0.22,0.15,1),sharp_ok=clamp((sharp-60)/120,0,1),size_ok=clamp((areaFrac-0.10)/0.10,0,1)*clamp((0.75-areaFrac)/0.15,0,1);
   const q=(frontal?1:0)*light_ok*sharp_ok*size_ok;
   const oily=clamp(shineDiff/0.13,0,1),dry=clamp((0.05-tz.shine)/0.05,0,1),acne=clamp((redness-0.05)/0.11,0,1);
@@ -399,10 +397,9 @@ function loopGuide(det){const v=$('#video'),pill=$('#coachPill'),txt=$('#coachTe
       if(r.length===0)msg='얼굴이 보이지 않아요';else if(r.length>1)msg='얼굴이 하나만 보이게';
       else{const bb=r[0].boundingBox,fw=bb.width/v.videoWidth,cxF=(bb.originX+bb.width/2)/v.videoWidth,cyF=(bb.originY+bb.height/2)/v.videoHeight;
         c.width=120;c.height=160;cx.drawImage(v,0,0,120,160);const br=brightnessOf(cx.getImageData(0,0,120,160).data);
-        if(fw<0.34)msg='조금 더 가까이';else if(fw>0.85)msg='조금 더 멀리';else if(Math.abs(cxF-0.5)>0.18||Math.abs(cyF-0.5)>0.2)msg='얼굴을 가운데로';
-        else if(br<55)msg='더 밝은 곳에서';else if(br>215)msg='직사광·플래시를 피해요';else{msg='좋아요 — 촬영하세요';good=true;}}
+        if(fw<0.18)msg='조금 더 가까이';else if(br<40)msg='더 밝은 곳에서';else{msg='좋아요 — 촬영하세요';good=true;}}
     }else{msg='촬영 후 분석합니다';good=true;}
-    txt.textContent=msg;pill.classList.toggle('ready',good);$('#shoot').disabled=!good;rafId=requestAnimationFrame(step);}
+    txt.textContent=msg;pill.classList.toggle('ready',good);$('#shoot').disabled=false;rafId=requestAnimationFrame(step);}
   step();}
 function captureStill(){const v=$('#video'),c=$('#work'),W=Math.min(640,v.videoWidth||640),H=Math.round(W*((v.videoHeight/v.videoWidth)||1.33));
   c.width=W;c.height=H;c.getContext('2d',{willReadFrequently:true}).drawImage(v,0,0,W,H);stopCamera();runFace(c);}
@@ -420,7 +417,9 @@ async function runFace(canvas){
 
 /* ===== wires ===== */
 $('#pickFile').onclick=()=>$('#fileInput').click();
-$('#fileInput').onchange=e=>{const f=e.target.files[0];if(!f)return;const img=new Image();img.onload=()=>runFace(imageToCanvas(img));img.src=URL.createObjectURL(f);e.target.value='';};
+$('#fileInput').onchange=async e=>{const f=e.target.files[0];if(!f)return;e.target.value='';
+  try{const bmp=await createImageBitmap(f,{imageOrientation:'from-image'});const c=document.createElement('canvas'),W=Math.min(720,bmp.width||640),H=Math.round(W*((bmp.height||480)/(bmp.width||640)));c.width=W;c.height=H;c.getContext('2d',{willReadFrequently:true}).drawImage(bmp,0,0,W,H);runFace(c);}
+  catch(err){const img=new Image();img.onload=()=>runFace(imageToCanvas(img));img.src=URL.createObjectURL(f);}};
 $('#startCam').onclick=startCamera;
 $('#shoot').onclick=()=>{if(!$('#shoot').disabled)captureStill();};
 $('#camCancel').onclick=()=>{stopCamera();show('#s-intro');$('#stepLabel').textContent='AI 피부 진단';};
