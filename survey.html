@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>피부 진단 설문 — BfM 르네상스맨</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<style>
+:root{--bg:#0B0C0E;--panel:#14161A;--panel-2:#1A1D23;--line:#262A31;--ink:#EDEFF2;--mut:#9AA2AD;--mut-2:#6B727C;
+  --accent:#5B8DEF;--accent-strong:#3E6FE0;--safe-b:env(safe-area-inset-bottom,0px);
+  --sans:"Pretendard Variable",Pretendard,-apple-system,system-ui,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);word-break:keep-all;line-break:strict;
+  letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+body{font-size:16px;line-height:1.55}
+.wrap{max-width:480px;margin:0 auto;padding:0 20px;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+.top{flex:none;padding:16px 0 6px}
+.tbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.brand{font-weight:800;font-size:20px;letter-spacing:-.04em}.brand i{font-style:normal;color:var(--accent)}
+.count{font-size:13px;color:var(--mut);font-weight:700}
+.prog{height:5px;border-radius:99px;background:var(--panel);overflow:hidden}
+.prog .fl{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),#83a8ff);width:12%;transition:width .35s cubic-bezier(.2,.8,.2,1)}
+.body{flex:1;display:flex;flex-direction:column;justify-content:center;padding:24px 0}
+.sec{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.q{font-size:24px;font-weight:800;letter-spacing:-.03em;line-height:1.3;margin:12px 0 0}
+.opts{margin-top:24px;display:flex;flex-direction:column;gap:11px}
+.opt{display:flex;align-items:center;gap:13px;background:var(--panel);border:1.5px solid var(--line);border-radius:14px;
+  padding:17px 17px;cursor:pointer;font-size:16px;font-weight:600;transition:border-color .15s,background .15s;text-align:left;width:100%;font-family:inherit;color:var(--ink)}
+.opt:active{transform:scale(.99)}
+.opt .rd{flex:none;width:21px;height:21px;border-radius:50%;border:2px solid var(--mut-2);position:relative;transition:.15s}
+.opt.sel{border-color:var(--accent);background:rgba(91,141,239,.08)}
+.opt.sel .rd{border-color:var(--accent)}
+.opt.sel .rd::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--accent)}
+.foot{flex:none;display:flex;gap:10px;padding:14px 0 calc(16px + var(--safe-b))}
+.btn{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;font-weight:800;font-size:16px;padding:16px;border-radius:13px;
+  background:var(--accent);color:#fff;border:0;cursor:pointer;font-family:inherit;box-shadow:0 10px 24px -12px rgba(91,141,239,.7)}
+.btn:disabled{opacity:.4;box-shadow:none}
+.btn.ghost{flex:0 0 auto;width:84px;background:transparent;color:var(--mut);border:1.5px solid var(--line);box-shadow:none}
+.btn:active:not(:disabled){transform:scale(.99)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="tbar"><span class="brand">B<i>f</i>M</span><span class="count"><span id="cur">1</span> / 8</span></div>
+    <div class="prog"><div class="fl" id="prog"></div></div>
+  </div>
+  <div class="body">
+    <span class="sec" id="sec">기본 정보</span>
+    <h1 class="q" id="qText">질문</h1>
+    <div class="opts" id="opts"></div>
+  </div>
+  <div class="foot">
+    <button class="btn ghost" id="prev">이전</button>
+    <button class="btn" id="next" disabled>다음</button>
+  </div>
+</div>
+<script>
+/* 8문항 — Baumann식 가중 점수. 각 보기는 지성(o)/건성(d)/여드름(a)에 점수를 더한다.
+   끝나면 Sv 벡터를 만들어 diagnose.html 로 넘긴다(?o=&d=&a=). 설문이 진단의 메인 축. */
+const Q = [
+  {sec:'유분·수분', q:'세수하고 30분 뒤, 아무것도 안 바른 얼굴은?', opts:[
+    {t:'이마·코가 번들거린다', o:3}, {t:'T존만 번들, 볼은 당긴다', o:2, d:1},
+    {t:'전체적으로 당기고 건조하다', d:3}, {t:'잘 모르겠다', o:1}]},
+  {sec:'유분·수분', q:'점심쯤 이마·코 상태는?', opts:[
+    {t:'번들거려서 닦아낸다', o:2}, {t:'약간 번들거린다', o:1},
+    {t:'보송하다', }, {t:'오히려 당긴다', d:2}]},
+  {sec:'유분·수분', q:'모공이 눈에 띄는 편인가요?', opts:[
+    {t:'넓고 많이 보인다', o:2}, {t:'보통이다', o:1}, {t:'거의 안 보인다', d:1}]},
+  {sec:'유분·수분', q:'피부가 자주 당기거나 각질이 일어나나요?', opts:[
+    {t:'자주 그렇다', d:3}, {t:'가끔 그렇다', d:1}, {t:'거의 없다', o:1}]},
+  {sec:'유분·수분', q:'보습제를 바른 뒤 느낌은?', opts:[
+    {t:'금세 번들거린다', o:2}, {t:'적당히 촉촉하다', }, {t:'발라도 당긴다', d:2}]},
+  {sec:'트러블', q:'여드름·뾰루지 같은 트러블이 얼마나 있나요?', opts:[
+    {t:'자주, 여러 개 난다', a:3}, {t:'가끔 한두 개', a:1}, {t:'거의 없다', }]},
+  {sec:'트러블', q:'얼굴에 붉은기나 자극을 자주 느끼나요?', opts:[
+    {t:'자주 느낀다', a:2}, {t:'가끔 느낀다', a:1}, {t:'거의 없다', }]},
+  {sec:'트러블', q:'면도 후 피부 상태는?', opts:[
+    {t:'붉어지고 따갑다', a:2}, {t:'약간 예민하다', a:1}, {t:'괜찮다', }]},
+];
+const ans = new Array(Q.length).fill(-1);
+let i = 0;
+const $ = s => document.querySelector(s);
+function render(){
+  const q = Q[i];
+  $('#cur').textContent = i+1;
+  $('#prog').style.width = ((i+1)/Q.length*100)+'%';
+  $('#sec').textContent = q.sec;
+  $('#qText').textContent = q.q;
+  $('#opts').innerHTML = q.opts.map((o,j)=>`<button class="opt${ans[i]===j?' sel':''}" data-j="${j}"><span class="rd"></span><span>${o.t}</span></button>`).join('');
+  $('#opts').querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ ans[i]=+b.dataset.j; render();
+    // auto-advance feel: enable next; if not last, brief delay then advance
+    setTimeout(()=>{ if(i<Q.length-1){ i++; render(); } }, 180); });
+  $('#prev').style.visibility = i===0 ? 'hidden':'visible';
+  $('#next').disabled = ans[i]===-1;
+  $('#next').textContent = i===Q.length-1 ? '결과 보기' : '다음';
+}
+$('#prev').onclick=()=>{ if(i>0){ i--; render(); } };
+$('#next').onclick=()=>{ if(ans[i]===-1) return; if(i<Q.length-1){ i++; render(); } else finish(); };
+function finish(){
+  let o=0,d=0,a=0;
+  Q.forEach((q,qi)=>{ const opt=q.opts[ans[qi]]||{}; o+=opt.o||0; d+=opt.d||0; a+=opt.a||0; });
+  o += 2; // 지성 base prior (남성 기본값)
+  const s = (o+d+a)||1;
+  const url = `diagnose.html?o=${(o/s).toFixed(3)}&d=${(d/s).toFixed(3)}&a=${(a/s).toFixed(3)}`;
+  location.href = url;
+}
+render();
+</script>
+</body>
+</html>

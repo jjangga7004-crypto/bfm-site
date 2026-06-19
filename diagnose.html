@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>AI 피부 진단 — BfM</title>
+<meta name="description" content="얼굴을 먼저 읽고, 그 신호에 맞춘 짧은 설문으로 내 피부 타입을 진단합니다. 사진은 기기에서만 처리합니다." />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<style>
+:root{--bg:#0B0C0E;--panel:#14161A;--panel-2:#1A1D23;--line:#262A31;--ink:#EDEFF2;--mut:#9AA2AD;--mut-2:#6B727C;
+  --accent:#5B8DEF;--accent-strong:#3E6FE0;--ok:#46c98b;--warn:#E2B45B;--bad:#E2725B;--safe-b:env(safe-area-inset-bottom,0px);
+  --sans:"Pretendard Variable",Pretendard,-apple-system,system-ui,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);word-break:keep-all;line-break:strict;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;min-height:100%}
+body{font-size:16px;line-height:1.6}
+.wrap{max-width:480px;margin:0 auto;padding:0 20px;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+a{color:inherit;text-decoration:none}
+.top{flex:none;display:flex;align-items:center;justify-content:space-between;height:56px}
+.brand{font-weight:800;font-size:21px;letter-spacing:-.04em}.brand i{font-style:normal;color:var(--accent)}
+.top .step{font-size:12.5px;color:var(--mut);font-weight:700}
+.prog{height:5px;border-radius:99px;background:var(--panel);overflow:hidden}
+.prog .fl{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),#83a8ff);width:25%;transition:width .35s cubic-bezier(.2,.8,.2,1)}
+h1{font-size:27px;font-weight:800;letter-spacing:-.035em;margin:0;line-height:1.22}
+h1 .ac{color:var(--accent)}
+.sub{color:var(--mut);font-size:15px;margin-top:12px}
+.eyebrow{font-size:11.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--accent)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;font-weight:800;font-size:16.5px;padding:17px;border-radius:14px;background:var(--accent);color:#fff;border:0;cursor:pointer;font-family:inherit;box-shadow:0 10px 26px -10px rgba(91,141,239,.7)}
+.btn:disabled{opacity:.45;box-shadow:none}.btn:active:not(:disabled){transform:scale(.985)}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line);box-shadow:none}
+.btn.sm{padding:13px;font-size:15px}
+.linkbtn{background:0;border:0;color:var(--mut);font-family:inherit;font-size:14px;cursor:pointer;padding:10px;width:100%;text-align:center;font-weight:600}
+.screen{flex:1;display:none;flex-direction:column;padding-bottom:calc(20px + var(--safe-b))}
+.screen.on{display:flex}.grow{flex:1}
+.note{font-size:12.5px;color:var(--mut-2);text-align:center;margin-top:10px}
+.foot{flex:none;display:flex;flex-direction:column;gap:8px;padding-top:14px}
+
+.privacy{margin-top:18px;background:rgba(91,141,239,.07);border:1px solid rgba(91,141,239,.25);border-radius:14px;padding:15px 16px;display:flex;gap:11px;align-items:flex-start}
+.privacy .i{flex:none;width:26px;height:26px;border-radius:8px;background:rgba(91,141,239,.16);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+.privacy b{font-size:14px}.privacy p{margin:3px 0 0;font-size:13px;color:var(--mut)}
+.guides{margin-top:18px;display:flex;flex-direction:column;gap:9px}
+.guides .g{display:flex;gap:10px;align-items:center;font-size:14px;color:var(--mut)}
+.guides .g b{color:var(--ink);font-weight:700}
+.guides .g .c{flex:none;width:22px;height:22px;border-radius:7px;background:var(--panel);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:12px;font-weight:800}
+.inapp{margin-top:16px;background:rgba(226,180,91,.1);border:1px solid rgba(226,180,91,.35);border-radius:13px;padding:14px;font-size:13.5px;color:#e8d3a6;display:none}.inapp.on{display:block}.inapp b{color:#f2e3c0}
+.err{margin-top:14px;font-size:13.5px;color:#e8b3a6;background:rgba(226,114,91,.1);border:1px solid rgba(226,114,91,.3);border-radius:12px;padding:13px;display:none}.err.on{display:block}
+
+.cam{position:relative;flex:1;border-radius:20px;overflow:hidden;background:#000;margin-top:6px;min-height:380px}
+.cam video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.oval{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}.oval svg{width:74%;max-width:300px}
+.coach{position:absolute;left:0;right:0;bottom:14px;display:flex;justify-content:center;pointer-events:none}
+.coach .pill{background:rgba(8,9,11,.82);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
+.coach .pill .dot{width:8px;height:8px;border-radius:50%;background:var(--warn)}
+.coach .pill.ready .dot{background:var(--ok)}.coach .pill.ready{color:#bff0d6;border-color:rgba(70,201,139,.5)}
+
+/* scan / overlay */
+.scanwrap{margin-top:8px;border-radius:20px;overflow:hidden;background:#000;position:relative;display:flex;align-items:center;justify-content:center}
+.scanwrap canvas{display:block;width:100%;height:auto}
+.scanstat{position:absolute;left:0;right:0;bottom:0;padding:14px 16px;background:linear-gradient(0deg,rgba(8,9,11,.9),transparent);font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px}
+.scanstat .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.3}}
+.sigchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.sigchip{font-size:13.5px;font-weight:700;padding:9px 13px;border-radius:11px;display:flex;align-items:center;gap:8px;background:var(--panel-2);border:1px solid var(--line)}
+.sigchip .d{width:9px;height:9px;border-radius:50%}
+
+/* retake */
+.retake{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px}
+.retake .ic{width:64px;height:64px;border-radius:18px;background:rgba(226,180,91,.14);border:1px solid rgba(226,180,91,.4);display:flex;align-items:center;justify-content:center;font-size:30px}
+.retake h2{font-size:22px;font-weight:800;letter-spacing:-.02em}.retake p{color:var(--mut);font-size:15px;margin:0;max-width:300px}
+
+.analyze{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:18px}
+.spinner{width:50px;height:50px;border-radius:50%;border:4px solid var(--line);border-top-color:var(--accent);animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* survey */
+.qsec{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.prime{margin:12px 0 0;background:rgba(91,141,239,.09);border:1px solid rgba(91,141,239,.28);border-radius:12px;padding:12px 14px;font-size:13.5px;color:#cfe0ff;display:none}.prime.on{display:flex;gap:9px;align-items:flex-start}.prime .s{flex:none}
+.q{font-size:23px;font-weight:800;letter-spacing:-.03em;line-height:1.3;margin:14px 0 0}
+.opts{margin-top:22px;display:flex;flex-direction:column;gap:11px}
+.opt{display:flex;align-items:center;gap:13px;background:var(--panel);border:1.5px solid var(--line);border-radius:14px;padding:16px;cursor:pointer;font-size:16px;font-weight:600;text-align:left;width:100%;font-family:inherit;color:var(--ink);transition:border-color .15s,background .15s}
+.opt:active{transform:scale(.99)}.opt .rd{flex:none;width:21px;height:21px;border-radius:50%;border:2px solid var(--mut-2);position:relative}
+.opt.sel{border-color:var(--accent);background:rgba(91,141,239,.08)}.opt.sel .rd{border-color:var(--accent)}.opt.sel .rd::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--accent)}
+.srow{flex:none;display:flex;gap:10px;padding-top:14px}.srow .btn{flex:1}.srow .btn.ghost{flex:0 0 auto;width:84px}
+
+/* result */
+.persona{margin-top:8px;background:linear-gradient(165deg,#101626,#0b0d12);border:1px solid #232a3a;border-radius:20px;padding:24px;text-align:center;position:relative;overflow:hidden}
+.persona::before{content:"";position:absolute;width:240px;height:240px;background:radial-gradient(circle,rgba(91,141,239,.22),transparent 70%);top:-110px;left:50%;transform:translateX(-50%)}
+.persona .en{position:relative;font-size:12px;font-weight:800;letter-spacing:.2em;color:var(--accent)}
+.persona .nm{position:relative;font-size:38px;font-weight:850;letter-spacing:-.04em;margin-top:6px}
+.persona .tg{position:relative;color:var(--mut);font-size:14.5px;margin-top:8px}
+.rep{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;margin-top:12px}
+.rep .h{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.rep .h .t{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.conf{font-size:11.5px;font-weight:700;padding:4px 9px;border-radius:99px}
+.flag{display:inline-block;margin-top:8px;font-size:12.5px;font-weight:700;color:#f0c9bf;background:rgba(226,114,91,.14);border:1px solid rgba(226,114,91,.4);padding:5px 11px;border-radius:99px}
+.bar{margin-top:12px}.bar .bt{display:flex;justify-content:space-between;font-size:12.5px;color:var(--mut);margin-bottom:6px}.bar .bt b{color:var(--ink)}
+.bar .tr{height:7px;border-radius:99px;background:#1c2230;overflow:hidden}.bar .fl{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),#83a8ff);width:0;transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.reason{margin-top:14px;border-top:1px solid var(--line);padding-top:13px;font-size:14px;color:var(--mut);line-height:1.6}.reason b{color:var(--ink);font-weight:700}
+.usedphoto{margin-top:11px;font-size:12px;color:var(--mut-2);display:flex;align-items:center;gap:7px}.usedphoto .d{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+canvas#work{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><span class="brand">B<i>f</i>M</span><span class="step" id="stepLabel">AI 피부 진단</span></div>
+
+  <!-- 1. INTRO -->
+  <section class="screen on" id="s-intro">
+    <div class="grow">
+      <span class="eyebrow">1단계 · 얼굴 분석</span>
+      <h1 style="margin-top:11px">먼저 <span class="ac">얼굴</span>을<br>읽어드릴게요.</h1>
+      <p class="sub">AI가 셀카 한 장에서 유분·붉은기 신호를 먼저 읽고, 그 위에 표시해 보여줍니다. 그다음 짧은 설문으로 마무리해요.</p>
+      <div class="privacy"><div class="i">🔒</div><div><b>사진은 기기에서만 분석합니다.</b><p>서버에 올리거나 저장하지 않아요. 분석이 끝나면 사라집니다.</p></div></div>
+      <div class="guides">
+        <div class="g"><span class="c">1</span><span><b>정면</b>으로, 화면 안에 얼굴을 맞춰요.</span></div>
+        <div class="g"><span class="c">2</span><span><b>밝은 곳</b>에서, 직사광·플래시는 피해요.</span></div>
+        <div class="g"><span class="c">3</span><span>안경·마스크는 벗고, <b>이마</b>가 보이게.</span></div>
+      </div>
+      <div class="inapp" id="inappMsg"><b>인스타그램 앱 안에서 열렸어요.</b><br>아래 <b>셀카로 분석 시작</b>을 누르면 휴대폰 카메라로 바로 찍을 수 있어요.</div>
+      <div class="err" id="introErr"></div>
+    </div>
+    <div class="foot">
+      <button class="btn" id="pickFile">셀카로 분석 시작</button>
+      <button class="btn ghost sm" id="startCam" style="display:none">실시간 가이드로 촬영</button>
+      <button class="linkbtn" id="skipPhoto">사진 없이 설문만 할게요 →</button>
+    </div>
+    <input type="file" id="fileInput" accept="image/*" capture="user" style="display:none" />
+  </section>
+
+  <!-- 2. CAMERA -->
+  <section class="screen" id="s-cam">
+    <div class="cam">
+      <video id="video" playsinline muted autoplay></video>
+      <div class="oval"><svg viewBox="0 0 300 380" fill="none"><ellipse cx="150" cy="190" rx="120" ry="158" stroke="rgba(255,255,255,.55)" stroke-width="3" stroke-dasharray="9 9"/></svg></div>
+      <div class="coach"><div class="pill" id="coachPill"><span class="dot"></span><span id="coachText">카메라 준비 중…</span></div></div>
+    </div>
+    <div class="foot"><button class="btn" id="shoot" disabled>촬영</button><button class="linkbtn" id="camCancel">취소</button></div>
+  </section>
+
+  <!-- 3. SCAN / OVERLAY -->
+  <section class="screen" id="s-scan">
+    <div class="grow">
+      <span class="eyebrow" id="scanEyebrow">분석 중</span>
+      <h1 style="margin-top:10px" id="scanTitle">얼굴을 읽고 있어요</h1>
+      <div class="scanwrap" id="scanwrap" style="margin-top:14px"><canvas id="faceCanvas"></canvas><div class="scanstat" id="scanStat"><span class="dot"></span><span id="scanStatText">피부 신호 측정 중…</span></div></div>
+      <div class="sigchips" id="sigChips"></div>
+    </div>
+    <div class="foot"><button class="btn" id="toSurvey" disabled>설문으로 마무리 (8문항) →</button></div>
+  </section>
+
+  <!-- 4. RETAKE -->
+  <section class="screen" id="s-retake">
+    <div class="retake">
+      <div class="ic">📷</div>
+      <h2 id="retakeTitle">사진을 다시 찍어볼까요?</h2>
+      <p id="retakeMsg">사람 얼굴이 잘 안 보여요.</p>
+    </div>
+    <div class="foot"><button class="btn" id="retakeBtn">다시 찍기</button><button class="linkbtn" id="retakeSkip">그냥 설문으로 진행 →</button></div>
+  </section>
+
+  <!-- 5. SURVEY -->
+  <section class="screen" id="s-survey">
+    <div style="flex:none;padding-top:6px">
+      <div style="display:flex;justify-content:flex-end"><span class="step"><span id="qCur">1</span> / <span id="qTot">8</span></span></div>
+      <div class="prog" style="margin-top:8px"><div class="fl" id="qProg"></div></div>
+    </div>
+    <div class="grow" style="display:flex;flex-direction:column;justify-content:center">
+      <span class="qsec" id="qSec">유분·수분</span>
+      <div class="prime" id="qPrime"><span class="s">✦</span><span id="qPrimeText"></span></div>
+      <h2 class="q" id="qText">질문</h2>
+      <div class="opts" id="qOpts"></div>
+    </div>
+    <div class="srow"><button class="btn ghost" id="qPrev">이전</button><button class="btn" id="qNext" disabled>다음</button></div>
+  </section>
+
+  <!-- 6. RESULT -->
+  <section class="screen" id="s-result">
+    <div class="grow">
+      <span class="eyebrow">AI 분석 완료</span>
+      <h1 style="margin-top:10px">당신에게 맞는<br>처방을 찾았습니다.</h1>
+      <div class="rep">
+        <div class="h"><span class="t">피부 데이터</span><span class="conf" id="confBadge">보통 확신</span></div>
+        <div id="flagWrap"></div>
+        <div class="bar"><div class="bt"><span>OILY · 유분·번들거림</span><b id="t0v">–</b></div><div class="tr"><div class="fl" id="t0"></div></div></div>
+        <div class="bar"><div class="bt"><span>DRY · 속당김·각질</span><b id="t1v">–</b></div><div class="tr"><div class="fl" id="t1"></div></div></div>
+        <div class="bar"><div class="bt"><span>TROUBLE · 트러블·자극</span><b id="t2v">–</b></div><div class="tr"><div class="fl" id="t2"></div></div></div>
+        <div class="reason" id="reason"></div>
+        <div class="usedphoto" id="usedPhoto"><span class="d"></span><span></span></div>
+      </div>
+      <p class="note" style="margin-top:14px">얼굴 신호 분석과 설문을 종합한 결과예요. 참고용이며 의학적 진단은 아닙니다.</p>
+    </div>
+    <div class="foot"><a class="btn" href="result.html">내 맞춤 처방 보기 →</a><button class="linkbtn" id="retry">처음부터 다시</button></div>
+  </section>
+
+  <canvas id="work"></canvas>
+</div>
+
+<script type="module">
+/* ===== 피부 타입 페르소나 (★ 이름·매핑은 사용자 확정 후 여기만 고치면 됨) =====
+   underlying 분석은 {지성, 건성, 여드름} 점수 → 우세 타입을 페르소나로 표시. 제품은 BfM. */
+const PERSONAS = {
+  지성: {name:'젠틀맨',    en:'GENTLE MAN',      tag:'유분 많은 피부를 단정하게 다스리는 타입'},
+  건성: {name:'니트맨',    en:'NEAT MAN',        tag:'수분 부족한 피부를 매끈하게 채우는 타입'},
+  여드름:{name:'르네상스맨', en:'RENAISSANCE MAN', tag:'자극에 약한 피부를 맑게 되살리는 타입'},
+};
+const TYPES=['지성','건성','여드름'];
+const $=s=>document.querySelector(s);
+const show=id=>{document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$(id).classList.add('on');scrollTo(0,0);};
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const normalize=v=>{const s=v.reduce((a,b)=>a+Math.max(0,b),0)||1;return v.map(x=>Math.max(0,x)/s);};
+const argmax=v=>{let m=0;for(let i=1;i<v.length;i++)if(v[i]>v[m])m=i;return m;};
+
+const ua=navigator.userAgent||'';
+const inApp=/Instagram|FBAN|FBAV|FB_IAB|KAKAOTALK|NAVER|Line\//i.test(ua);
+if(inApp)$('#inappMsg').classList.add('on');
+if(!inApp&&navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)$('#startCam').style.display='';
+
+let faceResult=null, capCanvas=null, Q=[], ans=[], qi=0, primeText='';
+
+/* ===== MediaPipe ===== */
+let vision=null,detector=null,landmarker=null;
+async function loadVision(){ if(vision)return vision; const mod=await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14');
+  vision={mod,fileset:await mod.FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm')}; return vision; }
+async function getDetector(){ if(detector)return detector; const {mod,fileset}=await loadVision();
+  detector=await mod.FaceDetector.createFromOptions(fileset,{baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite',delegate:'GPU'},runningMode:'VIDEO',minDetectionConfidence:0.6}); return detector; }
+async function getLandmarker(){ if(landmarker)return landmarker; const {mod,fileset}=await loadVision();
+  landmarker=await mod.FaceLandmarker.createFromOptions(fileset,{baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task',delegate:'GPU'},runningMode:'IMAGE',numFaces:2}); return landmarker; }
+
+/* ===== image helpers ===== */
+function brightnessOf(d){let s=0;for(let i=0;i<d.length;i+=4)s+=0.299*d[i]+0.587*d[i+1]+0.114*d[i+2];return s/(d.length/4);}
+function toGray(d,w,h){const g=new Float32Array(w*h);for(let i=0,j=0;i<d.length;i+=4,j++)g[j]=0.299*d[i]+0.587*d[i+1]+0.114*d[i+2];return g;}
+function laplacianVar(g,w,h){let s=0,s2=0,n=0;for(let y=1;y<h-1;y++)for(let x=1;x<w-1;x++){const i=y*w+x;const l=4*g[i]-g[i-1]-g[i+1]-g[i-w]-g[i+w];s+=l;s2+=l*l;n++;}const m=s/n;return s2/n-m*m;}
+function isSkin(r,g,b){const mx=Math.max(r,g,b),mn=Math.min(r,g,b);return r>60&&g>40&&b>20&&r>=g&&r>=b&&(r-g)>=8&&(mx-mn)>=12;}
+function wbFactors(d){let r=0,g=0,b=0,n=0;for(let i=0;i<d.length;i+=4){r+=d[i];g+=d[i+1];b+=d[i+2];n++;}r/=n||1;g/=n||1;b/=n||1;const gr=(r+g+b)/3;return[gr/(r||1),gr/(g||1),gr/(b||1)];}
+function analyzeROI(ctx,fx,fy,fw,fh,roi,wb){const cw=ctx.canvas.width,ch=ctx.canvas.height;
+  const x=clamp(Math.floor(fx+roi[0]*fw),0,cw-2),y=clamp(Math.floor(fy+roi[1]*fh),0,ch-2);
+  const w=Math.max(2,Math.min(Math.floor(roi[2]*fw),cw-x)),h=Math.max(2,Math.min(Math.floor(roi[3]*fh),ch-y));
+  const d=ctx.getImageData(x,y,w,h).data; let skin=0,shine=0,clip=0; const rg=[];
+  for(let i=0;i<d.length;i+=4){const r=Math.min(255,d[i]*wb[0]),g=Math.min(255,d[i+1]*wb[1]),b=Math.min(255,d[i+2]*wb[2]);
+    if(!isSkin(r,g,b))continue;skin++;const mx=Math.max(r,g,b),mn=Math.min(r,g,b);const V=mx/255,S=mx===0?0:(mx-mn)/mx;
+    if(V>0.85&&S<0.20)shine++; if(V>0.97)clip++; rg.push(r/(g+1));}
+  if(!skin)return{shine:0,redness:0,clip:0,skin:0};
+  rg.sort((a,b)=>a-b);const med=rg[(rg.length/2)|0]||1;let red=0;for(const v of rg)if(v>med*1.18)red++;
+  return{shine:shine/skin,redness:red/skin,clip:clip/skin,skin};}
+
+async function analyzePhoto(c){
+  let lm; try{lm=await getLandmarker();}catch(e){return{ok:false,reason:'model'};}
+  const res=lm.detect(c); const faces=res.faceLandmarks||[];
+  if(faces.length===0)return{ok:false,reason:'noface'};         // 강아지·풍경·물체 등
+  if(faces.length>1)return{ok:false,reason:'multi'};
+  const pts=faces[0],W=c.width,H=c.height; let mnx=1,mny=1,mxx=0,mxy=0;
+  for(const p of pts){if(p.x<mnx)mnx=p.x;if(p.y<mny)mny=p.y;if(p.x>mxx)mxx=p.x;if(p.y>mxy)mxy=p.y;}
+  const fx=mnx*W,fy=mny*H,fw=(mxx-mnx)*W,fh=(mxy-mny)*H,areaFrac=(fw*fh)/(W*H);
+  const nose=pts[1],le=pts[33],re=pts[263];const yaw=Math.abs((nose.x-(le.x+re.x)/2)/(Math.abs(re.x-le.x)||0.01));const frontal=yaw<0.22;
+  const ctx=c.getContext('2d',{willReadFrequently:true});
+  const cx=clamp(Math.floor(fx),0,W-1),cy=clamp(Math.floor(fy),0,H-1),cw=clamp(Math.floor(fw),2,W-cx),ch=clamp(Math.floor(fh),2,H-cy);
+  const fd=ctx.getImageData(cx,cy,cw,ch);const bright=brightnessOf(fd.data);const sharp=laplacianVar(toGray(fd.data,cw,ch),cw,ch);const wb=wbFactors(fd.data);
+  const tz=analyzeROI(ctx,fx,fy,fw,fh,[0.34,0.06,0.32,0.55],wb),lc=analyzeROI(ctx,fx,fy,fw,fh,[0.08,0.45,0.24,0.26],wb),rc=analyzeROI(ctx,fx,fy,fw,fh,[0.68,0.45,0.24,0.26],wb);
+  const cheekShine=(lc.shine+rc.shine)/2,shineDiff=Math.max(0,tz.shine-cheekShine*0.6),redness=Math.max(lc.redness,rc.redness),glare=Math.max(tz.clip,(lc.clip+rc.clip)/2);
+  // 재촬영 사유 판정(순서)
+  let reason=null;
+  if(!frontal)reason='pose'; else if(areaFrac<0.10)reason='small'; else if(bright<55)reason='dark';
+  else if(bright>218||glare>0.32)reason='bright'; else if(sharp<50)reason='blur';
+  const light_ok=clamp((bright-45)/35,0,1)*clamp((215-bright)/35,0,1)*clamp((0.22-glare)/0.22,0.15,1),sharp_ok=clamp((sharp-60)/120,0,1),size_ok=clamp((areaFrac-0.10)/0.10,0,1)*clamp((0.75-areaFrac)/0.15,0,1);
+  const q=(frontal?1:0)*light_ok*sharp_ok*size_ok;
+  const oily=clamp(shineDiff/0.13,0,1),dry=clamp((0.05-tz.shine)/0.05,0,1),acne=clamp((redness-0.05)/0.11,0,1);
+  return{ok:reason===null,reason,q,Sp:normalize([oily+0.05,dry,acne]),shine:tz.shine,shineDiff,redness,glare,frontal,pts,fx,fy,fw,fh,srcW:W,srcH:H};
+}
+
+/* ===== scan + overlay drawing ===== */
+function roundRect(x,a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath();}
+function tag(x,cx,cy,text,color){x.font='700 12px '+getComputedStyle(document.body).fontFamily;const w=x.measureText(text).width+18;x.fillStyle='rgba(8,9,11,.82)';x.strokeStyle=color;x.lineWidth=1;roundRect(x,cx-w/2,cy-11,w,22,11);x.fill();x.stroke();x.fillStyle='#fff';x.textAlign='center';x.textBaseline='middle';x.fillText(text,cx,cy);}
+function showScan(src){
+  capCanvas=src; show('#s-scan'); $('#stepLabel').textContent='분석';
+  $('#scanEyebrow').textContent='분석 중'; $('#scanTitle').textContent='얼굴을 읽고 있어요';
+  $('#sigChips').innerHTML=''; $('#toSurvey').disabled=true; $('#scanStat').style.display='';
+  const f=faceResult, cv=$('#faceCanvas'); const dispW=Math.min(440,$('#scanwrap').clientWidth||360);
+  const sc=dispW/src.width; cv.width=dispW; cv.height=Math.round(src.height*sc);
+  const x=cv.getContext('2d'); const base=()=>{x.clearRect(0,0,cv.width,cv.height);x.drawImage(src,0,0,cv.width,cv.height);};
+  const fy0=f.fy*sc, fy1=(f.fy+f.fh)*sc; let t0=null;
+  function scan(ts){ if(!t0)t0=ts; const p=Math.min(1,(ts-t0)/1300); base();
+    const y=fy0+(fy1-fy0)*p;
+    x.save();x.fillStyle='rgba(11,12,14,.30)';x.fillRect(0,y,cv.width,cv.height-y);
+    const g=x.createLinearGradient(0,y-20,0,y);g.addColorStop(0,'rgba(91,141,239,0)');g.addColorStop(1,'rgba(91,141,239,.45)');x.fillStyle=g;x.fillRect(0,y-20,cv.width,20);
+    x.strokeStyle='rgba(130,175,255,.95)';x.lineWidth=2;x.beginPath();x.moveTo(0,y);x.lineTo(cv.width,y);x.stroke();x.restore();
+    if(p<1)requestAnimationFrame(scan); else setTimeout(()=>drawOverlay(x,base,sc),250);
+  }
+  requestAnimationFrame(scan);
+}
+function drawOverlay(x,base,sc){
+  base(); const f=faceResult; const fx=f.fx*sc,fy=f.fy*sc,fw=f.fw*sc,fh=f.fh*sc;
+  // subtle landmark dots
+  if(f.pts){x.fillStyle='rgba(130,175,255,.30)';for(let i=0;i<f.pts.length;i+=8){const p=f.pts[i];x.beginPath();x.arc(p.x*x.canvas.width,p.y*x.canvas.height,1,0,7);x.fill();}}
+  // T-zone box
+  const tx=fx+fw*0.30,ty=fy+fh*0.03,tw=fw*0.40,th=fh*0.56;
+  x.setLineDash([6,5]);x.strokeStyle='rgba(91,141,239,.95)';x.lineWidth=2;roundRect(x,tx,ty,tw,th,9);x.stroke();x.setLineDash([]);
+  // cheeks
+  const lcx=fx+fw*0.18,rcx=fx+fw*0.82,ccy=fy+fh*0.58,cr=fw*0.11;
+  x.strokeStyle='rgba(226,114,91,.85)';x.lineWidth=2;[lcx,rcx].forEach(cx=>{x.beginPath();x.arc(cx,ccy,cr,0,7);x.stroke();});
+  // tags from real signals
+  tag(x,tx+tw/2,ty-2,f.shineDiff>0.06?'T존 · 광택↑':(f.shine<0.05?'T존 · 광택 낮음':'T존'),'#5B8DEF');
+  if(f.redness>0.06) tag(x,rcx,ccy+cr+12,'붉은기 감지','#E2725B');
+  // finalize UI
+  $('#scanStat').style.display='none'; $('#scanEyebrow').textContent='분석 완료'; $('#scanTitle').textContent='얼굴에서 이런 신호가 보여요';
+  const chips=[];
+  if(f.shineDiff>0.06)chips.push(['#5B8DEF','T존 광택 ↑ — 유분 신호']); else if(f.shine<0.05)chips.push(['#8A93A0','광택 적음 — 유분 낮음']);
+  if(f.redness>0.06)chips.push(['#E2725B','볼 붉은기 — 여드름 신호']);
+  if(chips.length===0)chips.push(['#46c98b','전반적으로 균형 잡힌 피부']);
+  $('#sigChips').innerHTML=chips.map(c=>`<span class="sigchip"><span class="d" style="background:${c[0]}"></span>${c[1]}</span>`).join('');
+  $('#toSurvey').disabled=false;
+}
+
+/* ===== adaptive survey ===== */
+const CORE=[
+ {sec:'유분·수분',q:'세수하고 30분 뒤, 아무것도 안 바른 얼굴은?',o:['이마·코가 번들거린다|o3','T존만 번들, 볼은 당긴다|o2d1','전체적으로 당기고 건조하다|d3','잘 모르겠다|o1']},
+ {sec:'유분·수분',q:'점심쯤 이마·코 상태는?',o:['번들거려 닦아낸다|o2','약간 번들거린다|o1','보송하다|','오히려 당긴다|d2']},
+ {sec:'유분·수분',q:'모공이 눈에 띄는 편인가요?',o:['넓고 많이 보인다|o2','보통이다|o1','거의 안 보인다|d1']},
+ {sec:'유분·수분',q:'피부가 자주 당기거나 각질이 일어나나요?',o:['자주 그렇다|d3','가끔 그렇다|d1','거의 없다|o1']},
+ {sec:'유분·수분',q:'보습제를 바른 뒤 느낌은?',o:['금세 번들거린다|o2','적당히 촉촉하다|','발라도 당긴다|d2']},
+ {sec:'트러블',q:'여드름·뾰루지 같은 트러블이 얼마나 있나요?',o:['자주, 여러 개 난다|a3','가끔 한두 개|a1','거의 없다|']},
+];
+const FOCUS={
+ oily:[{sec:'유분',q:'시간이 지나면 화장·선크림이 잘 무너지나요?',o:['자주 무너진다|o2','가끔|o1','잘 안 무너진다|']},{sec:'유분',q:'오후나 여름에 유분이 특히 심해지나요?',o:['매우 심하다|o2','약간|o1','비슷하다|']}],
+ dry:[{sec:'건성',q:'각질이 일어나거나 가루처럼 보일 때가 있나요?',o:['자주 있다|d2','가끔|d1','거의 없다|']},{sec:'건성',q:'실내·겨울 등 건조한 곳에서 더 당기나요?',o:['많이 당긴다|d2','조금|d1','별 차이 없다|']}],
+ acne:[{sec:'트러블',q:'면도 후 붉어지거나 따가운가요?',o:['자주 그렇다|a2','가끔|a1','괜찮다|']},{sec:'트러블',q:'같은 부위에 트러블이 반복되나요?',o:['자주 반복된다|a2','가끔|a1','거의 없다|']}],
+ def:[{sec:'트러블',q:'얼굴에 붉은기나 자극을 자주 느끼나요?',o:['자주|a2','가끔|a1','거의 없다|']},{sec:'마무리',q:'가장 신경 쓰이는 점은?',o:['번들거림·모공|o2','당김·각질|d2','트러블·붉은기|a2','딱히 없다|o1']}],
+};
+function parseOpt(s){const[t,code]=s.split('|');const m={o:0,d:0,a:0};(code||'').replace(/([oda])(\d)/g,(_,k,n)=>{m[k]=+n;});return{t,...m};}
+function dominantHint(f){if(!f||!f.ok||f.q<0.4)return null;return['oily','dry','acne'][argmax(f.Sp)];}
+function buildSurvey(){
+  const hint=dominantHint(faceResult); const focus=FOCUS[hint]||FOCUS.def;
+  Q=[...CORE,...focus].map(x=>({sec:x.sec,q:x.q,opts:x.o.map(parseOpt)}));
+  ans=new Array(Q.length).fill(-1); qi=0; $('#qTot').textContent=Q.length;
+  primeText=(faceResult&&faceResult.ok&&hint)?{oily:'셀카에서 T존 광택이 보였어요. 유분 쪽을 확인할게요.',dry:'셀카상 광택이 적은 편이었어요. 수분 쪽을 확인할게요.',acne:'셀카에서 볼 붉은기가 보였어요. 트러블을 확인할게요.'}[hint]:'';
+}
+function renderQ(){
+  const q=Q[qi]; $('#qCur').textContent=qi+1; $('#qProg').style.width=((qi+1)/Q.length*100)+'%';
+  $('#qSec').textContent=q.sec; $('#qText').textContent=q.q;
+  const pr=$('#qPrime'); if(qi===0&&primeText){pr.classList.add('on');$('#qPrimeText').textContent=primeText;}else pr.classList.remove('on');
+  $('#qOpts').innerHTML=q.opts.map((o,j)=>`<button class="opt${ans[qi]===j?' sel':''}" data-j="${j}"><span class="rd"></span><span>${o.t}</span></button>`).join('');
+  $('#qOpts').querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ans[qi]=+b.dataset.j;renderQ();setTimeout(()=>{if(qi<Q.length-1){qi++;renderQ();}},170);});
+  $('#qPrev').style.visibility=qi===0?'hidden':'visible'; $('#qNext').disabled=ans[qi]===-1; $('#qNext').textContent=qi===Q.length-1?'결과 보기':'다음';
+}
+function surveyVector(){let o=0,d=0,a=0;Q.forEach((q,i)=>{const opt=q.opts[ans[i]]||{};o+=opt.o||0;d+=opt.d||0;a+=opt.a||0;});o+=2;return normalize([o,d,a]);}
+
+/* ===== fusion + result ===== */
+function fuse(Sv,photo){
+  const usedPhoto=photo&&photo.ok&&photo.q>=0.5;const w_p=usedPhoto?0.30*clamp(photo.q,0,1):0;const w_v=1-w_p;const Sp=usedPhoto?photo.Sp:[0,0,0];
+  const F=[0,1,2].map(i=>w_v*Sv[i]+w_p*Sp[i]);let primary=argmax(F);const flags=[];
+  if(primary===2){flags.push('여드름 주의');primary=argmax([F[0],F[1],-1]);}else if(F[2]>0.24||(usedPhoto&&photo.Sp[2]>0.45))flags.push('여드름 주의');
+  if(usedPhoto&&photo.shine!=null&&photo.shine<0.05&&primary===0&&Sv[1]>0.25)flags.push('부분 건성');
+  const sorted=[...F].sort((a,b)=>b-a);const margin=sorted[0]-sorted[1];const agree=!usedPhoto?0.6:(argmax(Sv)===argmax(photo.Sp)?1:0.4);
+  const conf=(usedPhoto?clamp(photo.q,0,1):0.55)*0.4+clamp(margin/0.3,0,1)*0.35+agree*0.25;
+  return{F,primary,flags,band:conf>0.7?'높은 확신':conf>0.45?'보통 확신':'낮은 확신',usedPhoto};
+}
+function reasonText(r,photo,Sv){let s='';
+  if(r.usedPhoto){s+='셀카와 설문을 함께 분석했어요. ';
+    if(photo.shineDiff>0.06)s+='<b>T존 광택이 높아</b> 유분이 많은 편이고, ';else if(photo.shine<0.05)s+='광택이 적어 유분은 낮은 편이고, ';
+    if(photo.redness>0.06)s+='볼에 약한 붉은기가 보여 <b>진정 케어</b>도 함께 고려했어요. ';
+    s+='이 신호에 가장 맞는 처방을 매칭했습니다.';}
+  else s+='설문 답변을 분석해, 당신에게 <b>가장 맞는 처방</b>을 매칭했어요.';return s;}
+function renderResult(){
+  const Sv=surveyVector();const r=fuse(Sv,faceResult);show('#s-result');$('#stepLabel').textContent='결과';
+  const cb=$('#confBadge');cb.textContent=r.band;cb.style.color=r.band[0]==='높'?'#bff0d6':r.band[0]==='보'?'#e8d3a6':'#f0c9bf';cb.style.background=r.band[0]==='높'?'rgba(70,201,139,.15)':r.band[0]==='보'?'rgba(226,180,91,.14)':'rgba(226,114,91,.14)';
+  $('#flagWrap').innerHTML=r.flags.map(f=>`<span class="flag">${f}</span>`).join(' ');
+  const pct=r.F.map(x=>Math.round(x*100));['#t0','#t1','#t2'].forEach((id,i)=>setTimeout(()=>{$(id).style.width=pct[i]+'%';},60));
+  $('#t0v').textContent=pct[0]+'%';$('#t1v').textContent=pct[1]+'%';$('#t2v').textContent=pct[2]+'%';
+  $('#reason').innerHTML=reasonText(r,faceResult,Sv);
+  $('#usedPhoto').querySelector('span:last-child').textContent=r.usedPhoto?'얼굴 분석 + 설문 반영 · 사진은 기기에서만 처리(서버 전송 없음)':'설문만 반영 · 사진 없이 분석';
+  const tkey={지성:'oily',건성:'dry',여드름:'trouble'}[TYPES[r.primary]];
+  document.querySelector('#s-result a.btn').setAttribute('href','result.html?type='+tkey);
+}
+
+/* ===== retake ===== */
+const RETAKE={
+  noface:['사람 얼굴이 안 보여요','정면 셀카로 다시 찍어주세요. (얼굴이 또렷하게 나와야 분석할 수 있어요)'],
+  multi:['얼굴이 여러 개 보여요','혼자 나오게 다시 찍어주세요.'],
+  pose:['정면이 아니에요','카메라를 정면으로 보고 다시 찍어주세요.'],
+  small:['얼굴이 너무 작아요','조금 더 가까이서 다시 찍어주세요.'],
+  dark:['너무 어두워요','밝은 곳에서 다시 찍어주세요. (직사광·플래시는 피해요)'],
+  bright:['빛 반사가 강해요','직사광·플래시를 피해 다시 찍어주세요.'],
+  blur:['흔들렸어요','또렷하게 다시 찍어주세요.'],
+  model:['분석을 불러오지 못했어요','네트워크를 확인하고 다시 시도하거나, 설문만으로 진행하세요.'],
+};
+function goRetake(reason){const m=RETAKE[reason]||RETAKE.noface;$('#retakeTitle').textContent=m[0];$('#retakeMsg').textContent=m[1];$('#stepLabel').textContent='다시 찍기';show('#s-retake');}
+
+function goSurvey(){buildSurvey();renderQ();$('#stepLabel').textContent='설문';show('#s-survey');}
+
+/* ===== camera ===== */
+let stream=null,rafId=null;
+async function startCamera(){show('#s-cam');$('#stepLabel').textContent='촬영';
+  try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:720},height:{ideal:960}},audio:false});
+    const v=$('#video');v.srcObject=stream;await v.play();let det;try{det=await getDetector();}catch(e){det=null;}loopGuide(det);
+  }catch(e){stopCamera();show('#s-intro');$('#introErr').classList.add('on');$('#introErr').textContent='카메라를 열 수 없어요. 위의 ‘셀카로 분석 시작’으로 휴대폰 카메라를 쓰거나, 사진 없이 진행하세요.';}}
+function stopCamera(){if(rafId)cancelAnimationFrame(rafId);rafId=null;if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}}
+function loopGuide(det){const v=$('#video'),pill=$('#coachPill'),txt=$('#coachText'),c=$('#work'),cx=c.getContext('2d',{willReadFrequently:true});
+  function step(){if(!v.videoWidth){rafId=requestAnimationFrame(step);return;}let msg='',good=false;
+    if(det){const r=det.detectForVideo(v,performance.now()).detections||[];
+      if(r.length===0)msg='얼굴이 보이지 않아요';else if(r.length>1)msg='얼굴이 하나만 보이게';
+      else{const bb=r[0].boundingBox,fw=bb.width/v.videoWidth,cxF=(bb.originX+bb.width/2)/v.videoWidth,cyF=(bb.originY+bb.height/2)/v.videoHeight;
+        c.width=120;c.height=160;cx.drawImage(v,0,0,120,160);const br=brightnessOf(cx.getImageData(0,0,120,160).data);
+        if(fw<0.34)msg='조금 더 가까이';else if(fw>0.85)msg='조금 더 멀리';else if(Math.abs(cxF-0.5)>0.18||Math.abs(cyF-0.5)>0.2)msg='얼굴을 가운데로';
+        else if(br<55)msg='더 밝은 곳에서';else if(br>215)msg='직사광·플래시를 피해요';else{msg='좋아요 — 촬영하세요';good=true;}}
+    }else{msg='촬영 후 분석합니다';good=true;}
+    txt.textContent=msg;pill.classList.toggle('ready',good);$('#shoot').disabled=!good;rafId=requestAnimationFrame(step);}
+  step();}
+function captureStill(){const v=$('#video'),c=$('#work'),W=Math.min(640,v.videoWidth||640),H=Math.round(W*((v.videoHeight/v.videoWidth)||1.33));
+  c.width=W;c.height=H;c.getContext('2d',{willReadFrequently:true}).drawImage(v,0,0,W,H);stopCamera();runFace(c);}
+function imageToCanvas(img){const c=document.createElement('canvas'),W=Math.min(720,img.naturalWidth||640),H=Math.round(W*(((img.naturalHeight||480)/(img.naturalWidth||640))));c.width=W;c.height=H;c.getContext('2d',{willReadFrequently:true}).drawImage(img,0,0,W,H);return c;}
+async function runFace(canvas){
+  show('#s-scan');$('#stepLabel').textContent='분석 중';$('#scanEyebrow').textContent='분석 중';$('#scanTitle').textContent='얼굴을 읽고 있어요';
+  $('#sigChips').innerHTML='';$('#toSurvey').disabled=true;$('#scanStat').style.display='';
+  // draw immediately so user sees their photo while model loads
+  const cv=$('#faceCanvas'),dispW=Math.min(440,$('#scanwrap').clientWidth||360),sc=dispW/canvas.width;cv.width=dispW;cv.height=Math.round(canvas.height*sc);cv.getContext('2d').drawImage(canvas,0,0,cv.width,cv.height);
+  let photo; try{photo=await analyzePhoto(canvas);}catch(e){photo={ok:false,reason:'model'};}
+  faceResult=photo;
+  if(!photo.ok){ goRetake(photo.reason); return; }
+  showScan(canvas);
+}
+
+/* ===== wires ===== */
+$('#pickFile').onclick=()=>$('#fileInput').click();
+$('#fileInput').onchange=e=>{const f=e.target.files[0];if(!f)return;const img=new Image();img.onload=()=>runFace(imageToCanvas(img));img.src=URL.createObjectURL(f);e.target.value='';};
+$('#startCam').onclick=startCamera;
+$('#shoot').onclick=()=>{if(!$('#shoot').disabled)captureStill();};
+$('#camCancel').onclick=()=>{stopCamera();show('#s-intro');$('#stepLabel').textContent='AI 피부 진단';};
+$('#skipPhoto').onclick=()=>{faceResult=null;goSurvey();};
+$('#toSurvey').onclick=goSurvey;
+$('#retakeBtn').onclick=()=>{$('#introErr').classList.remove('on');if(!inApp&&navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)startCamera();else $('#fileInput').click();};
+$('#retakeSkip').onclick=()=>{faceResult=null;goSurvey();};
+$('#qPrev').onclick=()=>{if(qi>0){qi--;renderQ();}};
+$('#qNext').onclick=()=>{if(ans[qi]===-1)return;if(qi<Q.length-1){qi++;renderQ();}else renderResult();};
+$('#retry').onclick=()=>{faceResult=null;$('#introErr').classList.remove('on');$('#stepLabel').textContent='AI 피부 진단';show('#s-intro');};
+</script>
+</body>
+</html>

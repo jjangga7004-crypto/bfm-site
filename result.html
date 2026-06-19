@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>내 처방 — BfM</title>
+<meta name="description" content="타입마다 성분이 다릅니다. 당신 타입에 꼭 필요한 성분만, 바르기 쉬운 올인원 한 병에." />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<style>
+:root{--bg:#0B0C0E;--panel:#14161A;--panel-2:#1A1D23;--line:#262A31;--ink:#EDEFF2;--mut:#9AA2AD;--mut-2:#6B727C;
+  --clinic:#F4F6F8;--clinic-2:#fff;--clinic-ink:#0E1116;--clinic-mut:#5A626D;--clinic-line:#E4E8EC;
+  --accent:#5B8DEF;--accent-strong:#3E6FE0;--safe-b:env(safe-area-inset-bottom,0px);
+  --sans:"Pretendard Variable",Pretendard,-apple-system,system-ui,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);word-break:keep-all;line-break:strict;overflow-wrap:break-word;letter-spacing:-.01em;font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;padding-bottom:calc(76px + var(--safe-b))}
+img{max-width:100%;display:block}a{color:inherit;text-decoration:none}
+.wrap{max-width:560px;margin:0 auto;padding-inline:20px}
+.eyebrow{font-size:11.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+h1,h2,h3{margin:0;font-weight:800;letter-spacing:-.03em;line-height:1.18}
+.sec{padding:46px 0}
+.sec.light{background:var(--clinic);color:var(--clinic-ink)}
+.sec.white{background:#fff;color:var(--clinic-ink)}
+.sec.light .eyebrow,.sec.white .eyebrow{color:var(--accent-strong)}
+.lead{color:var(--mut);font-size:15.5px;margin-top:12px;line-height:1.7}
+.sec.light .lead,.sec.white .lead{color:var(--clinic-mut)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;font-weight:800;font-size:16.5px;padding:17px;border-radius:14px;background:var(--accent);color:#fff;border:0;cursor:pointer;font-family:inherit;box-shadow:0 10px 26px -10px rgba(91,141,239,.7)}
+.btn:active{transform:scale(.985)}
+.btn.ghost{background:#fff;color:var(--clinic-ink);border:1.5px solid var(--clinic-line);box-shadow:none}
+
+/* header */
+header{position:sticky;top:0;z-index:50;background:rgba(11,12,14,.8);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:54px}
+.brand{font-weight:800;font-size:20px;letter-spacing:-.04em}.brand i{font-style:normal;color:var(--accent)}
+header .re{font-size:13.5px;color:var(--mut);font-weight:600}
+
+/* hero */
+.hero{padding:40px 0 36px;background:radial-gradient(130% 90% at 80% 0%,#16223f,#0b0c0e 60%)}
+.hero .et{font-size:11.5px;font-weight:800;letter-spacing:.18em;color:var(--accent);text-transform:uppercase}
+.hero .en{font-size:clamp(40px,11vw,58px);font-weight:850;letter-spacing:-.04em;line-height:1;margin-top:12px}
+.hero .ko{font-size:17px;color:var(--mut);font-weight:700;margin-top:8px}
+.hero .one{font-size:clamp(19px,4vw,23px);font-weight:800;letter-spacing:-.03em;margin-top:20px;line-height:1.4}
+.hero .one .ac{color:var(--accent)}
+.str{display:flex;gap:10px;margin-top:22px}
+.str .s{flex:1;background:rgba(91,141,239,.08);border:1px solid rgba(91,141,239,.25);border-radius:13px;padding:14px}
+.str .s .k{font-size:12.5px;color:var(--mut);font-weight:600}
+.str .s .v{font-size:15px;font-weight:800;margin-top:4px;letter-spacing:-.02em}
+.str .s .v b{color:var(--accent)}
+
+/* concept */
+.concept h2{font-size:25px}
+.concept .big{font-weight:800;color:var(--clinic-ink)}
+
+/* ingredient cards */
+.ighead{display:flex;align-items:baseline;gap:10px;margin-bottom:18px}
+.ighead .en{font-size:12px;font-weight:800;letter-spacing:.12em;color:var(--accent-strong);text-transform:uppercase}
+.ighead h2{font-size:22px}
+.ig{background:#fff;border:1px solid var(--clinic-line);border-radius:16px;padding:20px;margin-bottom:12px}
+.sec.white .ig{background:var(--clinic);}
+.ig .r{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.ig .nm{font-size:18px;font-weight:800;letter-spacing:-.02em}
+.ig .nm .en{display:block;font-size:11.5px;font-weight:700;color:var(--clinic-mut);letter-spacing:.03em;margin-top:2px}
+.ig .ef{flex:none;font-size:12px;font-weight:800;color:var(--accent-strong);background:rgba(91,141,239,.1);padding:7px 11px;border-radius:99px;text-align:center}
+.ig p{margin:12px 0 0;font-size:14px;color:var(--clinic-mut);line-height:1.65}
+.subnote{font-size:12.5px;color:var(--clinic-mut);margin-top:6px}
+
+/* formulation */
+.form3{display:flex;flex-direction:column;gap:12px;margin-top:22px}
+.f3{display:flex;gap:14px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+.f3 .n{flex:none;width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-strong));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff}
+.f3 b{font-size:15.5px}.f3 p{margin:3px 0 0;color:var(--mut);font-size:14px;line-height:1.6}
+
+/* product */
+.prod{background:#fff;border:1px solid var(--clinic-line);border-radius:18px;overflow:hidden;margin-top:8px}
+.prod .pic{height:190px;background:radial-gradient(120% 100% at 30% 20%,#17243f,#0b0d12 62%);display:flex;align-items:center;justify-content:center;position:relative}
+.prod .pic .mk{font-weight:900;font-size:46px;letter-spacing:-.05em;color:rgba(255,255,255,.92)}.prod .pic .mk i{font-style:normal;color:var(--accent)}
+.prod .pic .hint{position:absolute;bottom:10px;left:0;right:0;text-align:center;font-size:11px;color:rgba(255,255,255,.32)}
+.prod .body{padding:20px}
+.prod .nm{font-size:21px;font-weight:800;letter-spacing:-.03em}
+.prod .ds{color:var(--clinic-mut);font-size:14px;margin-top:6px}
+.prod .price{display:flex;align-items:baseline;gap:9px;margin-top:16px}
+.prod .price .now{font-size:29px;font-weight:850;letter-spacing:-.03em}.prod .price .s{font-size:13px;color:var(--clinic-mut)}
+.prod .spec{margin-top:14px;border-top:1px solid var(--clinic-line);padding-top:14px;display:flex;flex-direction:column;gap:8px;font-size:13.5px;color:var(--clinic-mut)}
+.prod .spec .ln{display:flex;justify-content:space-between}.prod .spec .ln b{color:var(--clinic-ink);font-weight:700}
+.prod .body .btn{margin-top:18px}
+
+/* guarantee */
+.guar{background:linear-gradient(135deg,#10141f,#0b0d12);border:1px solid #232a3a;border-radius:18px;padding:26px 22px;text-align:center;margin-top:8px}
+.guar .ic{width:52px;height:52px;border-radius:15px;margin:0 auto 14px;background:linear-gradient(135deg,var(--accent),var(--accent-strong));display:flex;align-items:center;justify-content:center;font-size:24px}
+.guar h2{font-size:22px}.guar p{color:var(--mut);font-size:14px;margin-top:10px}
+
+footer{background:#070809;border-top:1px solid var(--line);color:var(--mut-2);font-size:11.5px;line-height:1.85;padding:28px 0 22px}
+footer .bd{font-size:18px;color:var(--ink);font-weight:800;margin-bottom:8px}footer b{color:var(--mut)}
+.sticky{position:fixed;left:0;right:0;bottom:0;z-index:60;padding:10px 16px calc(10px + var(--safe-b));background:rgba(11,12,14,.94);backdrop-filter:blur(12px);border-top:1px solid var(--line)}
+.sticky .btn{box-shadow:none}
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s,transform .6s cubic-bezier(.2,.8,.2,1)}.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><a href="diagnose.html" class="brand">B<i>f</i>M</a><a href="diagnose.html" class="re">다시 진단</a></div></header>
+
+<!-- HERO -->
+<section class="hero"><div class="wrap">
+  <div class="et">AI 분석 완료</div>
+  <div class="en" style="font-size:clamp(30px,8vw,44px);line-height:1.14">당신에게 맞는<br>처방을 찾았습니다.</div>
+  <div class="one">고민할 필요 없습니다. <span class="ac">AI와 질문지</span>를 기반으로, 최적의 솔루션을 제시합니다.</div>
+  <div class="str">
+    <div class="s"><div class="k">개인 맞춤</div><div class="v">효과 <b>↑</b></div></div>
+    <div class="s"><div class="k">우리가 정함</div><div class="v">선택 피로 <b>0</b></div></div>
+  </div>
+</div></section>
+
+<!-- CONCEPT -->
+<section class="sec light concept"><div class="wrap">
+  <span class="eyebrow">AI 매칭</span>
+  <h2>당신에게 맞는 것만,<br>한 병에.</h2>
+  <p class="lead">남자 피부는 다 다릅니다. AI가 당신의 피부 신호와 답변을 읽어 가장 맞는 처방을 매칭합니다. <span class="big">꼭 필요한 성분만</span> 좋은 오일과 안정적인 유화로 잡아, 바르기 쉬운 올인원 한 병에. 고를 필요 없이.</p>
+</div></section>
+
+<!-- KEY ACTIVES -->
+<section class="sec white"><div class="wrap">
+  <div class="ighead"><span class="en">KEY ACTIVES</span><h2>핵심 활성</h2></div>
+  <div id="coreList"></div>
+</div></section>
+
+<!-- SUPPORT -->
+<section class="sec light"><div class="wrap">
+  <div class="ighead"><span class="en">SUPPORT</span><h2>보조 케어</h2></div>
+  <div id="subList"></div>
+</div></section>
+
+<!-- FORMULATION -->
+<section class="sec"><div class="wrap">
+  <span class="eyebrow">성분만큼 중요한 것</span>
+  <h2 style="font-size:24px;margin-top:11px">좋은 성분도,<br>베이스가 싸구려면 소용없습니다.</h2>
+  <div class="form3">
+    <div class="f3"><div class="n">1</div><div><b>좋은 베이스 오일</b><p>아무리 좋은 활성도 베이스가 받쳐주지 않으면 피부에 안 먹습니다. 흡수 좋은 식물성 오일만 씁니다.</p></div></div>
+    <div class="f3"><div class="n">2</div><div><b>안정적인 유화</b><p>오일과 물을 제대로 섞는 유화 기술. 분리 없이, 끈적임 없이, 산뜻하게 발립니다.</p></div></div>
+    <div class="f3"><div class="n">3</div><div><b>꼭 필요한 성분만</b><p>유행 성분을 다 때려넣지 않습니다. 당신 타입에 필요한 것만. 그래서 한 병으로 충분합니다.</p></div></div>
+  </div>
+</div></section>
+
+<!-- PRODUCT -->
+<section class="sec light"><div class="wrap">
+  <span class="eyebrow">처방</span>
+  <h2 style="font-size:24px;margin:11px 0 18px">고르기 쉽게, 바르기 쉽게.</h2>
+  <div class="prod reveal">
+    <!-- 제품 사진으로 교체: div.pic 안에 <img> -->
+    <div class="pic"><span class="mk">B<i>f</i>M</span><span class="hint">제품 사진 자리</span></div>
+    <div class="body">
+      <div class="nm">Perfect All-in-One</div>
+      <div class="ds">당신 타입에 맞춘 활성·보조 성분을, 좋은 오일·유화로 한 병에. 토너·로션·세럼·영양을 따로 바를 필요 없습니다.</div>
+      <div class="price"><span class="now">21,900원</span><span class="s">2달치(200ml) · 정기배송</span></div>
+      <div class="spec">
+        <div class="ln"><span>용량</span><b>200ml · 약 2개월분</b></div>
+        <div class="ln"><span>구성</span><b>올인원 1병 (4-in-1)</b></div>
+        <div class="ln"><span>배송</span><b>전국 무료배송 · 정기배송</b></div>
+      </div>
+      <a href="#" class="btn">정기배송으로 시작하기 →</a>
+    </div>
+  </div>
+</div></section>
+
+<!-- GUARANTEE -->
+<section class="sec"><div class="wrap"><div class="guar reveal">
+  <div class="ic">↺</div><h2>안 맞으면, 무료로 교체.</h2>
+  <p>혹시 문제가 생기면 다른 타입으로 무료로 바꿔드립니다. 안 맞을까 걱정하지 마세요.</p>
+</div></div></section>
+
+<footer><div class="wrap">
+  <div class="bd">B<span style="color:var(--accent)">f</span>M</div>
+  <b>상호명</b> BFM<br>
+  Copyright ⓒ 2026 BFM. All rights reserved.
+</div></footer>
+
+<div class="sticky"><a href="#" class="btn">정기배송으로 시작 · 21,900원 →</a></div>
+
+<script>
+const TYPE = {
+  oily:{en:'GENTLE MAN',ko:'젠틀맨',typeKo:'지성',typeEn:'OILY'},
+  dry:{en:'NEAT MAN',ko:'니트맨',typeKo:'건성',typeEn:'DRY'},
+  trouble:{en:'RENAISSANCE MAN',ko:'르네상스맨',typeKo:'트러블',typeEn:'TROUBLE'},
+};
+const ING = {
+  oily:{ core:[
+    {nm:'나이아신아마이드',en:'Niacinamide',ef:'피지 조절·모공',d:'T존 과잉 피지 분비를 잡고 모공을 시각적으로 좁혀줍니다. 하루 종일 번들거림이 신경 쓰이는 피부가 1순위로 들여야 할 성분.'},
+    {nm:'황금추출물',en:'Scutellaria',ef:'피지선 항염',d:'한방계 항염 원료. 피지선 과활성에서 시작되는 미세 염증을 가라앉혀, 트러블이 자리잡기 전 단계에서 차단하는 역할.'},
+    {nm:'베타-글루칸',en:'Beta-Glucan',ef:'진정·수분 균형',d:'피지가 많아도 속은 건조한 남성 피부 특유의 불균형을 잡아줍니다. 표면 자극을 다스리면서 수분층을 동시에 채워주는 멀티 성분.'}],
+   sub:[
+    {nm:'병풀추출물',en:'Centella',ef:'트러블 예방·재생',d:'시카로 알려진 진정 원료. 면도·외부 자극으로 예민해진 피부의 회복 속도를 끌어올립니다.'},
+    {nm:'폴리글루타믹애씨드',en:'Poly-Glutamic Acid',ef:'산뜻 보습',d:'하이알루론산보다 무겁지 않은 차세대 수분 폴리머. 끈적임 없이 표면 수분을 잡아두는 데 특화되어 지성 피부에도 부담이 없습니다.'},
+    {nm:'카퍼트라이펩타이드-1',en:'Copper Tripeptide-1',ef:'회복 신호',d:'손상 단백질의 회복 신호를 자극하는 구리 펩타이드. 피지 케어 과정에서 누적되는 미세 손상을 보완합니다.'}]},
+  trouble:{ core:[
+    {nm:'4-터피네올',en:'Terpinen-4-ol',ef:'항균·트러블 케어',d:'티트리오일의 활성 단일 분획. 원유 형태보다 자극은 낮추면서 트러블 원인균에 대한 작용은 그대로 유지합니다. 라인의 메인으로 박을 만한 무게감.'},
+    {nm:'약모밀추출물(어성초)',en:'Houttuynia',ef:'항염·진정',d:'한방계 트러블 케어의 대표 원료. 진행 중인 염증과 미세 자극을 가라앉혀 새 트러블이 올라오는 사이클 자체를 늦춥니다.'},
+    {nm:'나이아신아마이드',en:'Niacinamide',ef:'피지·붉은 자국',d:'과잉 피지를 줄이면서 트러블이 지나간 자리의 붉은 자국·색소 침착을 함께 옅게 만들어줍니다. 트러블 제형에서 빠질 수 없는 멀티 성분.'}],
+   sub:[
+    {nm:'시카 컴플렉스',en:'Cica Complex',ef:'재생·진정',d:'병풀추출물에 마데카소사이드 계열을 더한 강화 시카 구성. 이미 자극받은 피부의 장벽 회복과 진정을 동시에 끌어올립니다.'},
+    {nm:'판테놀',en:'Panthenol',ef:'자극 완화·수분',d:'프로비타민 B5. 트러블 피부 특유의 따끔거림과 건조함을 같이 다스리며, 자극 회복 속도를 끌어올리는 보조 성분.'}]},
+  dry:{ core:[
+    {nm:'세라마이드 콤플렉스',en:'Ceramide NP·AP·EOP',ef:'장벽 재건',d:'피부 장벽을 이루는 핵심 지질을 사람 피부와 같은 종류로. 무너진 보호막을 다시 쌓아 수분이 새어나가는 길부터 막습니다. 속당김·각질이 잦은 건성 피부의 1순위 성분.'},
+    {nm:'콜레스테롤+지방산',en:'Cholesterol + Fatty Acid',ef:'지질 황금비',d:'세라마이드만 넣어선 장벽이 안 채워집니다. 콜레스테롤·지방산을 황금비로 함께 넣어야 제대로 메워집니다. 건성 케어의 핵심은 ‘비율’.'},
+    {nm:'5종 히알루론산',en:'5-Hyaluronic Acid',ef:'다층 수분',d:'분자 크기가 다른 5종이 표면부터 안쪽까지 단계별로 수분을 채웁니다. 겉만 촉촉한 게 아니라 속까지.'}],
+   sub:[
+    {nm:'스쿠알란',en:'Squalane',ef:'유수분 보호막',d:'피부와 가장 닮은 보습 오일. 끈적임 없이 얇은 막을 만들어 건조한 환경에서도 수분을 지킵니다.'},
+    {nm:'판테놀',en:'Panthenol',ef:'진정·결 정돈',d:'프로비타민 B5. 당김과 미세 각질을 다스리며 거칠어진 결을 부드럽게 정돈합니다.'},
+    {nm:'마데카소사이드',en:'Madecassoside',ef:'장벽 회복',d:'병풀 유래 진정 성분. 약해진 건성 피부의 장벽 회복을 돕습니다.'}]},
+};
+const key = (new URLSearchParams(location.search).get('type')||'oily').toLowerCase();
+const ig = ING[key]||ING.oily;
+const card=i=>`<div class="ig reveal"><div class="r"><div class="nm">${i.nm}<span class="en">${i.en}</span></div><div class="ef">${i.ef}</div></div><p>${i.d}</p></div>`;
+document.getElementById('coreList').innerHTML=ig.core.map(card).join('');
+document.getElementById('subList').innerHTML=ig.sub.map(card).join('');
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}})},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+setTimeout(()=>document.querySelectorAll('.reveal:not(.in)').forEach(e=>e.classList.add('in')),1400);
+</script>
+</body>
+</html>
