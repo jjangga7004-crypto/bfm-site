@@ -1,5 +1,8 @@
 # 내부 문서·로컬 서버·임시폴더는 공개 호스팅에서 제외
 *.md
+# 단, 인수인계 문서는 저장소에 포함 (디자이너 온보딩 + Claude 자동 컨텍스트)
+!CLAUDE.md
+!HANDOFF.md
 server.js
 site/
 .DS_Store
