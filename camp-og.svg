@@ -9,9 +9,9 @@
   <g font-family="Pretendard, sans-serif">
     <circle cx="96" cy="104" r="15" fill="url(#fire)"/>
     <text x="120" y="118" font-size="40" font-weight="900" fill="#181210">불꽃캠프</text>
-    <text x="80" y="246" font-size="76" font-weight="900" letter-spacing="-3" fill="#181210">사탐은 암기과목이</text>
+    <text x="80" y="246" font-size="76" font-weight="900" letter-spacing="-3" fill="#181210">사탐은 외우는 과목이</text>
     <text x="80" y="336" font-size="76" font-weight="900" letter-spacing="-3" fill="#E0410F">아닙니다.</text>
-    <text x="82" y="406" font-size="33" font-weight="600" fill="#3A322D">인강 120강을 8시간에. 나머지는 불꽃캠프 모의고사로 다집니다.</text>
+    <text x="82" y="406" font-size="33" font-weight="600" fill="#3A322D">핵심은 평가원 뉘앙스. 개념은 필요한 만큼만, 나머지는 불꽃캠프로.</text>
     <g transform="translate(82,452)">
       <rect width="316" height="60" rx="30" fill="url(#fire)"/>
       <text x="158" y="39" text-anchor="middle" font-size="27" font-weight="800" fill="#ffffff">김과외 사탐 전국 1위</text>
