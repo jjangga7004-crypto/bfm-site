@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>불꽃캠프 — 김과외 업로드용 그래픽 카드</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<style>
+:root{
+  --bg:#0B0908;--ink:#F3EDE7;--mut:#B3A89E;--mut-2:#7C7167;--line:#2C2219;
+  --fire:#FF5A1F;--fire-2:#FF8A3D;--ember:#FFB02E;--deep:#C8330B;
+  --sans:"Pretendard Variable",Pretendard,-apple-system,system-ui,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#1a1512;font-family:var(--sans);color:var(--ink);padding:30px 16px 80px;word-break:keep-all;line-break:strict}
+.help{max-width:1080px;margin:0 auto 28px;background:#221a15;border:1px solid var(--line);border-radius:14px;padding:20px 24px;color:var(--mut);font-size:14.5px;line-height:1.7}
+.help b{color:var(--ember)}
+.help code{background:#000;color:var(--fire-2);padding:2px 7px;border-radius:6px;font-size:13px}
+.guide{max-width:1080px;margin:34px auto 10px;font-size:13px;font-weight:800;letter-spacing:.1em;color:var(--fire-2);text-transform:uppercase}
+
+/* === capture frame: 1080 x 1350 (김과외/인스타 세로 4:5) === */
+.card{
+  width:1080px;height:1350px;margin:0 auto;position:relative;overflow:hidden;
+  background:radial-gradient(120% 80% at 80% 0%,#3a1404 0%,#1a0d06 45%,#0b0908 100%);
+  border:1px solid var(--line);border-radius:8px;
+  padding:96px 88px;display:flex;flex-direction:column;
+}
+.card .glow{position:absolute;right:-12%;top:-14%;width:760px;height:760px;background:radial-gradient(circle,rgba(255,90,31,.26),transparent 62%);filter:blur(10px);pointer-events:none}
+.card .wm{position:absolute;right:-3%;bottom:-7%;font-size:520px;font-weight:900;letter-spacing:-.07em;color:rgba(255,120,40,.045);line-height:.8;pointer-events:none}
+.card>*{position:relative;z-index:1}
+.brandline{display:flex;align-items:center;gap:12px;font-size:30px;font-weight:900;letter-spacing:-.03em}
+.spacer{flex:1}
+.rank{display:inline-flex;align-self:flex-start;align-items:center;gap:10px;font-size:26px;font-weight:800;padding:16px 26px;border-radius:999px;background:linear-gradient(135deg,var(--fire),var(--deep));color:#fff;box-shadow:0 20px 50px -16px rgba(255,90,31,.7)}
+.big{font-size:118px;font-weight:900;letter-spacing:-.05em;line-height:1.04}
+.big .ac{background:linear-gradient(120deg,var(--ember),var(--fire));-webkit-background-clip:text;background-clip:text;color:transparent}
+.mid{font-size:64px;font-weight:900;letter-spacing:-.04em;line-height:1.12}
+.sub{font-size:38px;color:#E3DAD1;line-height:1.5;font-weight:500}
+.sub b{color:var(--fire-2);font-weight:800}
+.tag{font-size:26px;font-weight:800;letter-spacing:.12em;color:var(--fire-2);text-transform:uppercase}
+.foot{font-size:26px;color:var(--mut-2);font-weight:600}
+
+/* split card */
+.vs{display:flex;gap:28px;margin-top:20px}
+.vs .c{flex:1;border-radius:24px;padding:44px;border:2px solid}
+.vs .bad{background:#16110e;border-color:var(--line)}
+.vs .good{background:linear-gradient(160deg,#2a1106,#180c06);border-color:rgba(255,138,61,.55)}
+.vs .lab{font-size:26px;font-weight:800;padding:10px 20px;border-radius:999px;display:inline-block;margin-bottom:26px}
+.vs .bad .lab{background:#2a221b;color:#9a8a78}
+.vs .good .lab{background:rgba(255,90,31,.2);color:var(--fire-2)}
+.vs h3{font-size:46px;font-weight:900;letter-spacing:-.03em;line-height:1.15;margin-bottom:18px}
+.vs p{font-size:29px;color:var(--mut);line-height:1.5}
+.vs .good p{color:#E3DAD1}
+.vs .bar{height:22px;border-radius:11px;margin-top:34px;overflow:hidden;background:rgba(255,255,255,.07)}
+.vs .bar i{display:block;height:100%}
+.vs .bad .bar i{width:14%;background:#7c6e5e}
+.vs .good .bar i{width:100%;background:linear-gradient(90deg,var(--ember),var(--fire))}
+
+/* ladder card */
+.steps{display:flex;flex-direction:column;gap:26px;margin-top:18px}
+.steprow{display:flex;gap:30px;align-items:flex-start;border-radius:24px;padding:40px;background:#16110e;border:2px solid var(--line)}
+.steprow.hot{background:linear-gradient(160deg,#2a1106,#160b06);border-color:rgba(255,138,61,.55)}
+.steprow .n{flex:none;width:84px;height:84px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:900;background:rgba(255,90,31,.16);color:var(--fire-2)}
+.steprow.hot .n{background:linear-gradient(135deg,var(--fire),var(--deep));color:#fff}
+.steprow h3{font-size:44px;font-weight:900;letter-spacing:-.03em;margin-bottom:8px}
+.steprow .role{font-size:25px;color:var(--mut-2);font-weight:800;letter-spacing:.04em;margin-bottom:14px}
+.steprow p{font-size:28px;color:var(--mut);line-height:1.45}
+.steprow .price{margin-top:16px;font-size:30px;font-weight:800}
+.steprow .price b{color:var(--ember)}
+
+/* loop card */
+.loopwrap{display:flex;flex-direction:column;gap:24px;margin-top:18px}
+.loopn{display:flex;align-items:center;gap:34px;border-radius:24px;padding:44px;background:#16110e;border:2px solid var(--line)}
+.loopn .ic{font-size:90px;flex:none}
+.loopn .stp{font-size:24px;font-weight:800;letter-spacing:.14em;color:var(--fire-2);margin-bottom:8px}
+.loopn h3{font-size:48px;font-weight:900;letter-spacing:-.03em;margin-bottom:8px}
+.loopn p{font-size:28px;color:var(--mut);line-height:1.45}
+
+/* stats card */
+.statrow{display:flex;flex-direction:column;gap:30px;margin-top:14px}
+.statbox{border-radius:24px;padding:50px 52px;background:linear-gradient(160deg,#1e120a,#140c07);border:2px solid var(--line);display:flex;align-items:baseline;justify-content:space-between;gap:24px}
+.statbox .num{font-size:128px;font-weight:900;letter-spacing:-.05em;line-height:.9;background:linear-gradient(120deg,var(--ember),var(--fire));-webkit-background-clip:text;background-clip:text;color:transparent}
+.statbox .num small{font-size:.42em}
+.statbox .desc{text-align:right}
+.statbox .desc .t{font-size:38px;font-weight:800}
+.statbox .desc .s{font-size:25px;color:var(--mut-2);margin-top:6px}
+
+/* spec card */
+.specgrid{display:flex;flex-wrap:wrap;gap:20px;margin-top:24px}
+.specgrid span{font-size:31px;font-weight:800;padding:22px 30px;border-radius:18px;background:#16110e;border:2px solid var(--line);display:inline-flex;align-items:center;gap:14px}
+.specgrid span .s{color:var(--fire)}
+@media(max-width:1140px){
+  body{padding:20px 0 60px}
+  .card{transform:scale(calc((100vw - 8px)/1080));transform-origin:top center;margin-bottom:calc(-1350px * (1 - (100vw - 8px)/1080))}
+  .help,.guide{padding-inline:16px}
+}
+</style>
+</head>
+<body>
+
+<div class="help">
+  <b>📸 사용법</b><br>
+  이 페이지를 브라우저(크롬 권장)에서 열고, 각 카드를 <b>이미지로 캡처</b>해서 김과외 프로필에 올리세요. 카드는 <code>1080 × 1350px</code> (세로 4:5)로 만들어져 있어 그대로 올리면 깨지지 않습니다.<br><br>
+  · <b>가장 깔끔한 방법</b>: 크롬에서 <code>F12</code> → 캡처할 <code>&lt;div class="card"&gt;</code> 요소 우클릭 → "Capture node screenshot" → 1080×1350 PNG 저장.<br>
+  · <b>간단한 방법</b>: 화면 캡처(맥 <code>⌘⇧4</code> / 윈도우 <code>Win+Shift+S</code>)로 카드 영역만 잘라서 저장.<br>
+  · 글자·숫자는 HTML이라 언제든 직접 수정 가능합니다. (예: 결과 수치, 타임)
+</div>
+
+<!-- ============ CARD 1 : 후킹 ============ -->
+<div class="guide">카드 1 · 첫인상(후킹)</div>
+<div class="card">
+  <div class="glow"></div><div class="wm">사탐</div>
+  <div class="brandline">🔥 장쌤의 불꽃캠프</div>
+  <div class="spacer"></div>
+  <div class="rank">🔥 김과외 사탐 전국 1위</div>
+  <div class="big" style="margin-top:40px">사탐,<br>인강 6개월 들을<br>과목이 <span class="ac">아닙니다.</span></div>
+  <div class="sub" style="margin-top:40px">개념·기출은 <b>8시간</b>이면 끝납니다.<br>점수는 그 다음, <b>불꽃캠프</b>에서 만듭니다.</div>
+  <div class="spacer"></div>
+  <div class="foot">사회문화 · 생활과윤리　|　대치동　|　2026.6 기준</div>
+</div>
+
+<!-- ============ CARD 2 : 전달 vs 다지기 ============ -->
+<div class="guide">카드 2 · 왜 8시간이면 되나</div>
+<div class="card">
+  <div class="glow"></div>
+  <div class="tag">왜 8시간이면 되나</div>
+  <div class="mid" style="margin-top:24px">인강 6개월의 정체는<br>'전달 6개월'입니다.</div>
+  <div class="sub" style="margin-top:22px;font-size:32px">점수는 '전달'이 아니라 '다지기'에서 오릅니다.</div>
+  <div class="vs">
+    <div class="c bad">
+      <span class="lab">인강 6개월</span>
+      <h3>전달에 6개월</h3>
+      <p>개념·기출을 길게 늘여 듣고, 정작 점수를 만드는 다지기는 학생 몫. 대부분 못 끝냅니다.</p>
+      <div class="bar"><i></i></div>
+      <p style="font-size:24px;margin-top:14px;color:#9a8a78">점수로 이어지는 시간 — 적음</p>
+    </div>
+    <div class="c good">
+      <span class="lab">장쌤 방식</span>
+      <h3>전달 8시간<br>→ 다지기 집중</h3>
+      <p>전달은 4주에 마감. 점수가 실제로 오르는 다지기에 모든 시간을 붓습니다.</p>
+      <div class="bar"><i></i></div>
+      <p style="font-size:24px;margin-top:14px;color:var(--ember)">점수로 이어지는 시간 — 최대</p>
+    </div>
+  </div>
+  <div class="spacer"></div>
+  <div class="foot">🔥 장쌤의 불꽃캠프</div>
+</div>
+
+<!-- ============ CARD 3 : 2단계 코스 ============ -->
+<div class="guide">카드 3 · 2단계 코스</div>
+<div class="card">
+  <div class="glow"></div>
+  <div class="tag">2단계 코스</div>
+  <div class="mid" style="margin-top:24px">대부분 이 순서로 갑니다.</div>
+  <div class="steps">
+    <div class="steprow">
+      <div class="n">1</div>
+      <div>
+        <h3>4주 완성 1:1 과외</h3>
+        <div class="role">전달 — 개념 + 기출 마감</div>
+        <p>인강 6개월치를 2시간×4회로. 하루 30분 숙제만.</p>
+        <div class="price">대면 <b>80만</b> · 화상 <b>60만</b></div>
+      </div>
+    </div>
+    <div class="steprow hot">
+      <div class="n">2</div>
+      <div>
+        <h3>불꽃캠프 (모의고사 실전반)</h3>
+        <div class="role" style="color:var(--fire-2)">다지기 — 점수가 오르는 구간</div>
+        <p>모의고사·오답 피드백 무한 반복으로 약점을 메웁니다.</p>
+        <div class="price">주 1회 4시간 × 4회 <b>50만</b></div>
+      </div>
+    </div>
+  </div>
+  <div class="spacer"></div>
+  <div class="foot">개념이 끝났는데 등급이 안 나온다면 → 불꽃캠프</div>
+</div>
+
+<!-- ============ CARD 4 : 불꽃캠프 3단 루프 ============ -->
+<div class="guide">카드 4 · 불꽃캠프 3단 루프</div>
+<div class="card">
+  <div class="glow"></div>
+  <div class="tag">불꽃캠프 3단 루프</div>
+  <div class="mid" style="margin-top:24px">틀린 문제를 <span style="color:var(--fire-2)">그날<br>다시 맞히고</span> 갑니다.</div>
+  <div class="sub" style="margin-top:18px;font-size:30px">내용을 몰라서가 아니라, 문제 형태에 익숙하지 않아 틀립니다.</div>
+  <div class="loopwrap">
+    <div class="loopn"><div class="ic">📝</div><div><div class="stp">STEP 1</div><h3>단체 실전 시험</h3><p>한 타임에 모의고사 4세트. 시험장처럼 압박 노출.</p></div></div>
+    <div class="loopn"><div class="ic">🔍</div><div><div class="stp">STEP 2</div><h3>1:1 약점 피드백</h3><p>조교와 장쌤이 과외처럼 붙어 약점을 개인별 진단.</p></div></div>
+    <div class="loopn hot"><div class="ic">🔥</div><div><div class="stp">STEP 3</div><h3>그날 재시험</h3><p>고친 약점을 같은 날 확인. 틀린 채로 안 보냅니다.</p></div></div>
+  </div>
+  <div class="spacer"></div>
+  <div class="foot">저를 김과외 1위로 만든 커리큘럼</div>
+</div>
+
+<!-- ============ CARD 5 : 결과 ============ -->
+<div class="guide">카드 5 · 결과(숫자)</div>
+<div class="card">
+  <div class="glow"></div><div class="wm">결과</div>
+  <div class="tag">결과로 증명합니다</div>
+  <div class="mid" style="margin-top:24px">말이 아니라 숫자로.</div>
+  <div class="statrow">
+    <div class="statbox"><div class="num">1.2<small>등급↑</small></div><div class="desc"><div class="t">평균 등급 상승</div><div class="s">작년 · 2개월 이상 학습생</div></div></div>
+    <div class="statbox"><div class="num">1,000<small>명+</small></div><div class="desc"><div class="t">누적 수강생</div><div class="s">2026년 6월 기준</div></div></div>
+    <div class="statbox"><div class="num">1<small>위</small></div><div class="desc"><div class="t">김과외 사탐 전국</div><div class="s">사문 · 생윤 부문 1위</div></div></div>
+  </div>
+  <div class="spacer"></div>
+  <div class="foot">🔥 장쌤의 불꽃캠프</div>
+</div>
+
+<!-- ============ CARD 6 : 강사 스펙 ============ -->
+<div class="guide">카드 6 · 강사 스펙</div>
+<div class="card">
+  <div class="glow"></div>
+  <div class="tag">강사 — 장쌤</div>
+  <div class="mid" style="margin-top:24px">시험장에서 만점을<br>맞아본 사람이<br>가르쳐야 합니다.</div>
+  <div class="sub" style="margin-top:22px;font-size:30px">대학 합격 후에도 최신 수능을 직접 보며 트렌드를 확인합니다.</div>
+  <div class="specgrid">
+    <span><span class="s">★</span> 수능 8번 현장 응시</span>
+    <span><span class="s">★</span> 응시 전과목 만점</span>
+    <span><span class="s">★</span> 서울대 4전공</span>
+    <span><span class="s">★</span> 문과 5번 · 이과 3번</span>
+    <span><span class="s">★</span> 경기고 · 대치동</span>
+    <span><span class="s">★</span> 과외 400명+</span>
+  </div>
+  <div class="spacer"></div>
+  <div class="foot">국·수·영·사문·생윤·물1·지2 — 모두 만점 경험</div>
+</div>
+
+<!-- ============ CARD 7 : 작년 성과 (참여 vs 미참여) ============ -->
+<div class="guide">카드 7 · 작년 성과 (참여 vs 미참여)</div>
+<div class="card">
+  <div class="glow"></div>
+  <div class="tag">작년 데이터로 증명</div>
+  <div class="mid" style="margin-top:24px">다닌 학생과<br>안 다닌 학생의 차이.</div>
+  <div class="sub" style="margin-top:18px;font-size:30px">작년 사문, 6월 → 9월 모의고사 등급 변화</div>
+  <div class="vs">
+    <div class="c good">
+      <span class="lab">불꽃캠프 다닌 학생</span>
+      <h3 style="font-size:60px">사문 +0.74등급</h3>
+      <p>꾸준히(5주 이상) 다닌 학생은 <b style="color:var(--ember)">평균 +1.9등급</b>. 오래 다닐수록 더 올랐습니다.</p>
+    </div>
+    <div class="c bad">
+      <span class="lab">안 다닌 학생</span>
+      <h3 style="font-size:60px">사문 −0.33등급</h3>
+      <p>같은 기간 혼자 한 학생들은 오히려 평균 등급이 내려갔습니다.</p>
+    </div>
+  </div>
+  <div class="spacer"></div>
+  <div class="foot">🔥 장쌤의 불꽃캠프 · 작년 6→9월 자체 집계</div>
+</div>
+
+<!-- ============ CARD 8 : 성적대별 상승 ============ -->
+<div class="guide">카드 8 · 성적대별 상승</div>
+<div class="card">
+  <div class="glow"></div>
+  <div class="tag">낮을수록 더 오른다</div>
+  <div class="mid" style="margin-top:24px">시작 성적이 낮을수록<br>더 많이 오릅니다.</div>
+  <div class="sub" style="margin-top:16px;font-size:28px">재시험 1회차 → 최종, 입학 성적대별 평균 상승(점)</div>
+  <div style="margin-top:44px;display:flex;flex-direction:column;gap:20px">
+    <div style="display:flex;align-items:center;gap:24px"><span style="width:180px;font-size:34px;font-weight:800;color:var(--mut)">1등급</span><div style="flex:1;background:rgba(255,255,255,.08);border-radius:14px;height:46px;overflow:hidden"><div style="width:6%;height:100%;background:linear-gradient(90deg,var(--ember),var(--fire))"></div></div><span style="width:130px;text-align:right;font-size:38px;font-weight:900;color:var(--ember)">+1.2</span></div>
+    <div style="display:flex;align-items:center;gap:24px"><span style="width:180px;font-size:34px;font-weight:800;color:var(--mut)">2등급</span><div style="flex:1;background:rgba(255,255,255,.08);border-radius:14px;height:46px;overflow:hidden"><div style="width:22%;height:100%;background:linear-gradient(90deg,var(--ember),var(--fire))"></div></div><span style="width:130px;text-align:right;font-size:38px;font-weight:900;color:var(--ember)">+4.3</span></div>
+    <div style="display:flex;align-items:center;gap:24px"><span style="width:180px;font-size:34px;font-weight:800;color:var(--mut)">3등급</span><div style="flex:1;background:rgba(255,255,255,.08);border-radius:14px;height:46px;overflow:hidden"><div style="width:36%;height:100%;background:linear-gradient(90deg,var(--ember),var(--fire))"></div></div><span style="width:130px;text-align:right;font-size:38px;font-weight:900;color:var(--ember)">+6.9</span></div>
+    <div style="display:flex;align-items:center;gap:24px"><span style="width:180px;font-size:34px;font-weight:800;color:var(--mut)">4등급</span><div style="flex:1;background:rgba(255,255,255,.08);border-radius:14px;height:46px;overflow:hidden"><div style="width:49%;height:100%;background:linear-gradient(90deg,var(--ember),var(--fire))"></div></div><span style="width:130px;text-align:right;font-size:38px;font-weight:900;color:var(--ember)">+9.4</span></div>
+    <div style="display:flex;align-items:center;gap:24px"><span style="width:180px;font-size:34px;font-weight:800;color:var(--mut)">5등급</span><div style="flex:1;background:rgba(255,255,255,.08);border-radius:14px;height:46px;overflow:hidden"><div style="width:69%;height:100%;background:linear-gradient(90deg,var(--ember),var(--fire))"></div></div><span style="width:130px;text-align:right;font-size:38px;font-weight:900;color:var(--ember)">+13.3</span></div>
+    <div style="display:flex;align-items:center;gap:24px"><span style="width:180px;font-size:34px;font-weight:800;color:var(--mut)">6등급</span><div style="flex:1;background:rgba(255,255,255,.08);border-radius:14px;height:46px;overflow:hidden"><div style="width:80%;height:100%;background:linear-gradient(90deg,var(--ember),var(--fire))"></div></div><span style="width:130px;text-align:right;font-size:38px;font-weight:900;color:var(--ember)">+15.4</span></div>
+    <div style="display:flex;align-items:center;gap:24px"><span style="width:180px;font-size:34px;font-weight:800;color:var(--fire-2)">7등급↓</span><div style="flex:1;background:rgba(255,255,255,.08);border-radius:14px;height:46px;overflow:hidden"><div style="width:100%;height:100%;background:linear-gradient(90deg,var(--ember),var(--fire))"></div></div><span style="width:130px;text-align:right;font-size:38px;font-weight:900;color:var(--ember)">+19.3</span></div>
+  </div>
+  <div class="spacer"></div>
+  <div class="foot">7등급도 평균 +19점 — 노베일수록 효과 최대</div>
+</div>
+
+</body>
+</html>
