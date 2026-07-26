@@ -55,6 +55,14 @@ h1 .ac{color:var(--accent)}
 .coach .pill{background:rgba(8,9,11,.82);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-size:14px;font-weight:500;display:flex;align-items:center;gap:8px}
 .coach .pill .dot{width:8px;height:8px;border-radius:50%;background:var(--warn)}
 .coach .pill.ready .dot{background:var(--ok)}.coach .pill.ready{color:#bff0d6;border-color:rgba(70,201,139,.5)}
+/* 카메라 화면 꽉 차게: 상하좌우 프레임 제거 */
+@media (max-width:560px){
+  .wrap:has(#s-cam.on) .top{display:none}
+  #s-cam{position:relative;padding-bottom:0}
+  #s-cam .cam{margin:0 calc(50% - 50vw);border-radius:0}
+  #s-cam .coach{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 14px)}
+  #s-cam .foot{position:absolute;left:0;right:0;bottom:0;z-index:6;padding:26px 20px calc(16px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top,rgba(8,9,11,.92),rgba(8,9,11,.5) 55%,transparent)}
+}
 
 /* v2: 부위 썸네일 */
 .rgthumbs{display:flex;gap:8px;margin-top:14px}
