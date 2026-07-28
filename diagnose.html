@@ -306,8 +306,8 @@ function analyzeROI(ctx,fx,fy,fw,fh,roi,wb){const cw=ctx.canvas.width,ch=ctx.can
 /* ===== v2 부위 촬영 검증 파라미터 (★팀 캘리브레이션 — 여기 숫자만 조정) ===== */
 const VF={
   brDark:44, brDim:50, brHot:232, clipLive:0.16, clipHot:0.18, unevenLR:48, // 조명(완화 — 인식 덜 민감하게)
-  skinFar:0.22,        // 느슨한 피부비율(완화 — 볼/코 클로즈업 통과)
-  faceSkinMin:0.10,    // 얼굴피부(색도)비율(완화 — 벽만 걸러낼 정도)
+  skinFar:0.12,        // 근접 강요 완화(2026-07) — 보통 거리에서도 통과, 벽·빈화면만 거름
+  faceSkinMin:0.06,    // 얼굴피부(색도)비율(완화 — 벽만 걸러낼 정도)
   lapBlur:18,          // 초점(완화 — 웬만하면 통과)
   motionMax:20,        // 흔들림(완화)
   symBlock:0.06, symCoach:0.30, // 좌우대칭(거의 차단 안 함 — 코 인식 위해)
@@ -527,7 +527,7 @@ function loopRegion(){const v=$('#video'),pill=$('#coachPill'),txt=$('#coachText
     else if(br<VF.brDim)reason='조금 어두워요 — 빛을 더 받게';
     else if(clipR>VF.clipLive||br>VF.brHot)reason='빛이 너무 세요 — 창·조명 정면을 피해요';
     else if(Math.abs(brL-brR)>VF.unevenLR)reason='빛이 한쪽에 치우쳤어요 — 정면에서 받게';
-    else if(fskinR<VF.faceSkinMin&&skinR<0.42&&!faceActive)reason='피부가 화면에 꽉 차게 — 얼굴을 더 가까이';
+    else if(fskinR<VF.faceSkinMin&&skinR<0.30&&!faceActive)reason='피부가 화면에 꽉 차게 — 얼굴을 더 가까이';
     else if(skinR<VF.skinFar)reason='더 가까이 — 피부만 화면에 차게';
     else if(lap<VF.lapBlur)reason='초점이 안 맞아요 — 살짝 멀리';
     else if(motion>VF.motionMax)reason='잠깐 멈춰요 — 흔들리고 있어요';
