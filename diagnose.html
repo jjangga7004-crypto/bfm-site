@@ -324,6 +324,7 @@ function structSymmetry(g,w,h){let sMin=0,sMax=0;const hw=w>>1;
     sMin+=Math.min(m,mm);sMax+=Math.max(m,mm);}
   return sMax?sMin/sMax:1;}
 
+/* ⚠️ 도달 불가(레거시 face 모드) — 현재 진입점은 전부 부위 촬영(tzone)으로 감. 유분·측정 수정은 여기가 아니라 analyzeRegionShot·applyRegions에서 */
 async function analyzePhoto(c){
   let lm; try{lm=await getLandmarker();}catch(e){return{ok:false,reason:'model'};}
   const res=lm.detect(c); const faces=res.faceLandmarks||[];
@@ -427,6 +428,12 @@ function surveyVector(){let o=0,d=0,a=0;Q.forEach((q,i)=>{const opt=q.opts[ans[i
 /* 판정 상수 — 값 바꿀 땐 근거를 주석으로 남길 것 */
 const CAL={
   troubleMin:0.34, // 트러블 합성점수가 이 값 이상이면 타입 C(트러블) 유지 — 초기값, A/B/C 목표 배분에 따라 대표가 조정
+  shineFull:0.11,  // 유분: 광택 픽셀 비율이 이 값이면 지수 최대 — 근거 없음, 손으로 맞춘 값(실기기 재보정 예정)
+  dryZero:0.09,    // 건성: 광택이 이 값 이상이면 건성 신호 0 — shineFull과 대칭에 가깝게(근거 동일)
+  redOffset:0.02,  // 붉은기 하한(이 이하는 정상 혈색으로 봄) — 근거 없음, 손으로 맞춘 값
+  redFull:0.13,    // 붉은기: (redness-redOffset)/redFull 로 정규화 — 근거 없음, 손으로 맞춘 값
+  poreLo:70,       // 모공(라플라시안 분산) 하한 — 근거 없음, 손으로 맞춘 값. lap은 초점 의존이라 추후 교체 예정
+  poreHi:620,      // 모공 정규화 분모 — 근거 없음, 손으로 맞춘 값
 };
 function fuse(Sv,photo){
   const usedPhoto=photo&&photo.ok&&photo.q>=0.5;const w_p=usedPhoto?(photo.regions?0.45:0.30)*clamp(photo.q,0,1):0;const w_v=1-w_p;const Sp=usedPhoto?photo.Sp:[0,0,0];
@@ -480,8 +487,8 @@ function goRegionRetake(r,forceWhy){const d=regionData[r]||{};const lb=RSTEP[r].
    if(d.reason==='dark'||(d.bright!=null&&d.bright<52))why='너무 어두웠어요 — 밝은 곳에서 다시';
    else if(d.reason==='bright'||(d.bright!=null&&d.bright>215))why='빛이 너무 강했어요 — 창·조명 정면을 피해서';
    else if(d.reason==='noskin')why='피부가 잘 안 보였어요 — 얼굴을 화면에 꽉 차게';
-   else if(d.reason==='far'||(d.skinRatio!=null&&d.skinRatio<0.45))why='너무 멀리서 찍었어요 — 피부만 화면에 차게 더 가까이';
-   else if(d.reason==='blur'||(d.lap!=null&&d.lap<60))why='초점이 안 맞았어요 — 살짝 멀리서';
+   else if(d.reason==='far'||(d.skinRatio!=null&&d.skinRatio<VF.skinFar))why='너무 멀리서 찍었어요 — 피부만 화면에 차게 더 가까이';
+   else if(d.reason==='blur'||(d.lap!=null&&d.lap<VF.lapBlur))why='초점이 안 맞았어요 — 살짝 멀리서'; /* 실제 게이트(VF)와 같은 값 사용 — 예전엔 0.45/60이라 게이트 통과 사진에 재촬영 사유를 붙였음 */
    else if(d.reason==='offcenter')why=(r==='nose'?'코가':'콧대가')+' 가운데서 벗어났어요 — 세로 가운데로';
   }
   retakeCtx={region:r};
@@ -543,6 +550,7 @@ function loopRegion(){const v=$('#video'),pill=$('#coachPill'),txt=$('#coachText
     rafId=requestAnimationFrame(step);}
   step();}
 function stopCamera(){if(rafId)cancelAnimationFrame(rafId);rafId=null;if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}}
+/* ⚠️ 도달 불가(레거시 face 모드) — 라이브 코칭은 loopRegion이 담당 */
 function loopGuide(){const v=$('#video'),pill=$('#coachPill'),txt=$('#coachText'),c=$('#work'),cx=c.getContext('2d',{willReadFrequently:true});const t0=performance.now();
   function step(){if(stepMode!=='face')return;
     if(!v.videoWidth){txt.textContent=performance.now()-t0>7000?'카메라가 응답하지 않아요 — 취소 후 ‘셀카로 바로 찍기’으로':'카메라 켜는 중…';rafId=requestAnimationFrame(step);return;}
@@ -596,18 +604,18 @@ const P100=x=>Math.round(clamp(x,0,1)*100);
 /* 표시용 지수: √커브(저신호 증폭)+최소 10 — 웬만해선 0 안 나오게 */
 const PIDX=x=>x==null?null:Math.round(10+86*Math.sqrt(clamp(x,0,1)));
 function applyRegions(){const tz=regionData.tzone,n=regionData.nose,ch=regionData.cheek;if(!tz&&!n&&!ch)return;
-  const tzOilC=tz?clamp(tz.shine/0.11,0,1):null,noseOil=n?clamp(n.shine/0.11,0,1):null,pore=n?clamp((n.lap-70)/620,0,1):null;
-  const cheekOil=ch?clamp(ch.shine/0.11,0,1):null,cheekRed=ch?clamp((ch.redness-0.02)/0.13,0,1):null;
+  const tzOilC=tz?clamp(tz.shine/CAL.shineFull,0,1):null,noseOil=n?clamp(n.shine/CAL.shineFull,0,1):null,pore=n?clamp((n.lap-CAL.poreLo)/CAL.poreHi,0,1):null;
+  const cheekOil=ch?clamp(ch.shine/CAL.shineFull,0,1):null,cheekRed=ch?clamp((ch.redness-CAL.redOffset)/CAL.redFull,0,1):null;
   const oilSig=tzOilC??noseOil??0.3;
   const oily=clamp(0.45*oilSig+0.30*(noseOil??oilSig)+0.25*(pore??oilSig),0,1);
   const shineTz=tz?tz.shine:(n?n.shine:0);
-  const dryBase=clamp((0.09-shineTz)/0.09,0,1); /* 0.05 절벽 완화 — shine 0.05만 넘으면 건성 신호가 0이 되던 문제, oily 정규화(0.11)와 대칭에 가깝게 */
+  const dryBase=clamp((CAL.dryZero-shineTz)/CAL.dryZero,0,1); /* 0.05 절벽 완화 — shine 0.05만 넘으면 건성 신호가 0이 되던 문제, oily 정규화와 대칭에 가깝게 */
   const dry=clamp(0.55*dryBase+0.45*(cheekOil!=null?clamp((1-cheekOil)*dryBase*1.6,0,1):dryBase),0,1);
-  const acne=clamp(cheekRed??(n?clamp((n.redness-0.05)/0.12,0,1):0),0,1);
+  const acne=clamp(cheekRed??(n?clamp((n.redness-CAL.redOffset)/CAL.redFull,0,1):0),0,1); /* 볼 없을 때 코 폴백도 같은 상수 사용(예전엔 0.05/0.12로 세대가 달랐음) */
   const parts=[tz,n,ch].filter(Boolean);const rq=parts.reduce((s,p)=>s+p.q,0)/(parts.length||1);
   const anyFace=parts.some(p=>p.faceSeen); // 촬영 중 얼굴 감지된 부위 있으면 실사람 확인 → 신뢰↑
   const q=clamp(rq*(0.55+0.45*parts.length/3)*(anyFace?1.08:1),0,1); // 찍은 부위 많을수록·얼굴 잡힐수록 신뢰↑
-  const shineDiff=(tz&&ch)?Math.max(0,tz.shine-ch.shine*0.6):(oily>0.5?0.08:0); // T존 vs 볼 = 복합성 판단
+  const shineDiff=(tz&&ch)?Math.max(0,tz.shine-ch.shine):(oily>0.5?0.08:0); // T존 vs 볼 = 복합성 판단 (*0.6 제거 — 두 부위가 같아도 차이가 있다고 말하던 문제)
   faceResult={ok:true,regions:true,q,Sp:normalize([oily+0.12,dry+0.12,acne+0.12]),shine:shineTz,shineDiff, /* 세 축 동일 가산 — argmax 보존, [1,0,0] 포화·oily 단독 특혜 제거 */
     redness:ch?ch.redness:(n?n.redness:0),
     idx:{tzOil:PIDX(tzOilC),noseOil:PIDX(noseOil),pore:PIDX(pore),cheekOil:PIDX(cheekOil),red:PIDX(cheekRed)}};}
@@ -645,15 +653,16 @@ function regionTheater(){
     const dispW=Math.min(560,$('#scanwrap').clientWidth||360),scl=dispW/src.width;
     cv.width=dispW;cv.height=Math.round(src.height*scl);
     const bx=cv.width*0.16,by=cv.height*0.16,bw=cv.width*0.68,bh=cv.height*0.68;
-    const shineP=P100(clamp((rd.shine||0)/0.15,0,1));
-    const redP=P100(clamp(((rd.redness||0)-0.04)/0.12,0,1));
-    const poreP=P100(clamp(((rd.lap||0)-110)/560,0,1));
+    /* 결과 리포트와 같은 상수·같은 커브(PIDX) — 연출과 결과가 다른 숫자를 말하던 문제 해결 */
+    const shineP=PIDX(clamp((rd.shine||0)/CAL.shineFull,0,1));
+    const redP=PIDX(clamp(((rd.redness||0)-CAL.redOffset)/CAL.redFull,0,1));
+    const poreP=PIDX(clamp(((rd.lap||0)-CAL.poreLo)/CAL.poreHi,0,1));
     const AC={tzone:'#5B8DEF',cheek:(rd.redness>0.05?'#E2725B':'#46c98b'),nose:'#9CC1E8'}[rk];
     const LABEL={tzone:'T-ZONE SCAN',cheek:'CHEEK SCAN',nose:'NOSE SCAN'}[rk];
     const CALL={
-     tzone:[[0.58,bx+bw*0.5,by+bh*0.18,-1,'#5B8DEF','T-ZONE','유분 광택 '+shineP+'%']],
-     cheek:[[0.55,bx+bw*0.72,by+bh*0.45,1,(rd.redness>0.05?'#E2725B':'#46c98b'),'CHEEK',(rd.redness>0.05?'홍조 '+redP+'%':'붉은기 낮음')],[0.82,bx+bw*0.3,by+bh*0.68,-1,'#9CC1E8','MOISTURE','유분 '+shineP+'%']],
-     nose:[[0.55,bx+bw*0.5,by+bh*0.4,-1,'#9CC1E8','NOSE','모공·결 '+poreP+'%'],[0.82,bx+bw*0.5,by+bh*0.72,1,'#5B8DEF','SEBUM','유분 '+shineP+'%']]};
+     tzone:[[0.58,bx+bw*0.5,by+bh*0.18,-1,'#5B8DEF','T-ZONE','유분 광택 '+shineP]],
+     cheek:[[0.55,bx+bw*0.72,by+bh*0.45,1,(rd.redness>0.05?'#E2725B':'#46c98b'),'CHEEK',(rd.redness>0.05?'홍조 '+redP:'붉은기 낮음')],[0.82,bx+bw*0.3,by+bh*0.68,-1,'#9CC1E8','MOISTURE','유분 '+shineP]],
+     nose:[[0.55,bx+bw*0.5,by+bh*0.4,-1,'#9CC1E8','NOSE','모공·결 '+poreP],[0.82,bx+bw*0.5,by+bh*0.72,1,'#5B8DEF','SEBUM','유분 '+shineP]]};
     const parts=[];for(let i=0;i<26;i++)parts.push({x:bx+Math.random()*bw,y:by+bh*(0.4+Math.random()*0.6),vy:0.3+Math.random()*0.8,r:0.8+Math.random()*1.3,life:Math.random()});
     const dots=[];for(let i=0;i<22;i++)dots.push({x:bx+8+Math.random()*(bw-16),y:by+8+Math.random()*(bh-16),rev:false,t0:0});
     const st=STAGES[rk];let lastS=-1,t0=null;const DUR=2150;
@@ -719,8 +728,9 @@ function populateIdx(){
   if(!chips.length)chips.push(['#46c98b','전반적으로 균형 잡힌 피부']);
   const cbox=$('#idxChips');if(cbox)cbox.innerHTML=chips.map(c=>`<span class="sigchip"><span class="d" style="background:${c[0]}"></span>${c[1]}</span>`).join('');
   const bars=idxBar('T존 유분·광택',idx.tzOil)+idxBar('코 유분',idx.noseOil)+idxBar('코 모공·결 가시도',idx.pore)+idxBar('볼 유분',idx.cheekOil)+idxBar('볼 붉은기',idx.red);
-  $('#idxRep').innerHTML='<div class="h"><span class="t">부위별 지수 (0~100)</span></div>'+(bars||'<p class="note" style="text-align:left;margin:6px 0 0">부위 사진이 없어 얼굴 분석만 반영해요.</p>');}
+  $('#idxRep').innerHTML='<div class="h"><span class="t">부위별 상대 지수 (0~100 · 절대 측정값 아님)</span></div>'+(bars?bars+'<p class="note" style="text-align:left;margin:6px 0 0">촬영 조건(조명·거리)에 따라 달라질 수 있어요</p>':'<p class="note" style="text-align:left;margin:6px 0 0">부위 사진이 없어 얼굴 분석만 반영해요.</p>');}
 function imageToCanvas(img){const c=document.createElement('canvas'),W=Math.min(720,img.naturalWidth||640),H=Math.round(W*(((img.naturalHeight||480)/(img.naturalWidth||640))));c.width=W;c.height=H;c.getContext('2d',{willReadFrequently:true}).drawImage(img,0,0,W,H);return c;}
+/* ⚠️ 도달 불가(레거시 face 모드) — stepMode가 'face'가 되는 실경로 없음 */
 async function runFace(canvas){
   show('#s-scan');$('#stepLabel').textContent='분석 중';$('#scanEyebrow').textContent='분석 중';$('#scanTitle').textContent='얼굴을 읽고 있어요';
   $('#sigChips').innerHTML='';$('#toSurvey').disabled=true;$('#scanStat').style.display='';
@@ -754,7 +764,7 @@ $('#qNext').onclick=()=>{if(ans[qi]===-1)return;if(qi<Q.length-1){qi++;renderQ()
 $('#retry').onclick=()=>{faceResult=null;regionData={};stepMode='tzone';$('#introErr').classList.remove('on');$('#stepLabel').textContent='AI 피부 진단';show('#s-intro');};
 
 /* 검증용 훅 — 라이브 URL엔 ?bfmdebug가 없으므로 사용자에게 노출·동작 변화 없음 */
-if(location.search.includes('bfmdebug'))window.__BFM={fuse,surveyVector,applyRegions,VF,CORE,FOCUS,CAL,parseOpt};
+if(location.search.includes('bfmdebug'))window.__BFM={fuse,surveyVector,applyRegions,VF,CORE,FOCUS,CAL,parseOpt,_setRegion:(k,v)=>{regionData[k]=v;},_getFace:()=>faceResult};
 </script>
 </body>
 </html>
