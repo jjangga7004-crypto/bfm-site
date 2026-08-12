@@ -392,10 +392,10 @@ function drawOverlay(x,base,sc){
 
 /* ===== adaptive survey ===== */
 const CORE=[
- {sec:'유분·수분',q:'세수하고 30분 뒤, 아무것도 안 바른 얼굴은?',o:['이마·코가 번들거린다|o3','T존만 번들, 볼은 당긴다|o2d1','전체적으로 당기고 건조하다|d3','잘 모르겠다|o1']},
+ {sec:'유분·수분',q:'세수하고 30분 뒤, 아무것도 안 바른 얼굴은?',o:['이마·코가 번들거린다|o3','T존만 번들, 볼은 당긴다|o2d1','전체적으로 당기고 건조하다|d3','잘 모르겠다|']},
  {sec:'유분·수분',q:'점심쯤 이마·코 상태는?',o:['번들거려 닦아낸다|o2','약간 번들거린다|o1','보송하다|','오히려 당긴다|d2']},
- {sec:'유분·수분',q:'모공이 눈에 띄는 편인가요?',o:['넓고 많이 보인다|o2','보통이다|o1','거의 안 보인다|d1']},
- {sec:'유분·수분',q:'피부가 자주 당기거나 각질이 일어나나요?',o:['자주 그렇다|d3','가끔 그렇다|d1','거의 없다|o1']},
+ {sec:'유분·수분',q:'모공이 눈에 띄는 편인가요?',o:['넓고 많이 보인다|o2','보통이다|','거의 안 보인다|d1']},
+ {sec:'유분·수분',q:'피부가 자주 당기거나 각질이 일어나나요?',o:['자주 그렇다|d3','가끔 그렇다|d1','거의 없다|']},
  {sec:'유분·수분',q:'보습제를 바른 뒤 느낌은?',o:['금세 번들거린다|o2','적당히 촉촉하다|','발라도 당긴다|d2']},
  {sec:'트러블',q:'여드름·뾰루지 같은 트러블이 얼마나 있나요?',o:['자주, 여러 개 난다|a3','가끔 한두 개|a1','거의 없다|']},
 ];
@@ -403,7 +403,7 @@ const FOCUS={
  oily:[{sec:'유분',q:'시간이 지나면 화장·선크림이 잘 무너지나요?',o:['자주 무너진다|o2','가끔|o1','잘 안 무너진다|']},{sec:'유분',q:'오후나 여름에 유분이 특히 심해지나요?',o:['매우 심하다|o2','약간|o1','비슷하다|']}],
  dry:[{sec:'건성',q:'각질이 일어나거나 가루처럼 보일 때가 있나요?',o:['자주 있다|d2','가끔|d1','거의 없다|']},{sec:'건성',q:'실내·겨울 등 건조한 곳에서 더 당기나요?',o:['많이 당긴다|d2','조금|d1','별 차이 없다|']}],
  acne:[{sec:'트러블',q:'면도 후 붉어지거나 따가운가요?',o:['자주 그렇다|a2','가끔|a1','괜찮다|']},{sec:'트러블',q:'같은 부위에 트러블이 반복되나요?',o:['자주 반복된다|a2','가끔|a1','거의 없다|']}],
- def:[{sec:'트러블',q:'얼굴에 붉은기나 자극을 자주 느끼나요?',o:['자주|a2','가끔|a1','거의 없다|']},{sec:'마무리',q:'가장 신경 쓰이는 점은?',o:['번들거림·모공|o2','당김·각질|d2','트러블·붉은기|a2','딱히 없다|o1']}],
+ def:[{sec:'트러블',q:'얼굴에 붉은기나 자극을 자주 느끼나요?',o:['자주|a2','가끔|a1','거의 없다|']},{sec:'마무리',q:'가장 신경 쓰이는 점은?',o:['번들거림·모공|o2','당김·각질|d2','트러블·붉은기|a2','딱히 없다|']}],
 };
 function parseOpt(s){const[t,code]=s.split('|');const m={o:0,d:0,a:0};(code||'').replace(/([oda])(\d)/g,(_,k,n)=>{m[k]=+n;});return{t,...m};}
 function dominantHint(f){if(!f||!f.ok||f.q<0.4)return null;return['oily','dry','acne'][argmax(f.Sp)];}
@@ -421,13 +421,18 @@ function renderQ(){
   $('#qOpts').querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ans[qi]=+b.dataset.j;renderQ();setTimeout(()=>{if(qi<Q.length-1){qi++;renderQ();}},170);});
   $('#qPrev').style.visibility=qi===0?'hidden':'visible'; $('#qNext').disabled=ans[qi]===-1; $('#qNext').textContent=qi===Q.length-1?'결과 보기':'다음';
 }
-function surveyVector(){let o=0,d=0,a=0;Q.forEach((q,i)=>{const opt=q.opts[ans[i]]||{};o+=opt.o||0;d+=opt.d||0;a+=opt.a||0;});o+=2;return normalize([o,d,a]);}
+function surveyVector(){let o=0,d=0,a=0;Q.forEach((q,i)=>{const opt=q.opts[ans[i]]||{};o+=opt.o||0;d+=opt.d||0;a+=opt.a||0;});o+=1.5;d+=1.4;a+=1.0;return normalize([o,d,a]);} /* 세 축 공통 바닥값(동점 방지용 미세 차등) — 예전 o+=2는 유분만 가산해 지성 쏠림 */
 
 /* ===== fusion + result ===== */
+/* 판정 상수 — 값 바꿀 땐 근거를 주석으로 남길 것 */
+const CAL={
+  troubleMin:0.34, // 트러블 합성점수가 이 값 이상이면 타입 C(트러블) 유지 — 초기값, A/B/C 목표 배분에 따라 대표가 조정
+};
 function fuse(Sv,photo){
   const usedPhoto=photo&&photo.ok&&photo.q>=0.5;const w_p=usedPhoto?(photo.regions?0.45:0.30)*clamp(photo.q,0,1):0;const w_v=1-w_p;const Sp=usedPhoto?photo.Sp:[0,0,0];
   const F=[0,1,2].map(i=>w_v*Sv[i]+w_p*Sp[i]);let primary=argmax(F);const flags=[];
-  if(primary===2){flags.push('여드름 주의');primary=argmax([F[0],F[1],-1]);}else if(F[2]>0.24||(usedPhoto&&photo.Sp[2]>0.45))flags.push('여드름 주의');
+  /* 트러블 신호가 충분히 강하면(troubleMin 이상) 타입 C 유지 — 예전엔 무조건 지성/건성으로 되돌려 타입 C가 절대 나올 수 없었음 */
+  if(primary===2&&F[2]<CAL.troubleMin){flags.push('여드름 주의');primary=argmax([F[0],F[1],-1]);}else if(primary!==2&&(F[2]>0.24||(usedPhoto&&photo.Sp[2]>0.45)))flags.push('여드름 주의');
   if(usedPhoto&&photo.shine!=null&&photo.shine<0.05&&primary===0&&Sv[1]>0.25)flags.push('부분 건성');
   const sorted=[...F].sort((a,b)=>b-a);const margin=sorted[0]-sorted[1];const agree=!usedPhoto?0.6:(argmax(Sv)===argmax(photo.Sp)?1:0.4);
   const conf=(usedPhoto?clamp(photo.q,0,1):0.55)*0.4+clamp(margin/0.3,0,1)*0.35+agree*0.25;
@@ -596,14 +601,14 @@ function applyRegions(){const tz=regionData.tzone,n=regionData.nose,ch=regionDat
   const oilSig=tzOilC??noseOil??0.3;
   const oily=clamp(0.45*oilSig+0.30*(noseOil??oilSig)+0.25*(pore??oilSig),0,1);
   const shineTz=tz?tz.shine:(n?n.shine:0);
-  const dryBase=clamp((0.05-shineTz)/0.05,0,1);
+  const dryBase=clamp((0.09-shineTz)/0.09,0,1); /* 0.05 절벽 완화 — shine 0.05만 넘으면 건성 신호가 0이 되던 문제, oily 정규화(0.11)와 대칭에 가깝게 */
   const dry=clamp(0.55*dryBase+0.45*(cheekOil!=null?clamp((1-cheekOil)*dryBase*1.6,0,1):dryBase),0,1);
   const acne=clamp(cheekRed??(n?clamp((n.redness-0.05)/0.12,0,1):0),0,1);
   const parts=[tz,n,ch].filter(Boolean);const rq=parts.reduce((s,p)=>s+p.q,0)/(parts.length||1);
   const anyFace=parts.some(p=>p.faceSeen); // 촬영 중 얼굴 감지된 부위 있으면 실사람 확인 → 신뢰↑
   const q=clamp(rq*(0.55+0.45*parts.length/3)*(anyFace?1.08:1),0,1); // 찍은 부위 많을수록·얼굴 잡힐수록 신뢰↑
   const shineDiff=(tz&&ch)?Math.max(0,tz.shine-ch.shine*0.6):(oily>0.5?0.08:0); // T존 vs 볼 = 복합성 판단
-  faceResult={ok:true,regions:true,q,Sp:normalize([oily+0.05,dry,acne]),shine:shineTz,shineDiff,
+  faceResult={ok:true,regions:true,q,Sp:normalize([oily+0.12,dry+0.12,acne+0.12]),shine:shineTz,shineDiff, /* 세 축 동일 가산 — argmax 보존, [1,0,0] 포화·oily 단독 특혜 제거 */
     redness:ch?ch.redness:(n?n.redness:0),
     idx:{tzOil:PIDX(tzOilC),noseOil:PIDX(noseOil),pore:PIDX(pore),cheekOil:PIDX(cheekOil),red:PIDX(cheekRed)}};}
 function idxBar(lb,v){return v==null?'':`<div class="bar"><div class="bt"><span>${lb}</span><b>${v}</b></div><div class="tr"><div class="fl" style="width:${v}%"></div></div></div>`;}
@@ -748,7 +753,8 @@ $('#qPrev').onclick=()=>{if(qi>0){qi--;renderQ();}};
 $('#qNext').onclick=()=>{if(ans[qi]===-1)return;if(qi<Q.length-1){qi++;renderQ();}else renderResult();};
 $('#retry').onclick=()=>{faceResult=null;regionData={};stepMode='tzone';$('#introErr').classList.remove('on');$('#stepLabel').textContent='AI 피부 진단';show('#s-intro');};
 
-/* 디버그 훅 제거됨(배포용) */
+/* 검증용 훅 — 라이브 URL엔 ?bfmdebug가 없으므로 사용자에게 노출·동작 변화 없음 */
+if(location.search.includes('bfmdebug'))window.__BFM={fuse,surveyVector,applyRegions,VF,CORE,FOCUS,CAL,parseOpt};
 </script>
 </body>
 </html>
