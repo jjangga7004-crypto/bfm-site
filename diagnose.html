@@ -399,7 +399,7 @@ const CORE=[
  {sec:'유분·수분',q:'모공이 눈에 띄는 편인가요?',o:['넓고 많이 보인다|o2','보통이다|','거의 안 보인다|d1']},
  {sec:'유분·수분',q:'피부가 자주 당기거나 각질이 일어나나요?',o:['자주 그렇다|d3','가끔 그렇다|d1','거의 없다|']},
  {sec:'유분·수분',q:'보습제를 바른 뒤 느낌은?',o:['금세 번들거린다|o2','적당히 촉촉하다|','발라도 당긴다|d2']},
- {sec:'트러블',q:'여드름·뾰루지 같은 트러블이 얼마나 있나요?',o:['자주, 여러 개 난다|a3','가끔 한두 개|a1','거의 없다|']},
+ {sec:'트러블',q:'여드름·뾰루지 같은 트러블이 얼마나 있나요?',o:['자주, 여러 개 난다|a5','가끔 한두 개|a2','거의 없다|']}, /* 직접 질문 배점 강화 — 유분 문항 5개에 파묻혀 '여드름 있는 지성'이 늘 B로 가던 문제 */
 ];
 const FOCUS={
  oily:[{sec:'유분',q:'시간이 지나면 화장·선크림이 잘 무너지나요?',o:['자주 무너진다|o2','가끔|o1','잘 안 무너진다|']},{sec:'유분',q:'오후나 여름에 유분이 특히 심해지나요?',o:['매우 심하다|o2','약간|o1','비슷하다|']}],
@@ -410,7 +410,8 @@ const FOCUS={
 function parseOpt(s){const[t,code]=s.split('|');const m={o:0,d:0,a:0};(code||'').replace(/([oda])(\d)/g,(_,k,n)=>{m[k]=+n;});return{t,...m};}
 function dominantHint(f){if(!f||!f.ok||f.q<0.4)return null;return['oily','dry','acne'][argmax(f.Sp)];}
 function buildSurvey(){
-  const hint=dominantHint(faceResult); const focus=FOCUS[hint]||FOCUS.def;
+  const hint=dominantHint(faceResult); let focus=FOCUS[hint]||FOCUS.def;
+  if(hint==='oily'||hint==='dry')focus=[...focus,FOCUS.acne[1]]; /* 사진이 유분/건성으로 읽혀도 트러블을 표현할 문항 통로 확보 */
   Q=[...CORE,...focus].map(x=>({sec:x.sec,q:x.q,opts:x.o.map(parseOpt)}));
   ans=new Array(Q.length).fill(-1); qi=0; $('#qTot').textContent=Q.length;
   primeText=(faceResult&&faceResult.ok&&hint)?{oily:'셀카에서 T존 광택이 보였어요. 유분 쪽을 확인할게요.',dry:'셀카상 광택이 적은 편이었어요. 수분 쪽을 확인할게요.',acne:'셀카에서 볼 붉은기가 보였어요. 트러블을 확인할게요.'}[hint]:'';
@@ -428,7 +429,7 @@ function surveyVector(){let o=0,d=0,a=0;Q.forEach((q,i)=>{const opt=q.opts[ans[i
 /* ===== fusion + result ===== */
 /* 판정 상수 — 값 바꿀 땐 근거를 주석으로 남길 것 */
 const CAL={
-  troubleMin:0.34, // 트러블 합성점수가 이 값 이상이면 타입 C(트러블) 유지 — 초기값, A/B/C 목표 배분에 따라 대표가 조정
+  troubleMin:0.28, // 트러블 합성점수가 이 값 이상이면 타입 C(트러블) 유지 — 초기 0.34에서 하향('여드름 있는 지성' 응답이 경계에서 B로 쏠려서). A/B/C 목표 배분에 따라 대표가 조정
   shineFull:0.11,  // 유분: 광택 픽셀 비율이 이 값이면 지수 최대 — 근거 없음, 손으로 맞춘 값(실기기 재보정 예정)
   dryZero:0.09,    // 건성: 광택이 이 값 이상이면 건성 신호 0 — shineFull과 대칭에 가깝게(근거 동일)
   redOffset:0.02,  // 붉은기 하한(이 이하는 정상 혈색으로 봄) — 근거 없음, 손으로 맞춘 값
@@ -439,8 +440,11 @@ const CAL={
 function fuse(Sv,photo){
   const usedPhoto=photo&&photo.ok&&photo.q>=0.5;const w_p=usedPhoto?(photo.regions?0.45:0.30)*clamp(photo.q,0,1):0;const w_v=1-w_p;const Sp=usedPhoto?photo.Sp:[0,0,0];
   const F=[0,1,2].map(i=>w_v*Sv[i]+w_p*Sp[i]);let primary=argmax(F);const flags=[];
-  /* 트러블 신호가 충분히 강하면(troubleMin 이상) 타입 C 유지 — 예전엔 무조건 지성/건성으로 되돌려 타입 C가 절대 나올 수 없었음 */
-  if(primary===2&&F[2]<CAL.troubleMin){flags.push('여드름 주의');primary=argmax([F[0],F[1],-1]);}else if(primary!==2&&(F[2]>0.24||(usedPhoto&&photo.Sp[2]>0.45)))flags.push('여드름 주의');
+  /* 트러블 우선 규칙 — C 처방은 '유분과 자극을 함께' 커버하므로, 트러블 신호가 임계 이상이면
+     유분이 1위여도 C로 보낸다. (여드름 피부는 번들거림도 같이 답해 유분이 산술적으로 늘 이기던 문제)
+     예전 코드는 반대로 트러블 1위를 무조건 지성/건성으로 되돌려 타입 C가 절대 나올 수 없었음 */
+  if(F[2]>=CAL.troubleMin)primary=2;
+  else if(F[2]>0.24||(usedPhoto&&photo.Sp[2]>0.45))flags.push('여드름 주의');
   if(usedPhoto&&photo.shine!=null&&photo.shine<0.05&&primary===0&&Sv[1]>0.25)flags.push('부분 건성');
   const sorted=[...F].sort((a,b)=>b-a);const margin=sorted[0]-sorted[1];const agree=!usedPhoto?0.6:(argmax(Sv)===argmax(photo.Sp)?1:0.4);
   const conf=(usedPhoto?clamp(photo.q,0,1):0.55)*0.4+clamp(margin/0.3,0,1)*0.35+agree*0.25;
@@ -460,6 +464,10 @@ function renderResult(){
   const pct=r.F.map(x=>Math.round(x*100));['#t0','#t1','#t2'].forEach((id,i)=>setTimeout(()=>{$(id).style.width=pct[i]+'%';},60));
   $('#t0v').textContent=pct[0]+'%';$('#t1v').textContent=pct[1]+'%';$('#t2v').textContent=pct[2]+'%';
   $('#reason').innerHTML=reasonText(r,faceResult,Sv);
+  /* ?bfmdebug 일 때만: 판정 내부값을 결과 화면에 표시(폰 테스트 원인 확인용) — 라이브 URL엔 안 뜸 */
+  if(location.search.includes('bfmdebug')){const dbg=document.createElement('p');dbg.style.cssText='margin:10px 0 0;font-size:11px;color:#8a8f98;word-break:break-all';
+    dbg.textContent='[debug] F(유분/건성/트러블)='+r.F.map(x=>x.toFixed(2)).join(' / ')+' · 설문Sv='+Sv.map(x=>x.toFixed(2)).join('/')+(r.usedPhoto?' · 사진Sp='+faceResult.Sp.map(x=>x.toFixed(2)).join('/')+' q='+faceResult.q.toFixed(2):' · 사진 미사용')+' · troubleMin='+CAL.troubleMin;
+    $('#reason').appendChild(dbg);}
   $('#usedPhoto').querySelector('span:last-child').textContent=r.usedPhoto?((faceResult&&faceResult.regions?'부위(T존·볼·코) 분석':'얼굴 분석')+' + 설문 반영 · 사진은 기기에서만 처리(서버 전송 없음)'):'설문만 반영 · 사진 없이 분석';
   populateIdx(); /* 한 페이지 결과 리포트: 부위 썸네일·칩·지수 통합 */
   const tkey={지성:'oily',건성:'dry',여드름:'trouble'}[TYPES[r.primary]];
