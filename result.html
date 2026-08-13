@@ -235,7 +235,8 @@
       <div class="trust"><span>미개봉 7일 이내 환불</span><span>무상 타입 교체 1회</span><span>구독 해지 자유</span></div>
       <!-- ▼ 주문/결제 페이지 주소 -->
       <p class="optguide">구매 화면에서 <b class="opttype">타입</b>을 선택해 주세요.</p>
-      <a class="order" href="https://www.bfm.best/shop_view?idx=7">정기배송으로 시작하기 →</a>
+      <a class="order" href="https://www.bfm.best/shop_view?idx=7" target="_top" rel="noopener">정기배송으로 시작하기 →</a>
+      <p style="margin:8px 0 0;font-size:12px;color:#8a8f98;text-align:center">타입이 안 맞으면 1회 무상 교체</p>
     </div>
   </div></div>
 
@@ -303,6 +304,8 @@
   root.querySelector('.fno').textContent=String(fno).padStart(2,'0');
   root.querySelector('.pc-en').textContent=p.en;
   var ot=root.querySelector('.opttype'); if(ot) ot.textContent=p.ko;
+  /* 주문 버튼에 진단 타입 명시 — 결과와 구매 사이 재선택 오류 방지 */
+  var ob=root.querySelector('.order'); if(ob) ob.textContent=p.ko+'('+p.en+')로 정기배송 시작하기 →';
   root.querySelector('.pc-ko').textContent=p.ko;
   root.querySelector('.pc-tag').textContent=p.tag;
   /* 결과 세분화: 진단이 넘긴 실측 % (o=유분, d=건조, t=트러블) */
