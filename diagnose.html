@@ -51,6 +51,7 @@ h1 .ac{color:var(--accent)}
 .cam{position:relative;flex:1;border-radius:20px;overflow:hidden;background:#000;margin-top:6px;min-height:380px}
 .cam video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
 .oval{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}.oval svg{width:74%;max-width:300px}
+.oval text{paint-order:stroke;stroke:rgba(8,9,11,.8);stroke-width:3.5px;stroke-linejoin:round} /* 밝은 배경(벽·천장)에서도 안내 문구가 읽히게 외곽선 */
 .coach{position:absolute;left:0;right:0;bottom:14px;display:flex;justify-content:center;pointer-events:none}
 .coach .pill{background:rgba(8,9,11,.82);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-size:14px;font-weight:500;display:flex;align-items:center;gap:8px}
 .coach .pill .dot{width:8px;height:8px;border-radius:50%;background:var(--warn)}
@@ -259,13 +260,13 @@ let faceResult=null, capCanvas=null, Q=[], ans=[], qi=0, primeText='';
 let stepMode='face', regionData={};
 const GUIDES={
  face:'<svg viewBox="0 0 300 380" fill="none"><ellipse cx="150" cy="190" rx="120" ry="158" stroke="rgba(255,255,255,.55)" stroke-width="3" stroke-dasharray="9 9"/></svg>',
- tzone:'<svg viewBox="0 0 300 380" fill="none"><path d="M48 64 H252 V150 H182 V306 H118 V150 H48 Z" stroke="rgba(255,255,255,.75)" stroke-width="3" stroke-dasharray="9 9" stroke-linejoin="round"/><path d="M62 176 Q88 164 114 174" stroke="rgba(91,141,239,.65)" stroke-width="3" stroke-dasharray="6 6"/><path d="M186 174 Q212 164 238 176" stroke="rgba(91,141,239,.65)" stroke-width="3" stroke-dasharray="6 6"/><text x="150" y="342" text-anchor="middle" fill="rgba(174,182,195,.95)" font-size="13" font-weight="500" font-family="inherit">이마·콧대를 T자에 — 눈썹은 파란 선</text></svg>',
+ tzone:'<svg viewBox="0 0 300 380" fill="none"><path d="M48 64 H252 V150 H182 V306 H118 V150 H48 Z" stroke="rgba(255,255,255,.75)" stroke-width="3" stroke-dasharray="9 9" stroke-linejoin="round"/><path d="M62 176 Q88 164 114 174" stroke="rgba(91,141,239,.65)" stroke-width="3" stroke-dasharray="6 6"/><path d="M186 174 Q212 164 238 176" stroke="rgba(91,141,239,.65)" stroke-width="3" stroke-dasharray="6 6"/><text x="150" y="342" text-anchor="middle" fill="rgba(234,238,245,.98)" font-size="13" font-weight="500" font-family="inherit">폰을 눈높이로 들고 — 이마·콧대를 T자에</text></svg>',
  cheek:'<svg viewBox="0 0 300 380" fill="none"><circle cx="150" cy="182" r="84" stroke="rgba(255,255,255,.72)" stroke-width="3" stroke-dasharray="9 9"/><text x="150" y="191" text-anchor="middle" fill="rgba(255,255,255,.9)" font-size="21" font-weight="500" font-family="inherit">볼</text><text x="150" y="322" text-anchor="middle" fill="rgba(174,182,195,.95)" font-size="13" font-weight="500" font-family="inherit">볼이 원 안에 꽉 차게</text></svg>',
  nose:'<svg viewBox="0 0 300 380" fill="none"><ellipse cx="94" cy="88" rx="26" ry="12" stroke="rgba(91,141,239,.65)" stroke-width="2.5"/><ellipse cx="206" cy="88" rx="26" ry="12" stroke="rgba(91,141,239,.65)" stroke-width="2.5"/><text x="150" y="58" text-anchor="middle" fill="rgba(174,182,195,.95)" font-size="12.5" font-weight="500" font-family="inherit">눈을 위 타원에 맞춰요</text><path d="M139 132 C138 148 135 162 128 174 C122 182 116 187 116 195 C116 205 126 210 139 210 C144 210 147 207 150 207 C153 207 156 210 161 210 C174 210 184 205 184 195 C184 187 178 182 172 174 C165 162 162 148 161 132" stroke="rgba(255,255,255,.78)" stroke-width="3" stroke-dasharray="8 8" stroke-linecap="round"/><path d="M126 197 Q135 203 144 198" stroke="rgba(91,141,239,.65)" stroke-width="2" stroke-dasharray="4 4"/><path d="M156 198 Q165 203 174 197" stroke="rgba(91,141,239,.65)" stroke-width="2" stroke-dasharray="4 4"/><text x="150" y="246" text-anchor="middle" fill="rgba(255,255,255,.82)" font-size="13" font-weight="500" font-family="inherit">코</text><path d="M120 284 Q150 300 180 284" stroke="rgba(91,141,239,.6)" stroke-width="2.5" stroke-dasharray="5 5"/><text x="150" y="318" text-anchor="middle" fill="rgba(174,182,195,.9)" font-size="12" font-weight="500" font-family="inherit">턱</text></svg>'
 };
 const RZOOM=1; // 자동 줌인 제거(사용자 요청 2026-07-12) — 화면 확대·중앙크롭 없이 전체화면. 1로 두면 scale(1)·크롭 전체프레임이라 로직 그대로 안전
 const RSTEP={
- tzone:{label:'T존 클로즈업',coach:'이마·콧대를 T자 점선에 맞춰요',next:'cheek'},
+ tzone:{label:'T존 클로즈업',coach:'폰을 눈높이로 — 이마·콧대를 T자 점선에',next:'cheek'},
  cheek:{label:'볼 클로즈업',coach:'볼을 원 안에 꽉 차게 맞춰요',next:'nose'},
  nose:{label:'코 클로즈업',coach:'코를 점선 실루엣에 — 눈은 위 타원에',next:null}
 };
@@ -519,12 +520,12 @@ async function startCamera(mode='face'){stepMode=mode;show('#s-cam');
     if(mode==='face'){loopGuide();if(!detLive)getDetector().then(d=>{detLive=d;}).catch(()=>{detFailed=true;});}
     else{if(!detLive)getDetector().then(d=>{detLive=d;}).catch(()=>{detFailed=true;});loopRegion();}
   }catch(e){stopCamera();show('#s-intro');$('#introErr').classList.add('on');$('#introErr').textContent='카메라를 열 수 없어요. 권한을 허용했는지 확인하거나, 위의 ‘셀카로 바로 찍기’으로 진행하세요.';}}
-function loopRegion(){const v=$('#video'),pill=$('#coachPill'),txt=$('#coachText'),c=$('#work'),cx=c.getContext('2d',{willReadFrequently:true});let okRun=0;prevTiny=null;faceSeen=false;
+function loopRegion(){const v=$('#video'),pill=$('#coachPill'),txt=$('#coachText'),c=$('#work'),cx=c.getContext('2d',{willReadFrequently:true});let okRun=0,facePos=null;prevTiny=null;faceSeen=false;
   function step(){if(stepMode==='face')return;if(!v.videoWidth){txt.textContent='카메라 켜는 중…';rafId=requestAnimationFrame(step);return;}
     const zs=1/RZOOM,zw=v.videoWidth*zs,zh=v.videoHeight*zs,zx=(v.videoWidth-zw)/2,zy=(v.videoHeight-zh)/2;
     c.width=140;c.height=180;cx.drawImage(v,zx,zy,zw,zh,0,0,140,180);const d=cx.getImageData(20,26,100,128).data;
     let brL=0,brR=0,nL=0,nR=0,clip=0,tot=0,skin=0,fskin=0;
-    for(let y=0;y<128;y++)for(let x=0;x<100;x++){const i=(y*100+x)*4;const R=d[i],G=d[i+1],B=d[i+2];const lum=0.299*R+0.587*G+0.114*B;tot++;if(lum>247)clip++;if(isSkin(R,G,B))skin++;if(isFaceSkin(R,G,B))fskin++;if(x<50){brL+=lum;nL++;}else{brR+=lum;nR++;}}
+    for(let y=0;y<128;y++)for(let x=0;x<100;x++){const i=(y*100+x)*4;const R=d[i],G=d[i+1],B=d[i+2];const lum=0.299*R+0.587*G+0.114*B;tot++;if(lum>247)clip++;const mxp=Math.max(R,G,B),mnp=Math.min(R,G,B);if(isSkin(R,G,B)&&(mxp-mnp)/(mxp||1)>=0.13)skin++;/* 채도 하한 — 따뜻한 벽지·천장이 피부로 잡히던 오탐 차단 */if(isFaceSkin(R,G,B))fskin++;if(x<50){brL+=lum;nL++;}else{brR+=lum;nR++;}}
     brL/=nL||1;brR/=nR||1;const br=(brL+brR)/2,clipR=clip/(tot||1),skinR=skin/(tot||1),fskinR=fskin/(tot||1);
     const gray=toGray(d,100,128),lap=laplacianVar(gray,100,128);
     const sym=(stepMode==='tzone'||stepMode==='nose')?structSymmetry(gray,100,128):1;
@@ -532,21 +533,31 @@ function loopRegion(){const v=$('#video'),pill=$('#coachPill'),txt=$('#coachText
     let motion=0;tinyX.drawImage(v,zx,zy,zw,zh,0,0,32,40);const td=tinyX.getImageData(0,0,32,40).data;
     if(prevTiny){let s=0;for(let i=0;i<td.length;i+=4)s+=Math.abs(td[i]-prevTiny[i]);motion=s/(td.length/4);}prevTiny=td;
     // 얼굴감지 기회주의적 활용 (5프레임마다) — 잡히면 실사람 확인, 안 잡히면(초근접) 휴리스틱 폴백
-    if(detLive&&((dframe++%5)===0)){try{const r=detLive.detectForVideo(v,performance.now()).detections||[];if(r.length){faceSeen=true;faceSeenAt=performance.now();}}catch(e){}}
+    if(detLive&&((dframe++%5)===0)){try{const r=detLive.detectForVideo(v,performance.now()).detections||[];
+      if(r.length){faceSeen=true;faceSeenAt=performance.now();
+        const bb=r.slice().sort((a,b)=>b.boundingBox.width*b.boundingBox.height-a.boundingBox.width*a.boundingBox.height)[0].boundingBox;
+        facePos={cx:(bb.originX+bb.width/2)/(v.videoWidth||1),cy:(bb.originY+bb.height/2)/(v.videoHeight||1),frac:(bb.width*bb.height)/((v.videoWidth*v.videoHeight)||1)};}
+      else facePos=null;}catch(e){}}
     const faceActive=faceSeen&&(performance.now()-faceSeenAt<1600);
+    /* 얼굴 '존재'만으로 게이트를 풀던 버그 수정 — 위치·크기까지 봐야 통과 (구석에 얼굴, 화면엔 천장인 상태로 '좋아요'가 뜨던 문제) */
+    const facePosBad=faceActive&&facePos&&(facePos.cx<0.22||facePos.cx>0.78||facePos.cy<0.15||facePos.cy>0.85);
+    const faceFar=faceActive&&facePos&&facePos.frac<0.03;
+    const faceGood=faceActive&&facePos&&!facePosBad&&!faceFar;
     let reason=null;
     if(br<VF.brDark)reason='너무 어두워요 — 밝은 곳으로';
     else if(br<VF.brDim)reason='조금 어두워요 — 빛을 더 받게';
     else if(clipR>VF.clipLive||br>VF.brHot)reason='빛이 너무 세요 — 창·조명 정면을 피해요';
     else if(Math.abs(brL-brR)>VF.unevenLR)reason='빛이 한쪽에 치우쳤어요 — 정면에서 받게';
-    else if(fskinR<VF.faceSkinMin&&skinR<0.30&&!faceActive)reason='피부가 화면에 꽉 차게 — 얼굴을 더 가까이';
+    else if(facePosBad)reason='얼굴이 화면 구석에 있어요 — 점선 가이드 중앙에 오게';
+    else if(faceFar)reason='더 가까이 — 부위가 화면에 크게 오게';
+    else if(fskinR<VF.faceSkinMin&&skinR<0.30&&!faceGood)reason='피부가 화면에 꽉 차게 — 얼굴을 더 가까이';
     else if(skinR<VF.skinFar)reason='더 가까이 — 피부만 화면에 차게';
     else if(lap<VF.lapBlur)reason='초점이 안 맞아요 — 살짝 멀리';
     else if(motion>VF.motionMax)reason='잠깐 멈춰요 — 흔들리고 있어요';
-    else if(sym<VF.symBlock&&!faceActive)reason=(stepMode==='nose'?'코를':'콧대를')+' 세로 가운데 점선에 맞춰요';
-    const softNudge=(!reason&&sym<VF.symCoach&&!faceActive)?((stepMode==='nose'?'코가':'콧대가')+' 살짝 치우쳤어요 — 가운데면 더 좋아요'):null;
+    else if(sym<VF.symBlock&&!faceGood)reason=(stepMode==='nose'?'코를':'콧대를')+' 세로 가운데 점선에 맞춰요';
+    const softNudge=(!reason&&sym<VF.symCoach&&!faceGood)?((stepMode==='nose'?'코가':'콧대가')+' 살짝 치우쳤어요 — 가운데면 더 좋아요'):null;
     if(reason){okRun=0;txt.textContent=reason;pill.classList.remove('ready');$('#shoot').disabled=true;}
-    else{okRun++;const rdy=okRun>=VF.readyFrames;txt.textContent=rdy?(softNudge||(faceActive?'좋아요 — 인식됨, 촬영하세요':'좋아요 — 촬영하세요')):'조금만 더 — 자세 유지';pill.classList.toggle('ready',rdy);$('#shoot').disabled=!rdy;}
+    else{okRun++;const rdy=okRun>=VF.readyFrames;txt.textContent=rdy?(softNudge||(faceGood?'좋아요 — 인식됨, 촬영하세요':'좋아요 — 촬영하세요')):'조금만 더 — 자세 유지';pill.classList.toggle('ready',rdy);$('#shoot').disabled=!rdy;}
     rafId=requestAnimationFrame(step);}
   step();}
 function stopCamera(){if(rafId)cancelAnimationFrame(rafId);rafId=null;if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}}
