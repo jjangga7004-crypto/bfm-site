@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>내 처방 — BfM (흰검 시안)</title>
+<meta name="description" content="타입마다 성분이 다릅니다. 당신 타입에 꼭 필요한 성분만, 바르기 쉬운 올인원 한 병에.">
+</head>
+<body style="margin:0;background:#FAFAF8"><!-- ============================================================
+     BfM 결과/타입 페이지 — 다크 프리미엄(청색+블랙) · 아임웹 코드입력 블록
+     ★ 사용법: 아래 <section> 의 data-type 을 페이지에 맞게 바꾸세요
+        · NEAT MAN(건성) 페이지        → data-type="neat"
+        · ETERNAL MAN(지성) 페이지      → data-type="eternal"
+        · RENAISSANCE MAN(트러블) 페이지 → data-type="renaissance"
+     ★ 제품/주문 버튼 href 는 .order 의 href 를 수정
+     · 폰트 Pretendard · 볼드 없음(헤딩 500)
+============================================================ -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<section id="bfm-result" data-type="eternal">
+<style>
+#bfm-result{--accent:#141414;--accent2:#444444;--ink:#141414;--mut:#5A5F66;--faint:#8B9096;--panel:#FFFFFF;--line:#E4E4E1;
+  margin:0;background:#FAFAF8;color:var(--ink);
+  font-family:"Pretendard Variable",Pretendard,-apple-system,system-ui,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;word-break:keep-all;line-break:strict;-webkit-font-smoothing:antialiased;letter-spacing:-.01em}
+#bfm-result *{box-sizing:border-box;margin:0;font-weight:400}
+#bfm-result .wrap{max-width:760px;margin:0 auto;padding:0 26px}
+#bfm-result .eyebrow{font-size:12px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+#bfm-result h2{font-size:clamp(25px,4vw,38px);font-weight:500;letter-spacing:-.035em;line-height:1.25}
+#bfm-result .lead{color:var(--mut);font-size:15.5px;line-height:1.8;margin-top:16px}
+#bfm-result .lead b{color:var(--ink);font-weight:400}
+/* hero */
+#bfm-result .hero{padding:96px 0 40px;background:radial-gradient(120% 90% at 50% -10%,#EFEFEC,#FAFAF8 60%);text-align:center}
+#bfm-result .hero .et{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)}
+#bfm-result .persona{margin:22px auto 0;max-width:520px;background:linear-gradient(165deg,#FFFFFF,#F5F5F2);border:1px solid #DDDDD8;border-radius:22px;padding:34px 26px;box-shadow:0 40px 80px -50px rgba(0,0,0,.10)}
+#bfm-result .pc-en{font-size:12px;letter-spacing:.24em;color:var(--accent)}
+#bfm-result .pc-ko{font-size:clamp(34px,8vw,46px);font-weight:500;letter-spacing:-.04em;margin-top:8px}
+#bfm-result .pc-tag{color:var(--mut);font-size:14.5px;margin-top:10px}
+#bfm-result .pc-fno{display:inline-block;margin-top:18px;font-size:12.5px;color:#333333;background:rgba(20,20,20,.1);border:1px solid rgba(20,20,20,.28);padding:7px 14px;border-radius:99px}
+#bfm-result .hero h1{font-size:clamp(24px,4vw,34px);font-weight:500;letter-spacing:-.035em;line-height:1.3;margin-top:36px}
+#bfm-result .hero h1 .ac{color:var(--accent)}
+/* sections */
+#bfm-result .sec{padding:64px 0;border-top:1px solid var(--line)}
+#bfm-result .iglist{margin-top:32px;display:flex;flex-direction:column;gap:14px}
+#bfm-result .ig{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;transition:border-color .3s}
+#bfm-result .ig:hover{border-color:rgba(20,20,20,.4)}
+#bfm-result .igr{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+#bfm-result .ignm{font-size:18px;font-weight:500;letter-spacing:-.02em}
+#bfm-result .igen{display:block;font-size:11.5px;color:var(--faint);letter-spacing:.03em;margin-top:3px}
+#bfm-result .igef{flex:none;font-size:12px;color:var(--accent2);background:rgba(20,20,20,.1);border:1px solid rgba(20,20,20,.24);padding:7px 11px;border-radius:99px;text-align:center}
+#bfm-result .ig p{margin-top:14px;font-size:14px;color:var(--mut);line-height:1.7}
+#bfm-result .iglvl{margin-top:16px;height:6px;border-radius:99px;background:#E8E8E4;overflow:hidden}
+#bfm-result .iglvl i{display:block;height:100%;border-radius:99px;background:var(--accent);transition:width .9s cubic-bezier(.2,.7,.2,1)}
+#bfm-result .pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+#bfm-result .fpill{font-family:inherit;font-size:12.5px;font-weight:400;color:var(--mut);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:8px 14px;cursor:pointer;transition:border-color .2s,color .2s,background .2s,transform .15s}
+#bfm-result .fpill:hover{border-color:rgba(20,20,20,.45);color:#333333;transform:translateY(-1px)}
+#bfm-result .fpill.on{color:#141414;border-color:rgba(20,20,20,.65);background:rgba(20,20,20,.14)}
+#bfm-result .pilldesc{margin-top:14px;background:var(--panel);border:1px solid rgba(20,20,20,.32);border-radius:12px;padding:14px 16px;font-size:13.5px;color:var(--mut);line-height:1.65}
+/* 성분 칩 위에 뜨는 말풍선(3초 후 사라짐) */
+#bfm-result .pilltip{position:absolute;display:none;z-index:40;max-width:min(300px,86%);background:#FFFFFF;border:1px solid rgba(20,20,20,.55);border-radius:12px;padding:11px 14px;box-shadow:0 14px 34px -12px rgba(0,0,0,.10);opacity:0;transform:translateY(5px);transition:opacity .18s ease,transform .18s ease;pointer-events:none}
+#bfm-result .pilltip.show{opacity:1;transform:none}
+#bfm-result .pilltip b{display:block;font-size:13px;font-weight:500;color:#141414;margin-bottom:3px;letter-spacing:-.02em}
+#bfm-result .pilltip span{display:block;font-size:12.5px;color:var(--mut);line-height:1.6}
+#bfm-result .pilltip .ptArrow{position:absolute;bottom:-6px;width:10px;height:10px;background:#FFFFFF;border-right:1px solid rgba(20,20,20,.55);border-bottom:1px solid rgba(20,20,20,.55);transform:translateX(-50%) rotate(45deg)}
+#bfm-result .pilltip.below .ptArrow{bottom:auto;top:-6px;border:0;border-left:1px solid rgba(20,20,20,.55);border-top:1px solid rgba(20,20,20,.55)}
+#bfm-result .pdN{display:block;color:var(--ink);font-weight:500;margin-bottom:4px}
+/* formulation */
+#bfm-result .f3{display:flex;flex-direction:column;gap:14px;margin-top:30px}
+#bfm-result .fi{display:flex;gap:16px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px}
+#bfm-result .fn{flex:none;width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;background:var(--accent)}
+#bfm-result .fi b{font-size:16px;font-weight:500}
+#bfm-result .fi p{margin-top:5px;color:var(--mut);font-size:14px;line-height:1.6}
+/* product */
+#bfm-result .prod{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:30px;margin-top:30px}
+#bfm-result .prod .nm{font-size:22px;font-weight:500;letter-spacing:-.03em}
+#bfm-result .prod .ds{color:var(--mut);font-size:14.5px;line-height:1.7;margin-top:10px}
+#bfm-result .prod .price{display:flex;align-items:baseline;gap:10px;margin-top:20px}
+#bfm-result .prod .now{font-size:30px;font-weight:300;letter-spacing:-.03em}
+#bfm-result .prod .s{font-size:13px;color:var(--faint)}
+#bfm-result .prod .spec{margin-top:18px;border-top:1px solid var(--line)}
+#bfm-result .prod .ln{display:flex;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--line);font-size:14px;color:var(--mut)}
+#bfm-result .prod .ln b{color:var(--ink);font-weight:400}
+#bfm-result .trust{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+#bfm-result .trust span{font-size:12.5px;color:var(--accent2);border:1px solid rgba(20,20,20,.28);padding:7px 12px;border-radius:99px}
+#bfm-result .optguide{margin:20px 0 0;text-align:center;font-size:13.5px;color:var(--mut)}
+#bfm-result .optguide b{color:var(--accent);font-weight:500}
+#bfm-result .order{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;padding:17px;border-radius:14px;background:var(--accent);color:#fff;font-size:16.5px;font-weight:500;text-decoration:none}
+/* guarantee */
+#bfm-result .guar{margin:64px 0 0;padding:48px 30px;text-align:center;background:radial-gradient(120% 120% at 50% -10%,#16223f,#0c0e13 62%);border:1px solid #DDDDD8;border-radius:22px}
+#bfm-result .guar .badge{width:54px;height:54px;border-radius:15px;margin:0 auto 18px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:25px}
+#bfm-result .guar h3{font-size:22px;font-weight:500;letter-spacing:-.03em}
+#bfm-result .guar p{max-width:520px;margin:14px auto 0;color:var(--mut);font-size:15px;line-height:1.8}
+#bfm-result .guar .triad{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:22px}
+#bfm-result .guar .triad span{font-size:13px;color:#333333;border:1px solid rgba(20,20,20,.3);background:rgba(20,20,20,.08);padding:8px 15px;border-radius:99px}
+#bfm-result .botpad{height:80px}
+@media(max-width:760px){#bfm-result .hero{padding:76px 0 32px}#bfm-result .sec{padding:54px 0}}
+
+/* ── ✦ 프리미엄 연출 (스크롤 등장 / 리빌) ───────────────────── */
+#bfm-result .rv{opacity:0;transform:translateY(24px);transition:opacity .85s cubic-bezier(.2,.7,.2,1),transform .85s cubic-bezier(.2,.7,.2,1)}
+#bfm-result .rv.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){#bfm-result .rv{opacity:1!important;transform:none!important;transition:none}#bfm-result .persona,#bfm-result .persona::after{animation:none!important}}
+
+/* 페르소나 카드: 등장 + 은은한 광택 스윕 + 상단 글로우 */
+#bfm-result .persona{position:relative;overflow:hidden;animation:bfmPersona 1s cubic-bezier(.2,.7,.2,1) both}
+@keyframes bfmPersona{from{opacity:0;transform:translateY(26px) scale(.972)}to{opacity:1;transform:none}}
+#bfm-result .persona::before{content:"";position:absolute;left:0;right:0;top:0;height:64%;background:radial-gradient(60% 100% at 50% 0,rgba(20,20,20,.26),transparent 72%);pointer-events:none}
+#bfm-result .persona::after{content:"";position:absolute;top:0;left:-60%;width:42%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.08),transparent);transform:skewX(-18deg);animation:bfmSheen 4.2s ease-in-out 1.1s infinite;pointer-events:none}
+@keyframes bfmSheen{0%,62%{left:-60%}100%{left:165%}}
+#bfm-result .persona>*{position:relative}
+#bfm-result .pc-ko{background:linear-gradient(180deg,#fff,#bcd0ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+#bfm-result .pc-fno{position:relative;overflow:hidden}
+#bfm-result .pc-fno::after{content:"";position:absolute;inset:0;border-radius:99px;background:linear-gradient(100deg,transparent,rgba(207,224,255,.5),transparent);transform:translateX(-120%);animation:bfmChip 3.4s ease-in-out 1.6s infinite}
+@keyframes bfmChip{0%,55%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
+
+/* 성분 카드: 인덱스 번호 + 호버 리프트 + 왼쪽 액센트 라인 */
+#bfm-result .ig{position:relative;transition:border-color .3s,transform .3s,box-shadow .3s;overflow:hidden}
+#bfm-result .ig::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--accent),transparent);opacity:0;transition:opacity .3s}
+#bfm-result .ig:hover{border-color:rgba(20,20,20,.42);transform:translateY(-4px);box-shadow:0 26px 50px -34px rgba(20,20,20,.5)}
+#bfm-result .ig:hover::before{opacity:1}
+#bfm-result .ig .igidx{position:absolute;right:20px;bottom:14px;font-size:44px;line-height:1;color:#fff;opacity:.04;letter-spacing:-.04em}
+
+/* 처방 카드 / 포뮬레이션 아이템 호버 */
+#bfm-result .fi{transition:border-color .3s,transform .3s}
+#bfm-result .fi:hover{border-color:rgba(20,20,20,.35);transform:translateY(-3px)}
+#bfm-result .prod{transition:border-color .3s,box-shadow .3s}
+#bfm-result .prod:hover{border-color:rgba(20,20,20,.4);box-shadow:0 40px 80px -50px rgba(20,20,20,.5)}
+#bfm-result .order{transition:background .2s,transform .15s,box-shadow .3s;box-shadow:0 18px 40px -20px rgba(20,20,20,.8)}
+#bfm-result .order:hover{background:#3E6FE0;transform:translateY(-2px)}
+
+/* 히어로 상단: AI 분석 완료 라인에 진행 바 */
+#bfm-result .scanline{max-width:200px;margin:16px auto 0;height:2px;border-radius:2px;background:#E8E8E4;overflow:hidden}
+#bfm-result .scanline i{display:block;height:100%;width:38%;border-radius:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);animation:bfmScan 2.1s ease-in-out infinite}
+@keyframes bfmScan{0%{transform:translateX(-120%)}100%{transform:translateX(360%)}}
+
+/* 전성분 아코디언 */
+#bfm-result .fullwrap{margin-top:24px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:0 24px;transition:border-color .3s}
+#bfm-result .fullwrap[open]{border-color:rgba(20,20,20,.4)}
+#bfm-result .fullwrap summary{list-style:none;cursor:pointer;padding:22px 0;font-size:15.5px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+#bfm-result .fullwrap summary::-webkit-details-marker{display:none}
+#bfm-result .fullwrap summary::after{content:"+";color:var(--accent2);font-size:20px;flex:none;transition:transform .3s}
+#bfm-result .fullwrap[open] summary::after{transform:rotate(45deg)}
+#bfm-result .fullwrap .cnt{margin-left:auto;margin-right:6px;font-size:12.5px;color:var(--faint)}
+#bfm-result .fulllist{padding:0 0 6px;color:var(--mut);font-size:13.5px;line-height:1.9;word-break:keep-all}
+#bfm-result .fullnote{padding:14px 0 22px;font-size:12px;color:var(--faint);line-height:1.6;border-top:1px solid var(--line);margin-top:4px}
+
+/* ── 히어로 풀스크린 + 컬러 오로라 + 결과 세분화 ── */
+#bfm-result .hero{min-height:100svh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:44px 0}
+#bfm-result .hero .wrap{position:relative;z-index:2;width:100%}
+#bfm-result .aur{position:absolute;width:70vmax;height:70vmax;border-radius:50%;filter:blur(70px);pointer-events:none;z-index:0;opacity:.55}
+#bfm-result .a1{background:radial-gradient(circle,rgba(20,20,20,.5),transparent 62%);top:-25vmax;left:-18vmax;animation:aurA 13s ease-in-out infinite alternate}
+#bfm-result .a2{background:radial-gradient(circle,rgba(150,90,255,.36),transparent 62%);bottom:-30vmax;right:-20vmax;animation:aurB 17s ease-in-out infinite alternate}
+#bfm-result .a3{background:radial-gradient(circle,rgba(45,205,190,.28),transparent 60%);top:30%;left:55%;width:44vmax;height:44vmax;animation:aurC 11s ease-in-out infinite alternate}
+@keyframes aurA{to{transform:translate(9vmax,7vmax) scale(1.15)}}
+@keyframes aurB{to{transform:translate(-8vmax,-6vmax) scale(1.1)}}
+@keyframes aurC{to{transform:translate(-6vmax,5vmax) scale(1.22);opacity:.4}}
+#bfm-result .hstats{max-width:520px;margin:20px auto 0;background:rgba(13,17,27,.66);border:1px solid #232b3d;border-radius:16px;padding:16px 18px;backdrop-filter:blur(8px);display:flex;flex-direction:column;gap:12px}
+#bfm-result .hstats[hidden]{display:none}
+#bfm-result .hs{display:flex;align-items:center;gap:12px}
+#bfm-result .hl{flex:none;width:92px;font-size:12.5px;color:var(--mut);text-align:left}
+#bfm-result .hb{flex:1;height:7px;border-radius:99px;background:#E8E8E4;overflow:hidden}
+#bfm-result .hb i{display:block;height:100%;width:0;border-radius:99px;transition:width 1.2s cubic-bezier(.2,.7,.2,1)}
+#bfm-result .io{background:linear-gradient(90deg,#5B8DEF,#83a8ff)}
+#bfm-result .id2{background:linear-gradient(90deg,#2fbfae,#7ee2ae)}
+#bfm-result .it{background:linear-gradient(90deg,#E2725B,#f0a48f)}
+#bfm-result .hv{flex:none;width:40px;font-size:13px;text-align:right;color:#dfe8fb}
+#bfm-result .shint{margin-top:26px;font-size:11px;letter-spacing:.18em;color:var(--faint)}
+#bfm-result .shint span{display:block;width:1px;height:26px;margin:8px auto 0;background:linear-gradient(180deg,var(--accent),transparent);animation:shd 1.6s ease-in-out infinite}
+@keyframes shd{0%{transform:scaleY(.2);transform-origin:top;opacity:0}30%{transform:scaleY(1);opacity:1}100%{transform:scaleY(1);opacity:0}}
+#bfm-result .prod .was{font-size:15px;color:var(--faint);text-decoration:line-through;margin-right:8px}
+@media (prefers-reduced-motion:reduce){#bfm-result .aur,#bfm-result .shint span{animation:none}}
+</style>
+
+  <!-- HERO -->
+  <div class="hero"><div class="aur a1"></div><div class="aur a2"></div><div class="aur a3"></div><div class="wrap">
+    <div class="et">AI 분석 완료 · 처방 No. <span class="fno">—</span></div>
+    <div class="scanline"><i></i></div>
+    <div class="persona">
+      <div class="pc-en">YOUR TYPE</div>
+      <div class="pc-ko">—</div>
+      <div class="pc-tag"></div>
+      <div class="pc-fno">맞춤 처방 매칭 완료</div>
+    </div>
+    <div class="hstats" hidden>
+      <div class="hs"><span class="hl">유분·번들거림</span><div class="hb"><i class="io"></i></div><b class="hv vo">—</b></div>
+      <div class="hs"><span class="hl">건조·당김</span><div class="hb"><i class="id2"></i></div><b class="hv vd">—</b></div>
+      <div class="hs"><span class="hl">트러블·자극</span><div class="hb"><i class="it"></i></div><b class="hv vt">—</b></div>
+    </div>
+    <h1>당신에게 맞는<br><span class="ac">처방</span>을 찾았습니다.</h1>
+    <div class="shint">SCROLL<span></span></div>
+  </div></div>
+
+  <!-- CONCEPT -->
+  <div class="sec" style="border-top:0"><div class="wrap">
+    <span class="eyebrow">AI Matching</span>
+    <h2 style="margin-top:14px">당신에게 맞는 것만,<br>한 병에.</h2>
+    <p class="lead">남자 피부는 다 다릅니다. AI가 당신의 피부 신호와 답변을 읽어 가장 맞는 처방을 매칭합니다. <b>꼭 필요한 성분만</b> 좋은 오일과 안정적인 유화로 잡아, 바르기 쉬운 올인원 한 병에. 고를 필요 없이.</p>
+  </div></div>
+
+  <!-- KEY ACTIVES -->
+  <div class="sec"><div class="wrap">
+    <span class="eyebrow">Key 4 · 핵심 성분</span>
+    <div class="iglist coreList"></div>
+    <p class="fullnote" style="border-top:0;padding:12px 0 0">막대는 전성분 표기 순서(함량순 표기 원칙) 기준의 상대 위치입니다.</p>
+  </div></div>
+
+  <!-- FULL INGREDIENTS · 전성분 -->
+  <div class="sec"><div class="wrap">
+    <span class="eyebrow">Full Ingredients · 전성분</span>
+    <p class="lead" style="margin-top:10px;font-size:13.5px">전체 <span class="cnt2">—</span> · 함량 순 표기 · 성분을 탭하면 역할 설명이 표시됩니다.</p>
+    <div class="pills"></div>
+    <p class="fullnote" style="border-top:0">※ 함량 순으로 표기된 실제 전성분입니다. 개봉 후 사용기한·주의사항은 제품 용기·박스 표기를 따르세요.</p>
+  </div></div>
+
+  <!-- FORMULATION -->
+  <div class="sec"><div class="wrap">
+    <span class="eyebrow">Formulation</span>
+    <h2 style="margin-top:14px;font-size:clamp(22px,3.4vw,30px)">좋은 성분도, 베이스가<br>싸구려면 소용없습니다.</h2>
+    <div class="f3">
+      <div class="fi"><div class="fn">1</div><div><b>좋은 베이스 오일</b><p>아무리 좋은 활성도 베이스가 받쳐주지 않으면 피부에 안 먹습니다. 흡수 좋은 식물성 오일만 씁니다.</p></div></div>
+      <div class="fi"><div class="fn">2</div><div><b>안정적인 유화</b><p>오일과 물을 제대로 섞는 유화 기술. 분리 없이, 끈적임 없이, 산뜻하게 발립니다.</p></div></div>
+      <div class="fi"><div class="fn">3</div><div><b>꼭 필요한 성분만</b><p>유행 성분을 다 때려넣지 않습니다. 당신 타입에 필요한 것만. 그래서 한 병으로 충분합니다.</p></div></div>
+    </div>
+  </div></div>
+
+  <!-- PRODUCT -->
+  <div class="sec"><div class="wrap">
+    <span class="eyebrow">Your Prescription</span>
+    <div class="prod">
+      <div class="nm">Perfect All-in-One</div>
+      <div class="ds">당신 타입에 맞춘 활성·보조 성분을, 좋은 오일·유화로 한 병에. 토너·로션·세럼·영양을 따로 바를 필요 없습니다.</div>
+      <div class="price"><span class="was">23,900원</span><span class="now">21,900원</span></div>
+      <div class="spec">
+        <div class="ln"><span>용량</span><b>100ml · 약 2개월분</b></div>
+        <div class="ln"><span>구성</span><b>올인원 1병 (4-in-1)</b></div>
+        <div class="ln"><span>배송</span><b>전국 무료배송 · 정기배송</b></div>
+      </div>
+      <div class="trust"><span>미개봉 7일 이내 환불</span><span>무상 타입 교체 1회</span><span>구독 해지 자유</span></div>
+      <!-- ▼ 주문/결제 페이지 주소 -->
+      <p class="optguide">구매 화면에서 <b class="opttype">타입</b>을 선택해 주세요.</p>
+      <a class="order" href="https://www.bfm.best/shop_view?idx=7" target="_top" rel="noopener">정기배송으로 시작하기 →</a>
+      <p style="margin:8px 0 0;font-size:12px;color:#8a8f98;text-align:center">타입이 안 맞으면 1회 무상 교체</p>
+    </div>
+  </div></div>
+
+  <!-- GUARANTEE -->
+  <div class="wrap"><div class="guar">
+    <div class="badge">↺</div>
+    <h3>안 맞으면, 무상으로 바꿔드립니다.</h3>
+    <p>미개봉 상품은 받으신 날부터 7일 이내에 환불 가능합니다. 개봉해 써 보고 피부에 맞지 않으면, 1회에 한해 다른 타입으로 무상 교체해 드립니다. 정기배송은 언제든 해지할 수 있습니다.</p>
+    <div class="triad"><span>미개봉 7일 이내 환불</span><span>무상 타입 교체 1회</span><span>구독 해지 자유</span></div>
+  </div></div>
+  <div class="botpad"></div>
+
+<script>
+(function(){
+  var root=document.getElementById('bfm-result');
+  var P={
+    a:{en:'건성',ko:'타입 A',tag:'수분 부족한 피부를 매끈하게 채우는 처방',fno:17,key:'dry'},
+    b:{en:'지성',ko:'타입 B',tag:'유분·번들거림을 단정하게 다스리는 처방',fno:32,key:'oily'},
+    c:{en:'복합',ko:'타입 C',tag:'유분과 자극을 함께 다스리는 처방',fno:48,key:'trouble'}
+  };
+  var ING={
+    oily:{core:[
+      {nm:'나이아신아마이드',en:'Niacinamide',ef:'피지 조절·모공',d:'전성분 상위에 배치된 핵심 활성. 과잉 피지 분비를 잡고 모공을 시각적으로 좁혀줍니다. 번들거림이 신경 쓰이는 지성 피부가 1순위로 챙겨야 할 성분.'},
+      {nm:'징크피씨에이',en:'Zinc PCA',ef:'피지·번들거림',d:'아연 기반 피지 밸런싱 성분. T존 유분을 눌러 하루 종일 뽀송한 상태를 오래 유지시켜 줍니다.'},
+      {nm:'버지니아풍년화추출물',en:'Witch Hazel',ef:'모공·수렴',d:'천연 아스트린젠트(수렴) 원료. 늘어진 모공을 조이고 번들거리는 표면을 산뜻하게 정돈합니다.'}],
+     sub:[
+      {nm:'소나무잎추출물',en:'Pine Leaf',ef:'항산화·진정',d:'항산화 폴리페놀이 풍부한 식물 추출물. 외부 자극으로 지친 피부를 차분하게 가라앉힙니다.'},
+      {nm:'세라마이드엔피',en:'Ceramide NP',ef:'장벽 보호',d:'피지가 많아도 속은 건조한 지성 피부를 위해. 무너지기 쉬운 장벽을 채워 수분이 새는 것을 막습니다.'},
+      {nm:'식물성스쿠알란',en:'Squalane',ef:'산뜻 보습',d:'피부와 닮은 가벼운 보습 오일. 끈적임 없이 얇은 막을 만들어 유수분 균형을 잡아줍니다.'}]},
+    trouble:{core:[
+      {nm:'4-터피네올',en:'Terpinen-4-ol',ef:'항균·트러블 케어',d:'티트리오일의 활성 단일 분획. 원유 형태보다 자극은 낮추면서 트러블 원인균에 대한 작용은 그대로. 라인의 메인 활성으로 담았습니다.'},
+      {nm:'병풀추출물 + 시카 4종',en:'Centella · Madecassoside 외',ef:'진정·재생',d:'병풀추출물에 마데카소사이드·아시아티코사이드·아시아틱애씨드·마데카식애씨드까지. 시카 진정 성분을 풀 스펙트럼으로 담아 자극받은 피부를 빠르게 가라앉힙니다.'},
+      {nm:'약모밀추출물(어성초)',en:'Houttuynia',ef:'항염·진정',d:'한방계 트러블 케어의 대표 원료. 진행 중인 미세 염증을 다스려 새 트러블이 올라오는 사이클 자체를 늦춥니다.'}],
+     sub:[
+      {nm:'나이아신아마이드',en:'Niacinamide',ef:'피지·붉은 자국',d:'과잉 피지를 줄이면서 트러블이 지나간 자리의 붉은 자국을 함께 옅게 만들어줍니다.'},
+      {nm:'황련뿌리추출물',en:'Coptis Root',ef:'한방 항균·진정',d:'장엽대황뿌리·도둑놈의지팡이(고삼)와 함께 담은 한방 진정 콤플렉스. 예민해진 피부를 차분하게 정돈합니다.'},
+      {nm:'뽕나무잎추출물',en:'Mulberry Leaf',ef:'맑은 톤 관리',d:'트러블 후 칙칙해진 피부 톤을 맑게 관리하는 것을 돕는 식물 추출물.'}]},
+    dry:{core:[
+      {nm:'세라마이드엔피',en:'Ceramide NP',ef:'장벽 재건',d:'피부 장벽을 이루는 핵심 지질. 무너진 보호막을 다시 쌓아 수분이 새어나가는 길부터 막습니다. 속당김·각질이 잦은 건성 피부의 1순위 성분.'},
+      {nm:'3종 식물성 오일',en:'Sunflower·Macadamia·Jojoba',ef:'유수분 보호막',d:'해바라기·마카다미아·호호바씨 오일에 식물성 스쿠알란까지. 피부와 닮은 지질로 얇은 보호막을 만들어 건조한 환경에서도 수분을 지킵니다.'},
+      {nm:'글리세릴글루코사이드',en:'Glyceryl Glucoside',ef:'속 수분 충전',d:'수분 통로(아쿠아포린)에 작용하는 차세대 보습 성분. 겉만이 아니라 속에서부터 촉촉함을 끌어올립니다.'}],
+     sub:[
+      {nm:'황금추출물',en:'Scutellaria',ef:'진정·항산화',d:'한방계 진정 원료. 건조로 예민해진 피부를 가라앉히고 항산화로 지켜줍니다.'},
+      {nm:'락토바실러스발효용해물',en:'Lactobacillus Ferment',ef:'결 정돈·장벽',d:'유산균 발효 성분. 거칠어진 결을 부드럽게 다듬고 건강한 장벽 환경을 돕습니다.'},
+      {nm:'식물 단백 콤플렉스',en:'Bean·Lentil·Mung 외',ef:'영양·탄력',d:'줄작두콩·돌콩·렌틸콩·녹두·칡 등 식물 유래 영양 성분을 더해 푸석한 건성 피부에 영양을 채웁니다.'}]}
+  };
+  var FULL={
+    oily:'정제수, 부틸렌글라이콜, 다이카프릴릴카보네이트, 나이아신아마이드, 글리세린, 카프릴릭/카프릭트라이글리세라이드, 1,2-헥산다이올, 식물성스쿠알란, 호호바씨오일, 징크피씨에이, 베타인, 소나무잎추출물, 버지니아풍년화추출물, 은행나무잎추출물, 판테놀, 알란토인, 알로에베라잎추출물, 세테아릴올리베이트, 솔비탄올리베이트, 토코페릴아세테이트, 다이포타슘글리시리제이트, 글로코노락톤, 세라마이드엔피, 에틸헥실글리세린, 암모늄아크릴로일다이메틸타우레이트/브이피코폴리머, 하이드록시아세토페논, 하이드로제네이티드레시틴, 동백나무씨오일, 리놀레익애씨드, 실리카, 잔탄검, 아데노신, 다이소듐이디티에이',
+    trouble:'정제수, 부틸렌글라이콜, 다이카프릴릴카보네이트, 글리세린, 나이아신아마이드, 1,2-헥산다이올, 카프릴릭/카프릭트라이글리세라이드, 병풀추출물, 약모밀추출물, 베타인, 식물성스쿠알란, 호호바씨오일, 세테아릴올리베이트, 솔비탄올리베이트, 토코페릴아세테이트, 장엽대황뿌리추출물, 황련뿌리추출물, 뽕나무잎추출물, 도둑놈의지팡이뿌리추출물, 은행나무잎추출물, 다이프로필렌글라이콜, 4-터피네올, 세라마이드엔피, 판테놀, 알란토인, 알로에베라잎추출물, 다이포타슘글리시리제이트, 마데카소사이드, 아시아티코사이드, 아시아틱애씨드, 마데카식애씨드, 하이드로제네이티드레시틴, 동백나무씨오일, 리놀레익애씨드, 에틸헥실글리세린, 하이드록시아세토페논, 암모늄아크릴로일다이메틸타우레이트/브이피코폴리머, 잔탄검, 실리카, 시트릭애씨드, 다이소듐이디티에이',
+    dry:'정제수, 카프릴릭/카프릭트라이글리세라이드, 부틸렌글라이콜, 글리세린, 식물성스쿠알란, 나이아신아마이드, 메틸트라이메티콘, 1,2-헥산다이올, 베타인, 판테놀, 해바라기씨오일, 마카다미아씨오일, 호호바씨오일, 폴리글리세릴-2스테아레이트, 글리세릴스테아레이트, 스테아릴알코올, 황금추출물, 글리세릴글루코사이드, 글루코오스, 줄작두콩씨추출물, 돌콩추출물, 렌틸콩씨추출물, 칡뿌리추출물, 녹두씨추출물, 캐롭씨추출물, 락토바실러스발효용해물, 세라마이드엔피, 동백나무씨오일, 리놀레익애씨드, C12-16알코올, 하이드로제네이티드레시틴, 팔미틱애씨드, C14-22알코올, C12-20알킬글루코사이드, 알로에베라잎추출물, 다이포타슘글리시리제이트, 토코페릴아세테이트, 에틸헥실글리세린, 알란토인, 잔탄검, 암모늄아크릴로일다이메틸타우레이트/브이피코폴리머, 아데노신, 하이드록시아세토페논, 다이소듐이디티에이'
+  };
+  var m={oily:'b',dry:'a',trouble:'c',eternal:'b',neat:'a',renaissance:'c'};
+  /* ⚠️ 진단이 넘긴 ?type= 을 최우선으로 사용한다.
+     (data-type 은 imweb 타입별 고정 페이지용 폴백 — 먼저 읽으면 진단 결과를 덮어써서
+      항상 같은 타입이 나오는 버그가 생김) */
+  var u=(new URLSearchParams(location.search).get('type')||'').toLowerCase();
+  var t=m[u]||u;
+  if(!P[t]){ var d=(root.dataset.type||'').toLowerCase(); t=m[d]||d; }
+  if(!P[t]) t='b';
+  var p=P[t], ig=ING[p.key];
+  /* 흰검 시안: 타입별 포인트 컬러(케이스 튜브색 매핑 — 확정 전 가안) A건성=갈색 · B지성=진파랑 · C트러블=진초록 */
+  var AC={a:'#7A4A2B',b:'#17408F',c:'#14532D'};
+  root.style.setProperty('--accent',AC[t]||'#141414');root.style.setProperty('--accent2',AC[t]||'#444444');
+  /* 처방 번호: 진단이 넘긴 ?fno(증가형) 우선, 없으면 시간 기반 진행 번호 */
+  var params2=new URLSearchParams(location.search);
+  var fno=parseInt(params2.get('fno'),10);
+  if(!fno||fno<1){fno=1500+Math.floor((Date.now()-Date.UTC(2026,6,1))/3900000);}
+  root.querySelector('.fno').textContent=String(fno).padStart(2,'0');
+  root.querySelector('.pc-en').textContent=p.en;
+  var ot=root.querySelector('.opttype'); if(ot) ot.textContent=p.ko;
+  /* 주문 버튼에 진단 타입 명시 — 결과와 구매 사이 재선택 오류 방지 */
+  var ob=root.querySelector('.order'); if(ob) ob.textContent=p.ko+'('+p.en+')로 정기배송 시작하기 →';
+  root.querySelector('.pc-ko').textContent=p.ko;
+  root.querySelector('.pc-tag').textContent=p.tag;
+  /* 결과 세분화: 진단이 넘긴 실측 % (o=유분, d=건조, t=트러블) */
+  var qo=parseInt(params2.get('o'),10),qd=parseInt(params2.get('d'),10),qt=parseInt(params2.get('t'),10);
+  var hst=root.querySelector('.hstats');
+  if(hst&&!isNaN(qo)&&!isNaN(qd)&&!isNaN(qt)){hst.hidden=false;
+    var cl=function(v){return Math.max(0,Math.min(100,v));};
+    var sv=function(vs,bs,v){var e=root.querySelector(vs);if(e)e.textContent=cl(v)+'%';var b=root.querySelector(bs);if(b)setTimeout(function(){b.style.width=cl(v)+'%';},380);};
+    sv('.vo','.io',qo);sv('.vd','.id2',qd);sv('.vt','.it',qt);}
+  /* 핵심 4 성분 — 용량 게이지(전성분 표기 순서 기반) */
+  var fullArr=(FULL[p.key]||'').split(',').map(function(s){return s.trim();}).filter(Boolean);
+  function fidx(nm){var n=String(nm).replace(/\s/g,'');for(var i2=0;i2<fullArr.length;i2++){var a=fullArr[i2].replace(/\s/g,'');if(!a)continue;if(a.indexOf(n)>=0||n.indexOf(a)>=0)return i2;}return -1;}
+  var key4=ig.core.concat(ig.sub).slice(0,4);
+  function card(i,idx){var pos=fidx(i.nm);
+    var lv=pos>=0?Math.max(18,Math.round(94-(pos/Math.max(1,fullArr.length-1))*80)):[88,74,62,52][idx];
+    return '<div class="ig"><span class="igidx">'+String(idx+1).padStart(2,'0')+'</span><div class="igr"><div class="ignm">'+i.nm+'</div><div class="igef">'+i.ef+'</div></div><div class="iglvl"><i style="width:'+lv+'%"></i></div><p>'+i.d+'</p></div>';}
+  root.querySelector('.coreList').innerHTML=key4.map(card).join('');
+  /* 전성분 — 타원 칩, 탭하면 설명 */
+  var ROLE={'정제수':'제품의 베이스가 되는 용제','부틸렌글라이콜':'보습·성분 용해 보조','글리세린':'수분을 끌어당기는 보습제','1,2-헥산다이올':'보존 보조·보습','카프릴릭/카프릭트라이글리세라이드':'가볍게 발리는 피부 유연 오일','다이카프릴릴카보네이트':'산뜻한 에몰리언트 오일','식물성스쿠알란':'피부와 닮은 보습 오일','호호바씨오일':'유수분 밸런스 보습 오일','해바라기씨오일':'지질 보급 보습 오일','마카다미아씨오일':'피부 유연 보습 오일','동백나무씨오일':'윤기·보습 오일','베타인':'수분·진정 보조','판테놀':'진정·보습(프로비타민 B5)','알란토인':'피부 컨디셔닝·진정','세라마이드엔피':'피부 장벽 지질','토코페릴아세테이트':'항산화(비타민 E 유도체)','잔탄검':'점도 조절(제형 안정)','실리카':'피지 흡착·보송한 사용감','아데노신':'주름 개선 기능성 성분','다이소듐이디티에이':'제형 안정화(금속이온 봉쇄)','하이드록시아세토페논':'항산화·보존 보조','에틸헥실글리세린':'컨디셔닝·보존 보조','세테아릴올리베이트':'올리브 유래 천연 유화제','솔비탄올리베이트':'올리브 유래 천연 유화제','하이드로제네이티드레시틴':'유화·흡수 보조','리놀레익애씨드':'피부 지질 보급(오메가6)','암모늄아크릴로일다이메틸타우레이트/브이피코폴리머':'점도·제형 안정 폴리머','다이프로필렌글라이콜':'용제·보습 보조','메틸트라이메티콘':'가벼운 발림성 향상 실리콘','글루코오스':'보습 보조(당류)','시트릭애씨드':'pH 조절','스테아릴알코올':'제형 경도 조절 지방알코올','글리세릴스테아레이트':'유화제','폴리글리세릴-2스테아레이트':'유화제','팔미틱애씨드':'제형 보조 지방산','C12-16알코올':'제형 보조','C14-22알코올':'유화 보조','C12-20알킬글루코사이드':'유화 보조','알로에베라잎추출물':'수분·진정 식물 추출물','다이포타슘글리시리제이트':'감초 유래 진정 성분','은행나무잎추출물':'식물 유래 컨디셔닝','징크피씨에이':'아연 유래 피지 밸런싱','글리세릴글루코사이드':'속 수분 충전 보습 성분','락토바실러스발효용해물':'유산균 발효 컨디셔닝','글로코노락톤':'각질 결 정돈(PHA)','나이아신아마이드':'피지·톤 케어 활성(비타민 B3)','4-터피네올':'티트리 유래 트러블 케어 활성'};
+  var CURATED={};ig.core.concat(ig.sub).forEach(function(i){CURATED[String(i.nm).replace(/\s/g,'')]=i.d;});
+  function roleOf(name){var n=name.replace(/\s/g,'');for(var k in CURATED){if(n.indexOf(k)>=0||k.indexOf(n)>=0)return CURATED[k];}if(ROLE[name])return ROLE[name];for(var k2 in ROLE){if(n.indexOf(k2.replace(/\s/g,''))>=0)return ROLE[k2];}if(/추출물|오일|꽃수|잎수/.test(name))return '식물 유래 컨디셔닝 성분';return '제형 안정·사용감을 위한 보조 성분';}
+  var pillsEl=root.querySelector('.pills');
+  if(pillsEl){pillsEl.innerHTML=fullArr.map(function(n){return '<button type="button" class="fpill">'+n+'</button>';}).join('');
+    /* 성분 클릭 → 그 칩 바로 위에 말풍선으로 3초간 표시 (하단 패널 방식 폐기) */
+    var pd=root.querySelector('.pilldesc');if(pd)pd.remove();
+    pillsEl.style.position='relative';
+    var tip=document.createElement('div');tip.className='pilltip';
+    tip.innerHTML='<b class="ptN"></b><span class="ptR"></span><i class="ptArrow"></i>';
+    pillsEl.appendChild(tip);
+    var tipN=tip.querySelector('.ptN'),tipR=tip.querySelector('.ptR'),tipTimer=null;
+    pillsEl.addEventListener('click',function(e){var b2=e.target.closest('.fpill');if(!b2)return;
+      var on=pillsEl.querySelector('.fpill.on');if(on)on.classList.remove('on');b2.classList.add('on');
+      tipN.textContent=b2.textContent;tipR.textContent=roleOf(b2.textContent);
+      tip.classList.remove('show');
+      /* 위치 계산: 칩 기준 위쪽 중앙, 좌우는 컨테이너 안으로 보정 */
+      tip.style.visibility='hidden';tip.style.display='block';
+      var pr=pillsEl.getBoundingClientRect(),br=b2.getBoundingClientRect();
+      var tw=tip.offsetWidth,th=tip.offsetHeight;
+      var cx=br.left-pr.left+br.width/2;
+      var left=Math.max(6,Math.min(cx-tw/2,pr.width-tw-6));
+      var top=br.top-pr.top-th-9;
+      var below=false;
+      if(top<0){top=br.bottom-pr.top+9;below=true;}
+      tip.style.left=left+'px';tip.style.top=top+'px';
+      tip.classList.toggle('below',below);
+      var ax=Math.max(12,Math.min(cx-left,tw-12));
+      tip.querySelector('.ptArrow').style.left=ax+'px';
+      tip.style.visibility='';
+      void tip.offsetWidth;tip.classList.add('show');
+      clearTimeout(tipTimer);
+      tipTimer=setTimeout(function(){tip.classList.remove('show');b2.classList.remove('on');},3000);});
+    var c2=root.querySelector('.cnt2');if(c2)c2.textContent=fullArr.length+'종';}
+
+  /* ── ✦ 스크롤 등장(리빌) : 섹션·카드에 순차 페이드업 ── */
+  var targets=[];
+  root.querySelectorAll('.sec .eyebrow, .sec h2, .sec .lead, .ig, .fi, .prod, .guar, .hero h1').forEach(function(el){el.classList.add('rv');targets.push(el);});
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+    },{threshold:.12,rootMargin:'0px 0px -8% 0px'});
+    /* 같은 리스트 안 카드들은 살짝 시차를 두고 등장 */
+    root.querySelectorAll('.iglist').forEach(function(list){
+      Array.prototype.forEach.call(list.children,function(c,x){c.style.transitionDelay=(x*80)+'ms';});
+    });
+    targets.forEach(function(el){io.observe(el);});
+  } else {
+    targets.forEach(function(el){el.classList.add('in');});
+  }
+})();
+</script>
+</section>
+
+</body>
+</html>
