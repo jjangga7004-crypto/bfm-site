@@ -219,8 +219,8 @@ header.nav.scrolled{border-bottom-color:var(--line);background:rgba(255,255,255,
 #special .who{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px}
 #special .who li{position:relative;padding-left:26px;font-size:15px;color:var(--ink-2);line-height:1.6}
 #special .who li::before{content:"✓";position:absolute;left:0;top:-1px;color:var(--deep);font-weight:900}
-#special .rounds{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}
-@media(max-width:900px){#special .rounds{grid-template-columns:repeat(2,1fr)}}
+#special .rounds{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:24px}
+
 @media(max-width:620px){#special .rounds{grid-template-columns:1fr}}
 #special .rd{background:#fff;border:1.5px solid var(--line-2);border-radius:var(--radius);padding:clamp(20px,2.6vw,26px)}
 #special .rd.open{border-color:rgba(255,90,44,.5);background:linear-gradient(165deg,#fff,var(--soft-2));box-shadow:var(--shadow)}
