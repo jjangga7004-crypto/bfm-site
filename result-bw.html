@@ -173,6 +173,36 @@
 @keyframes shd{0%{transform:scaleY(.2);transform-origin:top;opacity:0}30%{transform:scaleY(1);opacity:1}100%{transform:scaleY(1);opacity:0}}
 #bfm-result .prod .was{font-size:15px;color:var(--faint);text-decoration:line-through;margin-right:8px}
 @media (prefers-reduced-motion:reduce){#bfm-result .aur,#bfm-result .shint span{animation:none}}
+/* ══ v2 애플식 대청소 — 장식 제거, 위계는 타이포로 (뒤에 선언해 앞 규칙을 덮음) ══ */
+#bfm-result .aur,#bfm-result .scanline,#bfm-result .shint{display:none!important}
+#bfm-result .et{display:none}/* .fno 노드는 JS가 쓰므로 DOM엔 유지 */
+#bfm-result .hero{padding:64px 0 6px;background:none}
+#bfm-result .persona{background:none;border:0;box-shadow:none;padding:0;max-width:none;margin-top:0}
+#bfm-result .pc-en{display:none}
+#bfm-result .pc-ko{font-size:clamp(56px,16vw,84px);letter-spacing:-.045em;color:var(--accent)}
+#bfm-result .pc-tag{font-size:15px;margin-top:12px;color:var(--mut)}
+#bfm-result .pc-fno{display:none}
+#bfm-result .hero h1{display:none}
+#bfm-result .hstats{background:none;border:0;backdrop-filter:none;flex-direction:row;justify-content:center;gap:38px;max-width:none;margin-top:30px;padding:0}
+#bfm-result .hs{display:flex;flex-direction:column-reverse;align-items:center;gap:5px}
+#bfm-result .hb{display:none}
+#bfm-result .hv{font-size:33px;font-weight:500;letter-spacing:-.02em}
+#bfm-result .hl{font-size:11px;color:var(--faint);letter-spacing:.08em}
+#bfm-result .pstage{padding:34px 0 20px}
+#bfm-result .pcap{display:none}/* 케이스가 스스로 말함 */
+#bfm-result .ig{background:none;border:0;border-top:1px solid var(--line);border-radius:0;padding:20px 2px}
+#bfm-result .iglist{gap:0;margin-top:16px}
+#bfm-result .igef{display:none}
+#bfm-result .iglvl{display:none}
+#bfm-result .fn{display:none}
+#bfm-result .fi{background:none;border:0;border-top:1px solid var(--line);border-radius:0;padding:18px 2px}
+#bfm-result .f3{gap:0;margin-top:16px}
+#bfm-result .prod{background:none;border:0;padding:0;margin-top:24px}
+#bfm-result .guar{background:none;border:0;padding:22px 0 0;text-align:left}
+#bfm-result .badge{display:none}
+#bfm-result .triad span,#bfm-result .trust span{border:0;padding:0;color:var(--faint);font-size:12px}
+#bfm-result .order{border-radius:12px}
+#bfm-result .pilldesc{background:none}
 </style>
 
   <!-- HERO -->
