@@ -360,7 +360,10 @@
   /* 결과 세분화: 진단이 넘긴 실측 % (o=유분, d=건조, t=트러블) */
   var qo=parseInt(params2.get('o'),10),qd=parseInt(params2.get('d'),10),qt=parseInt(params2.get('t'),10);
   var hst=root.querySelector('.hstats');
-  if(hst&&!isNaN(qo)&&!isNaN(qd)&&!isNaN(qt)){hst.hidden=false;
+  /* 신뢰도 정직 표시: 사진 확신이 낮으면(lc=1) 숫자를 숨기고 문장으로 말한다 — 신뢰는 정확도가 아니라 정직에서 */
+  var lowConf=params2.get('lc')==='1';
+  if(hst&&lowConf){var lcn=document.createElement('p');lcn.style.cssText='max-width:520px;margin:18px auto 0;font-size:13px;line-height:1.65;color:#A6A6A2;text-align:center';lcn.innerHTML='사진 정확도가 낮아 <b style="color:#F2F2F0;font-weight:500">설문 위주로 판정</b>했어요.<br>밝은 곳에서 다시 측정하면 정확도가 올라갑니다. <a href="diagnose-bw.html" style="color:inherit;text-decoration:underline;text-underline-offset:3px">다시 측정 →</a>';hst.parentNode.insertBefore(lcn,hst.nextSibling);}
+  if(hst&&!lowConf&&!isNaN(qo)&&!isNaN(qd)&&!isNaN(qt)){hst.hidden=false;
     var cl=function(v){return Math.max(0,Math.min(100,v));};
     var sv=function(vs,bs,v){var e=root.querySelector(vs);if(e)e.textContent=cl(v)+'%';var b=root.querySelector(bs);if(b)setTimeout(function(){b.style.width=cl(v)+'%';},380);};
     sv('.vo','.io',qo);sv('.vd','.id2',qd);sv('.vt','.it',qt);}
