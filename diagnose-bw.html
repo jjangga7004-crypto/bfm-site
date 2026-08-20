@@ -50,6 +50,16 @@ h1 .ac{color:var(--accent)}
 
 .cam{position:relative;flex:1;border-radius:20px;overflow:hidden;background:#000;margin-top:6px;min-height:380px}
 .cam video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+/* 흰검 인트로 — 실물 렌더 히어로 */
+.i2{display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:22px}
+.i2brand{font-size:20px;font-weight:600;letter-spacing:.02em;color:var(--ink)}
+.i2brand i{font-style:italic;font-weight:400}
+.i2eyebrow{margin-top:24px;font-size:11px;letter-spacing:.34em;color:var(--mut-2);text-transform:uppercase}
+.i2title{margin-top:10px;font-size:clamp(26px,7.4vw,34px);font-weight:500;letter-spacing:-.03em;line-height:1.24}
+.i2title u{text-decoration-thickness:2px;text-underline-offset:6px}
+.i2sub{margin-top:12px;font-size:13.5px;color:var(--mut);line-height:1.65}
+.i2bottle{margin-top:22px;height:min(34vh,300px);filter:drop-shadow(0 24px 30px rgba(0,0,0,.55));-webkit-box-reflect:below -6px linear-gradient(transparent 80%,rgba(0,0,0,.16))}
+.i2priv{margin-top:22px;font-size:11.5px;color:var(--mut-2)}
 .oval{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}.oval svg{width:74%;max-width:300px}
 .oval text{paint-order:stroke;stroke:rgba(8,9,11,.8);stroke-width:3.5px;stroke-linejoin:round} /* 밝은 배경(벽·천장)에서도 안내 문구가 읽히게 외곽선 */
 .coach{position:absolute;left:0;right:0;bottom:14px;display:flex;justify-content:center;pointer-events:none}
@@ -126,23 +136,20 @@ canvas#work{display:none}
 <div class="wrap">
   <div class="top"><span class="step" id="stepLabel">AI 피부 진단</span></div>
 
-  <!-- 1. INTRO -->
+  <!-- 1. INTRO (흰검 개편 — 실물 렌더 히어로) -->
   <section class="screen on" id="s-intro">
-    <div class="grow">
-      <span class="eyebrow">1단계 · 부위 분석</span>
-      <h1 style="margin-top:11px"><span class="ac">T존 · 볼 · 코</span>를<br>읽어드릴게요.</h1>
-      <p class="sub">이마·볼·코를 가까이 찍으면 유분·모공·붉은기를 읽어요. 짧은 설문으로 마무리.</p>
-      <div class="privacy"><div class="i">🔒</div><div><b>사진은 기기에서만 분석 · 서버 전송·저장 안 함</b></div></div>
-      <div class="guides">
-        <div class="g"><span class="c">1</span><span><b>T존 → 볼 → 코</b> 순서로, 점선 가이드에 맞춰요.</span></div>
-        <div class="g"><span class="c">2</span><span><b>밝은 곳</b>에서, 직사광·플래시는 피해요.</span></div>
-        <div class="g"><span class="c">3</span><span>안경·마스크는 벗고, <b>이마</b>가 보이게.</span></div>
-      </div>
+    <div class="grow i2">
+      <div class="i2brand">B<i>f</i>M</div>
+      <p class="i2eyebrow">AI Skin Analysis</p>
+      <h1 class="i2title">피부 타입,<br>감이 아니라 <u>측정</u>으로.</h1>
+      <p class="i2sub">T존 · 볼 · 코 3부위를 카메라로 읽고<br>8문항으로 확정합니다 — 약 1분</p>
+      <img class="i2bottle" src="img/bfm-case-neutral.png" alt="BfM Perfect All-In-One">
+      <div class="i2priv">사진은 기기 안에서만 분석 · 서버 전송·저장 없음</div>
       <div class="inapp" id="inappMsg"><b>인스타그램 앱 안에서 열렸어요.</b><br>아래 <b>셀카로 바로 찍기</b>를 누르면 휴대폰 카메라로 바로 찍을 수 있어요.</div>
       <div class="err" id="introErr"></div>
     </div>
     <div class="foot">
-      <button class="btn" id="startCam">가이드로 촬영 시작</button>
+      <button class="btn" id="startCam">측정 시작</button>
       <button class="btn ghost sm" id="pickFile">셀카로 바로 찍기</button>
     </div>
     <input type="file" id="fileInput" accept="image/*" capture="user" style="display:none" />
