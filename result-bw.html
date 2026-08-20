@@ -197,8 +197,7 @@
   <!-- PRODUCT STAGE — 실물 케이스. 케이스의 'Type -' 빈칸을 진단이 채운다 -->
   <div class="pstage">
     <div class="pglow"></div>
-    <img class="pimg" src="img/bfm-case-real.png" alt="BfM Perfect All-In-One 실물 케이스">
-    <div class="ptype">Type <b class="ptb">—</b></div>
+    <img class="pimg" src="img/bfm-case-b.png" alt="BfM Perfect All-In-One 실물 케이스">
     <p class="pcap">Perfect All-In-One · For Efficient Man</p>
   </div>
 
@@ -315,8 +314,8 @@
   /* 흰검 시안: 타입별 포인트 컬러(케이스 튜브색 매핑 — 확정 전 가안) A건성=갈색 · B지성=진파랑 · C트러블=진초록 */
   var AC={a:'#C98A5B',b:'#5C8AE6',c:'#3FA372'},AC2={a:'#E0B08A',b:'#8FB0F0',c:'#7CC9A4'};
   root.style.setProperty('--accent',AC[t]||'#F2F2F0');root.style.setProperty('--accent2',AC2[t]||'#CFCFCB');
-  /* 케이스의 'Type -' 빈칸을 진단 결과 글자로 채움 */
-  var ptb=root.querySelector('.ptb');if(ptb)ptb.textContent='— '+p.ko.replace('타입 ','');
+  /* 타입별 실물 이미지로 교체 — 로고 색 + 'Type -' 빈칸이 이미지에 구워져 있음 */
+  var pimg=root.querySelector('.pimg');if(pimg)pimg.src='img/bfm-case-'+t+'.png';
   /* 처방 번호: 진단이 넘긴 ?fno(증가형) 우선, 없으면 시간 기반 진행 번호 */
   var params2=new URLSearchParams(location.search);
   var fno=parseInt(params2.get('fno'),10);
