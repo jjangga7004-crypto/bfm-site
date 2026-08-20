@@ -37,6 +37,13 @@
 #bfm-result .pc-fno{display:inline-block;margin-top:18px;font-size:12.5px;color:#DDDDDA;background:rgba(240,240,238,.1);border:1px solid rgba(240,240,238,.28);padding:7px 14px;border-radius:99px}
 #bfm-result .hero h1{font-size:clamp(24px,4vw,34px);font-weight:500;letter-spacing:-.035em;line-height:1.3;margin-top:36px}
 #bfm-result .hero h1 .ac{color:var(--accent)}
+/* product stage — 실물 케이스 (테슬라식 스튜디오 연출) */
+#bfm-result .pstage{position:relative;padding:54px 0 26px;text-align:center;overflow:hidden}
+#bfm-result .pglow{position:absolute;left:50%;top:52%;width:440px;height:440px;transform:translate(-50%,-50%);background:radial-gradient(closest-side,var(--accent) 0%,transparent 70%);opacity:.13;filter:blur(12px);pointer-events:none}
+#bfm-result .pimg{position:relative;height:min(56vh,450px);filter:drop-shadow(0 34px 44px rgba(0,0,0,.6));-webkit-box-reflect:below -10px linear-gradient(transparent 76%,rgba(0,0,0,.22))}
+#bfm-result .ptype{position:relative;margin-top:30px;font-size:13px;letter-spacing:.34em;text-transform:uppercase;color:var(--mut)}
+#bfm-result .ptype b{display:inline-block;margin-left:8px;font-size:32px;letter-spacing:.02em;color:var(--accent);font-weight:500;vertical-align:-5px}
+#bfm-result .pcap{position:relative;margin-top:12px;font-size:11.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--faint)}
 /* sections */
 #bfm-result .sec{padding:64px 0;border-top:1px solid var(--line)}
 #bfm-result .iglist{margin-top:32px;display:flex;flex-direction:column;gap:14px}
@@ -187,6 +194,14 @@
     <div class="shint">SCROLL<span></span></div>
   </div></div>
 
+  <!-- PRODUCT STAGE — 실물 케이스. 케이스의 'Type -' 빈칸을 진단이 채운다 -->
+  <div class="pstage">
+    <div class="pglow"></div>
+    <img class="pimg" src="img/bfm-case-real.png" alt="BfM Perfect All-In-One 실물 케이스">
+    <div class="ptype">Type <b class="ptb">—</b></div>
+    <p class="pcap">Perfect All-In-One · For Efficient Man</p>
+  </div>
+
   <!-- CONCEPT -->
   <div class="sec" style="border-top:0"><div class="wrap">
     <span class="eyebrow">AI Matching</span>
@@ -300,6 +315,8 @@
   /* 흰검 시안: 타입별 포인트 컬러(케이스 튜브색 매핑 — 확정 전 가안) A건성=갈색 · B지성=진파랑 · C트러블=진초록 */
   var AC={a:'#C98A5B',b:'#5C8AE6',c:'#3FA372'},AC2={a:'#E0B08A',b:'#8FB0F0',c:'#7CC9A4'};
   root.style.setProperty('--accent',AC[t]||'#F2F2F0');root.style.setProperty('--accent2',AC2[t]||'#CFCFCB');
+  /* 케이스의 'Type -' 빈칸을 진단 결과 글자로 채움 */
+  var ptb=root.querySelector('.ptb');if(ptb)ptb.textContent='— '+p.ko.replace('타입 ','');
   /* 처방 번호: 진단이 넘긴 ?fno(증가형) 우선, 없으면 시간 기반 진행 번호 */
   var params2=new URLSearchParams(location.search);
   var fno=parseInt(params2.get('fno'),10);
