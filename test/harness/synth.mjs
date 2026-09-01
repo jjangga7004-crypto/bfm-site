@@ -87,7 +87,7 @@ function paintPatches(d, r, areaFrac, mode, color, strength) {
     let cx, cy, rx, ry;
     if (mode === 'band') { cx = W * (0.42 + r() * 0.16); cy = H * (0.15 + r() * 0.6); rx = W * (0.03 + r() * 0.05); ry = H * (0.05 + r() * 0.10); }
     else if (mode === 'flush') { cx = W * (0.40 + r() * 0.2); cy = H * (0.35 + r() * 0.25); rx = W * (0.28 + r() * 0.10); ry = H * (0.22 + r() * 0.08); }
-    else { cx = W * (0.15 + r() * 0.7); cy = H * (0.15 + r() * 0.7); rx = W * (0.02 + r() * 0.05); ry = rx * (0.7 + r() * 0.6); }
+    else { cx = W * (0.15 + r() * 0.7); cy = H * (0.15 + r() * 0.7); rx = W * (0.007 + r() * 0.023); ry = rx * (0.7 + r() * 0.6); } /* 병변 직경 1~4.5mm ≈ 셀피 10px/mm (문헌 앵커) */
     for (let y = Math.max(0, cy - ry | 0); y < Math.min(H, cy + ry | 0); y++)
       for (let x = Math.max(0, cx - rx | 0); x < Math.min(W, cx + rx | 0); x++) {
         const e = ((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2; if (e > 1) continue;

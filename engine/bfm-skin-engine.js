@@ -164,8 +164,11 @@ export function analyzeRegionShot(c, region, opts = {}) { const ctx = c.getConte
     if (redN) { const srt = nrs.slice().sort((a, b) => a - b); const med = srt[(srt.length / 2) | 0];
       let k = 0;
       for (let g = 0; g < GW * GH; g++) { if (!gskin[g]) continue; if (nrs[k++] > med + 0.030) { grid[g] = 1; red++; } }
-      /* 연결요소(BFS) — 블롭 크기로 점상/대면적 분리. 경계값: 피부격자수 대비 2%(스팟 상한)·0.02%(노이즈 하한) */
-      const minCell = Math.max(3, redN * 0.0002), spotMax = redN * 0.02;
+      /* 연결요소(BFS) — 블롭 크기로 점상/대면적 분리.
+         경계 근거(문헌): 여드름 병변(구진·농포)은 직경 <5mm, ≥5mm는 결절(Merck Manual·StatPearls) —
+         셀피 볼 크롭 약 10px/mm 환산 시 병변 ≤ 피부격자수 0.4%, 병변 융합 여유를 두어 상한 0.8%.
+         주사성 홍조는 중앙안면 연속 분포(전면 침범 80%, PMC5502086)라 이보다 훨씬 큼. */
+      const minCell = Math.max(3, redN * 0.0002), spotMax = redN * 0.008;
       const seen = new Uint8Array(GW * GH); const qx = new Int32Array(GW * GH);
       for (let g0 = 0; g0 < GW * GH; g0++) { if (!grid[g0] || seen[g0]) continue;
         let head = 0, tail = 0; qx[tail++] = g0; seen[g0] = 1; let size = 0;
@@ -253,12 +256,17 @@ export function combineRegions(regionData) { const tz = regionData.tzone, n = re
   const shineTz = tz ? tz.shine : (n ? n.shine : 0);
   const dryBase = clamp((CAL.dryZero - shineTz) / CAL.dryZero, 0, 1); /* 0.05 절벽 완화 — shine 0.05만 넘으면 건성 신호가 0이 되던 문제, oily 정규화와 대칭에 가깝게 */
   let dry = clamp(0.55 * dryBase + 0.45 * (cheekOil != null ? clamp((1 - cheekOil) * dryBase * 1.6, 0, 1) : dryBase), 0, 1);
-  /* 각질(거칠기) — 건조의 직접 증거. 무광일 때만(dryBase 게이트) 최대 +18% 보정: 유분 피부의 결은 건조 신호가 아님 */
-  const roughVals = [tz, ch].filter(r => r && r.rough != null).map(r => clamp((r.rough - CAL.roughLo) / CAL.roughSpan, 0, 1));
-  const flakeN = roughVals.length ? roughVals.reduce((a, b) => a + b, 0) / roughVals.length : null;
+  /* 각질(거칠기) — 건조의 직접 증거. 무광일 때만(dryBase 게이트) 최대 +18% 보정: 유분 피부의 결은 건조 신호가 아님.
+     '볼' 기반 — 실사진 검증(2026-09)에서 이마 크롭은 눈썹·헤어라인이 섞여 rough가 3~7배 과대측정됐다.
+     각질 들뜸도 임상적으로 볼·입가가 주 부위. 볼이 없으면 T존×0.5 보수 폴백. */
+  const roughRaw = ch && ch.rough != null ? ch.rough : (tz && tz.rough != null ? tz.rough * 0.5 : null);
+  const flakeN = roughRaw != null ? clamp((roughRaw - CAL.roughLo) / CAL.roughSpan, 0, 1) : null;
   if (flakeN != null) dry = clamp(dry * (1 + 0.18 * flakeN * dryBase), 0, 1);
   const acne = clamp(cheekRed ?? (n ? clamp((redOf(n) - CAL.redOffset) / CAL.redFull, 0, 1) : 0), 0, 1); /* 볼 없을 때 코 폴백도 같은 상수 사용 */
-  const flush = Math.max(ch ? ch.redFlush || 0 : 0, n ? n.redFlush || 0 : 0, tz ? tz.redFlush || 0 : 0); /* 대면적 홍조 — 타입 축이 아니라 플래그로 */
+  /* 홍조는 '볼' 기반 — 실사진 검증(2026-09, 위키미디어 8장)에서 코·이마 redFlush는 콧구멍 그림자·
+     조명 때문에 중앙값 0.10로 부풀어(절반이 오탐 플래그) 볼만 중앙값 0.02로 정상이었다.
+     홍조는 임상적으로도 볼 중심 현상. 볼이 없으면 코×0.5로 보수적 폴백. */
+  const flush = ch ? (ch.redFlush || 0) : (n ? (n.redFlush || 0) * 0.5 : 0);
   const parts = [tz, n, ch].filter(Boolean); const rq = parts.reduce((s, p) => s + p.q, 0) / (parts.length || 1);
   const anyFace = parts.some(p => p.faceSeen); // 촬영 중 얼굴 감지된 부위 있으면 실사람 확인 → 신뢰↑
   const q = clamp(rq * (0.55 + 0.45 * parts.length / 3) * (anyFace ? 1.08 : 1), 0, 1); // 찍은 부위 많을수록·얼굴 잡힐수록 신뢰↑
@@ -354,4 +362,4 @@ export function assessRegionFrame(d, w, h, ctx) {
 }
 
 /* 엔진 버전 — 판정 로직이 바뀌면 올릴 것 (결과 재현·데이터 수집 시 함께 기록) */
-export const ENGINE_VERSION = '2.2.0';
+export const ENGINE_VERSION = '2.2.1';

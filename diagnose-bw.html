@@ -619,7 +619,11 @@ $('#qNext').onclick=()=>{if(ans[qi]===-1)return;if(qi<Q.length-1){qi++;renderQ()
 $('#retry').onclick=()=>{faceResult=null;regionData={};stepMode='tzone';$('#introErr').classList.remove('on');$('#stepLabel').textContent='AI 피부 진단';show('#s-intro');};
 
 /* 검증용 훅 — 라이브 URL엔 ?bfmdebug가 없으므로 사용자에게 노출·동작 변화 없음 */
-if(location.search.includes('bfmdebug'))window.__BFM={ENGINE,fuse:ENGINE.fuse,surveyVector,applyRegions,analyzeRegionShot:ENGINE.analyzeRegionShot,VF,CORE:ENGINE.CORE,FOCUS:ENGINE.FOCUS,CAL,parseOpt:ENGINE.parseOpt,_setRegion:(k,v)=>{regionData[k]=v;},_getFace:()=>faceResult,_goSurvey:goSurvey,_renderResult:renderResult,_guide:updateGuideTransform,_setStep:m=>{stepMode=m;}};
+if(location.search.includes('bfmdebug'))window.__BFM={ENGINE,fuse:ENGINE.fuse,surveyVector,applyRegions,analyzeRegionShot:ENGINE.analyzeRegionShot,VF,CORE:ENGINE.CORE,FOCUS:ENGINE.FOCUS,CAL,parseOpt:ENGINE.parseOpt,_setRegion:(k,v)=>{regionData[k]=v;},_getFace:()=>faceResult,_goSurvey:goSurvey,_renderResult:renderResult,_guide:updateGuideTransform,_setStep:m=>{stepMode=m;},
+  /* 정지 이미지 얼굴검출(디버그·실사진 검증용) — IMAGE 모드 검출기를 지연 생성 */
+  _detectImage:async img=>{if(!window.__BFM.__imgDet){const {mod,fileset}=await loadVision();
+    window.__BFM.__imgDet=await mod.FaceDetector.createFromOptions(fileset,{baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite'},runningMode:'IMAGE',minDetectionConfidence:0.5});}
+    return window.__BFM.__imgDet.detect(img).detections||[];}};
 </script>
 </body>
 </html>
