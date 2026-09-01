@@ -1,7 +1,7 @@
 {
- "label": "after-fix1",
+ "label": "after-final",
  "engineVersion": "2.0.0",
- "when": "2026-09-01T01:24:36.373Z",
+ "when": "2026-09-01T01:42:05.157Z",
  "surveySweep": {
   "total": 15552,
   "dist": {
@@ -23,13 +23,13 @@
    },
    "agreeMean": 0.985,
    "SpSpread": {
-    "oily": 0,
-    "dry": 0,
-    "acne": 0
+    "oily": 0.002,
+    "dry": 0.0017,
+    "acne": 0.0002
    },
    "idxSpread": {
     "tzOil": 0,
-    "pore": 0,
+    "pore": 15,
     "red": 0
    },
    "variants": {
@@ -39,7 +39,7 @@
       "chShine": 0,
       "noseShine": 0,
       "chRed": 0.0093,
-      "nosePore": 0.0004,
+      "nosePore": 0.0003,
       "q": 1
      },
      "Sp": [
@@ -129,7 +129,7 @@
       "chShine": 0,
       "noseShine": 0,
       "chRed": 0.0094,
-      "nosePore": 0.0006,
+      "nosePore": 0.0004,
       "q": 1
      },
      "Sp": [
@@ -159,7 +159,7 @@
       "chShine": 0,
       "noseShine": 0,
       "chRed": 0.012,
-      "nosePore": 0.0004,
+      "nosePore": 0.0003,
       "q": 1
      },
      "Sp": [
@@ -189,7 +189,7 @@
       "chShine": 0,
       "noseShine": 0,
       "chRed": 0.0062,
-      "nosePore": 0.0003,
+      "nosePore": 0.0002,
       "q": 1
      },
      "Sp": [
@@ -219,7 +219,7 @@
       "chShine": 0,
       "noseShine": 0,
       "chRed": 0.0097,
-      "nosePore": 0.0004,
+      "nosePore": 0.0003,
       "q": 1
      },
      "Sp": [
@@ -249,7 +249,7 @@
       "chShine": 0,
       "noseShine": 0,
       "chRed": 0.0092,
-      "nosePore": 0.0004,
+      "nosePore": 0.0003,
       "q": 1
      },
      "Sp": [
@@ -279,18 +279,18 @@
       "chShine": 0,
       "noseShine": 0,
       "chRed": 0.0094,
-      "nosePore": 0.0073,
+      "nosePore": 0.001,
       "q": 1
      },
      "Sp": [
-      0.0882,
-      0.8235,
-      0.0882
+      0.0902,
+      0.8218,
+      0.088
      ],
      "idx": {
       "tzOil": 10,
       "noseOil": 10,
-      "pore": 10,
+      "pore": 25,
       "cheekOil": 10,
       "red": 10
      },
@@ -339,7 +339,7 @@
       "chShine": 0,
       "noseShine": 0,
       "chRed": 0.0094,
-      "nosePore": 0.0004,
+      "nosePore": 0.0003,
       "q": 1
      },
      "Sp": [
@@ -435,32 +435,32 @@
    },
    "agreeMean": 0.938,
    "SpSpread": {
-    "oily": 0.107,
-    "dry": 0.1047,
-    "acne": 0.0024
+    "oily": 0.0799,
+    "dry": 0.0776,
+    "acne": 0.0025
    },
    "idxSpread": {
-    "tzOil": 36,
-    "pore": 0,
+    "tzOil": 15,
+    "pore": 19,
     "red": 0
    },
    "variants": {
     "base": {
      "raw": {
-      "tzShine": 0.0154,
-      "chShine": 0.014,
-      "noseShine": 0.0199,
+      "tzShine": 0.0158,
+      "chShine": 0.0142,
+      "noseShine": 0.0202,
       "chRed": 0.0124,
-      "nosePore": 0.0006,
+      "nosePore": 0.0004,
       "q": 0.982
      },
      "Sp": [
-      0.1621,
-      0.7502,
-      0.0878
+      0.1637,
+      0.7485,
+      0.0877
      ],
      "idx": {
-      "tzOil": 42,
+      "tzOil": 43,
       "noseOil": 47,
       "pore": 10,
       "cheekOil": 41,
@@ -477,20 +477,20 @@
     },
     "dark20": {
      "raw": {
-      "tzShine": 0.0155,
-      "chShine": 0.014,
-      "noseShine": 0.02,
+      "tzShine": 0.0158,
+      "chShine": 0.0143,
+      "noseShine": 0.0203,
       "chRed": 0.0125,
       "nosePore": 0.0003,
       "q": 0.983
      },
      "Sp": [
-      0.1623,
-      0.7499,
-      0.0878
+      0.164,
+      0.7483,
+      0.0877
      ],
      "idx": {
-      "tzOil": 42,
+      "tzOil": 43,
       "noseOil": 47,
       "pore": 10,
       "cheekOil": 41,
@@ -507,21 +507,21 @@
     },
     "dark35": {
      "raw": {
-      "tzShine": 0.0153,
-      "chShine": 0.0139,
-      "noseShine": 0.0197,
+      "tzShine": 0.0159,
+      "chShine": 0.0144,
+      "noseShine": 0.0205,
       "chRed": 0.0126,
       "nosePore": 0.0002,
       "q": 1
      },
      "Sp": [
-      0.1613,
-      0.751,
-      0.0878
+      0.1645,
+      0.7477,
+      0.0877
      ],
      "idx": {
-      "tzOil": 42,
-      "noseOil": 46,
+      "tzOil": 43,
+      "noseOil": 47,
       "pore": 10,
       "cheekOil": 41,
       "red": 10
@@ -537,23 +537,23 @@
     },
     "bright20": {
      "raw": {
-      "tzShine": 0,
-      "chShine": 0,
-      "noseShine": 0,
+      "tzShine": 0.0084,
+      "chShine": 0.0082,
+      "noseShine": 0.0128,
       "chRed": 0.0125,
-      "nosePore": 0.0009,
+      "nosePore": 0.0006,
       "q": 1
      },
      "Sp": [
-      0.0882,
-      0.8235,
-      0.0882
+      0.1298,
+      0.7823,
+      0.0879
      ],
      "idx": {
-      "tzOil": 10,
-      "noseOil": 10,
+      "tzOil": 34,
+      "noseOil": 39,
       "pore": 10,
-      "cheekOil": 10,
+      "cheekOil": 33,
       "red": 10
      },
      "q": 1,
@@ -571,12 +571,12 @@
       "chShine": 0.0143,
       "noseShine": 0.0207,
       "chRed": 0.0162,
-      "nosePore": 0.0006,
+      "nosePore": 0.0005,
       "q": 0.921
      },
      "Sp": [
-      0.1601,
-      0.7521,
+      0.1599,
+      0.7523,
       0.0878
      ],
      "idx": {
@@ -597,21 +597,21 @@
     },
     "gammaHi": {
      "raw": {
-      "tzShine": 0.0123,
-      "chShine": 0.0112,
-      "noseShine": 0.0146,
+      "tzShine": 0.0127,
+      "chShine": 0.012,
+      "noseShine": 0.0154,
       "chRed": 0.0081,
-      "nosePore": 0.0005,
+      "nosePore": 0.0004,
       "q": 1
      },
      "Sp": [
-      0.1443,
-      0.7675,
-      0.0881
+      0.1456,
+      0.7662,
+      0.0882
      ],
      "idx": {
       "tzOil": 39,
-      "noseOil": 41,
+      "noseOil": 42,
       "pore": 10,
       "cheekOil": 38,
       "red": 10
@@ -627,21 +627,21 @@
     },
     "warmWB": {
      "raw": {
-      "tzShine": 0.0069,
-      "chShine": 0.0068,
-      "noseShine": 0.0093,
+      "tzShine": 0.0065,
+      "chShine": 0.0064,
+      "noseShine": 0.0088,
       "chRed": 0.0129,
-      "nosePore": 0.0005,
+      "nosePore": 0.0004,
       "q": 0.93
      },
      "Sp": [
-      0.1196,
-      0.7922,
+      0.1178,
+      0.794,
       0.0882
      ],
      "idx": {
-      "tzOil": 32,
-      "noseOil": 35,
+      "tzOil": 31,
+      "noseOil": 34,
       "pore": 10,
       "cheekOil": 31,
       "red": 10
@@ -657,23 +657,23 @@
     },
     "coolWB": {
      "raw": {
-      "tzShine": 0.0091,
-      "chShine": 0.0041,
-      "noseShine": 0.0059,
+      "tzShine": 0.0117,
+      "chShine": 0.007,
+      "noseShine": 0.0116,
       "chRed": 0.0122,
-      "nosePore": 0.0006,
+      "nosePore": 0.0004,
       "q": 1
      },
      "Sp": [
-      0.1394,
-      0.7733,
-      0.0872
+      0.1531,
+      0.7599,
+      0.087
      ],
      "idx": {
-      "tzOil": 35,
-      "noseOil": 30,
+      "tzOil": 38,
+      "noseOil": 38,
       "pore": 10,
-      "cheekOil": 27,
+      "cheekOil": 32,
       "red": 10
      },
      "q": 1,
@@ -687,23 +687,23 @@
     },
     "noisy": {
      "raw": {
-      "tzShine": 0.0149,
-      "chShine": 0.0136,
-      "noseShine": 0.0193,
+      "tzShine": 0.0155,
+      "chShine": 0.014,
+      "noseShine": 0.0199,
       "chRed": 0.0125,
-      "nosePore": 0.0073,
+      "nosePore": 0.0011,
       "q": 0.981
      },
      "Sp": [
-      0.1595,
-      0.7527,
-      0.0878
+      0.1655,
+      0.747,
+      0.0874
      ],
      "idx": {
       "tzOil": 42,
-      "noseOil": 46,
-      "pore": 10,
-      "cheekOil": 40,
+      "noseOil": 47,
+      "pore": 29,
+      "cheekOil": 41,
       "red": 10
      },
      "q": 0.981,
@@ -717,16 +717,16 @@
     },
     "blur": {
      "raw": {
-      "tzShine": 0.0154,
-      "chShine": 0.014,
-      "noseShine": 0.0199,
+      "tzShine": 0.0156,
+      "chShine": 0.0142,
+      "noseShine": 0.02,
       "chRed": 0.0123,
       "nosePore": 0,
       "q": 0.707
      },
      "Sp": [
-      0.1617,
-      0.7505,
+      0.1627,
+      0.7495,
       0.0878
      ],
      "idx": {
@@ -747,23 +747,23 @@
     },
     "tiltLight": {
      "raw": {
-      "tzShine": 0.013,
-      "chShine": 0.0142,
-      "noseShine": 0.0165,
+      "tzShine": 0.0134,
+      "chShine": 0.0153,
+      "noseShine": 0.017,
       "chRed": 0.0124,
-      "nosePore": 0.0005,
+      "nosePore": 0.0004,
       "q": 0.983
      },
      "Sp": [
-      0.1451,
-      0.7665,
+      0.1469,
+      0.7646,
       0.0884
      ],
      "idx": {
       "tzOil": 40,
-      "noseOil": 43,
+      "noseOil": 44,
       "pore": 10,
-      "cheekOil": 41,
+      "cheekOil": 42,
       "red": 10
      },
      "q": 0.983,
@@ -777,17 +777,17 @@
     },
     "zoomIn": {
      "raw": {
-      "tzShine": 0.0191,
-      "chShine": 0.0124,
-      "noseShine": 0.0226,
+      "tzShine": 0.0195,
+      "chShine": 0.0125,
+      "noseShine": 0.023,
       "chRed": 0.0141,
       "nosePore": 0.0004,
       "q": 0.857
      },
      "Sp": [
-      0.1952,
-      0.7188,
-      0.086
+      0.1977,
+      0.7164,
+      0.0859
      ],
      "idx": {
       "tzOil": 46,
@@ -807,16 +807,16 @@
     },
     "shift": {
      "raw": {
-      "tzShine": 0.0168,
-      "chShine": 0.0159,
-      "noseShine": 0.02,
+      "tzShine": 0.0172,
+      "chShine": 0.0162,
+      "noseShine": 0.0203,
       "chRed": 0.013,
       "nosePore": 0.0005,
       "q": 0.892
      },
      "Sp": [
-      0.1633,
-      0.7484,
+      0.1649,
+      0.7468,
       0.0883
      ],
      "idx": {
@@ -839,43 +839,43 @@
   },
   "normal": {
    "agree": {
-    "neutral": 0.923,
+    "neutral": 0.846,
     "oily": 1,
     "dry": 1,
     "acne": 1,
-    "oilyAcne": 0.538
+    "oilyAcne": 0.846
    },
-   "agreeMean": 0.892,
+   "agreeMean": 0.938,
    "SpSpread": {
-    "oily": 0.3623,
-    "dry": 0.3701,
-    "acne": 0.0112
+    "oily": 0.2354,
+    "dry": 0.2468,
+    "acne": 0.0117
    },
    "idxSpread": {
-    "tzOil": 60,
-    "pore": 0,
+    "tzOil": 20,
+    "pore": 23,
     "red": 1
    },
    "variants": {
     "base": {
      "raw": {
-      "tzShine": 0.0467,
-      "chShine": 0.0243,
-      "noseShine": 0.043,
+      "tzShine": 0.0484,
+      "chShine": 0.0247,
+      "noseShine": 0.0443,
       "chRed": 0.0154,
-      "nosePore": 0.0009,
+      "nosePore": 0.0007,
       "q": 0.988
      },
      "Sp": [
-      0.3924,
-      0.5134,
-      0.0942
+      0.4066,
+      0.4987,
+      0.0946
      ],
      "idx": {
-      "tzOil": 66,
-      "noseOil": 64,
+      "tzOil": 67,
+      "noseOil": 65,
       "pore": 10,
-      "cheekOil": 50,
+      "cheekOil": 51,
       "red": 10
      },
      "q": 0.988,
@@ -889,23 +889,23 @@
     },
     "dark20": {
      "raw": {
-      "tzShine": 0.0487,
-      "chShine": 0.0242,
-      "noseShine": 0.0427,
+      "tzShine": 0.0503,
+      "chShine": 0.0248,
+      "noseShine": 0.0442,
       "chRed": 0.0155,
-      "nosePore": 0.0005,
+      "nosePore": 0.0004,
       "q": 0.985
      },
      "Sp": [
-      0.408,
-      0.4973,
-      0.0947
+      0.4222,
+      0.4826,
+      0.0952
      ],
      "idx": {
-      "tzOil": 67,
+      "tzOil": 68,
       "noseOil": 64,
       "pore": 10,
-      "cheekOil": 50,
+      "cheekOil": 51,
       "red": 10
      },
      "q": 0.985,
@@ -919,23 +919,23 @@
     },
     "dark35": {
      "raw": {
-      "tzShine": 0.0472,
-      "chShine": 0.024,
-      "noseShine": 0.0417,
+      "tzShine": 0.0499,
+      "chShine": 0.025,
+      "noseShine": 0.044,
       "chRed": 0.0157,
-      "nosePore": 0.0003,
+      "nosePore": 0.0002,
       "q": 1
      },
      "Sp": [
-      0.3953,
-      0.5103,
-      0.0944
+      0.4184,
+      0.4863,
+      0.0953
      ],
      "idx": {
-      "tzOil": 66,
-      "noseOil": 63,
+      "tzOil": 68,
+      "noseOil": 64,
       "pore": 10,
-      "cheekOil": 50,
+      "cheekOil": 51,
       "red": 10
      },
      "q": 1,
@@ -949,23 +949,23 @@
     },
     "bright20": {
      "raw": {
-      "tzShine": 0,
-      "chShine": 0,
-      "noseShine": 0,
+      "tzShine": 0.029,
+      "chShine": 0.0149,
+      "noseShine": 0.0293,
       "chRed": 0.0157,
-      "nosePore": 0.0014,
+      "nosePore": 0.001,
       "q": 1
      },
      "Sp": [
-      0.0882,
-      0.8235,
-      0.0882
+      0.2615,
+      0.6528,
+      0.0857
      ],
      "idx": {
-      "tzOil": 10,
-      "noseOil": 10,
-      "pore": 10,
-      "cheekOil": 10,
+      "tzOil": 54,
+      "noseOil": 54,
+      "pore": 24,
+      "cheekOil": 42,
       "red": 10
      },
      "q": 1,
@@ -974,25 +974,25 @@
       "oily": 0,
       "dry": 1,
       "acne": 2,
-      "oilyAcne": 1
+      "oilyAcne": 0
      }
     },
     "gammaLo": {
      "raw": {
-      "tzShine": 0.0535,
+      "tzShine": 0.0551,
       "chShine": 0.0259,
-      "noseShine": 0.0476,
+      "noseShine": 0.0482,
       "chRed": 0.02,
-      "nosePore": 0.001,
+      "nosePore": 0.0008,
       "q": 0.835
      },
      "Sp": [
-      0.4505,
-      0.4534,
-      0.0961
+      0.4653,
+      0.4384,
+      0.0964
      ],
      "idx": {
-      "tzOil": 70,
+      "tzOil": 71,
       "noseOil": 67,
       "pore": 10,
       "cheekOil": 52,
@@ -1004,28 +1004,28 @@
       "oily": 0,
       "dry": 1,
       "acne": 2,
-      "oilyAcne": 2
+      "oilyAcne": 0
      }
     },
     "gammaHi": {
      "raw": {
-      "tzShine": 0.0356,
-      "chShine": 0.018,
-      "noseShine": 0.0308,
+      "tzShine": 0.0401,
+      "chShine": 0.0192,
+      "noseShine": 0.0341,
       "chRed": 0.0099,
-      "nosePore": 0.0008,
+      "nosePore": 0.0006,
       "q": 1
      },
      "Sp": [
-      0.3031,
-      0.6077,
-      0.0893
+      0.3393,
+      0.57,
+      0.0906
      ],
      "idx": {
-      "tzOil": 59,
-      "noseOil": 55,
+      "tzOil": 62,
+      "noseOil": 58,
       "pore": 10,
-      "cheekOil": 45,
+      "cheekOil": 46,
       "red": 10
      },
      "q": 1,
@@ -1040,16 +1040,16 @@
     "warmWB": {
      "raw": {
       "tzShine": 0.0291,
-      "chShine": 0.0117,
+      "chShine": 0.0114,
       "noseShine": 0.0219,
       "chRed": 0.016,
-      "nosePore": 0.0009,
+      "nosePore": 0.0007,
       "q": 0.841
      },
      "Sp": [
-      0.2588,
-      0.6564,
-      0.0849
+      0.2596,
+      0.6558,
+      0.0847
      ],
      "idx": {
       "tzOil": 54,
@@ -1069,23 +1069,23 @@
     },
     "coolWB": {
      "raw": {
-      "tzShine": 0.0146,
-      "chShine": 0.0065,
-      "noseShine": 0.0102,
+      "tzShine": 0.0248,
+      "chShine": 0.0126,
+      "noseShine": 0.0234,
       "chRed": 0.0152,
-      "nosePore": 0.0009,
+      "nosePore": 0.0007,
       "q": 1
      },
      "Sp": [
-      0.1712,
-      0.7423,
-      0.0864
+      0.2299,
+      0.6852,
+      0.0849
      ],
      "idx": {
-      "tzOil": 41,
-      "noseOil": 36,
+      "tzOil": 51,
+      "noseOil": 50,
       "pore": 10,
-      "cheekOil": 31,
+      "cheekOil": 39,
       "red": 10
      },
      "q": 1,
@@ -1094,27 +1094,27 @@
       "oily": 0,
       "dry": 1,
       "acne": 2,
-      "oilyAcne": 1
+      "oilyAcne": 0
      }
     },
     "noisy": {
      "raw": {
-      "tzShine": 0.0454,
-      "chShine": 0.0236,
-      "noseShine": 0.0416,
+      "tzShine": 0.0479,
+      "chShine": 0.0244,
+      "noseShine": 0.0437,
       "chRed": 0.0155,
-      "nosePore": 0.0076,
+      "nosePore": 0.0012,
       "q": 0.977
      },
      "Sp": [
-      0.3814,
-      0.525,
-      0.0936
+      0.4061,
+      0.5,
+      0.0938
      ],
      "idx": {
-      "tzOil": 65,
-      "noseOil": 63,
-      "pore": 10,
+      "tzOil": 67,
+      "noseOil": 64,
+      "pore": 33,
       "cheekOil": 50,
       "red": 10
      },
@@ -1129,23 +1129,23 @@
     },
     "blur": {
      "raw": {
-      "tzShine": 0.0468,
-      "chShine": 0.0242,
-      "noseShine": 0.0428,
+      "tzShine": 0.0482,
+      "chShine": 0.0245,
+      "noseShine": 0.0438,
       "chRed": 0.0152,
       "nosePore": 0,
       "q": 0.712
      },
      "Sp": [
-      0.3932,
-      0.5126,
-      0.0942
+      0.4046,
+      0.5009,
+      0.0945
      ],
      "idx": {
-      "tzOil": 66,
+      "tzOil": 67,
       "noseOil": 64,
       "pore": 10,
-      "cheekOil": 50,
+      "cheekOil": 51,
       "red": 10
      },
      "q": 0.712,
@@ -1159,23 +1159,23 @@
     },
     "tiltLight": {
      "raw": {
-      "tzShine": 0.0455,
-      "chShine": 0.0179,
-      "noseShine": 0.0321,
+      "tzShine": 0.0472,
+      "chShine": 0.0193,
+      "noseShine": 0.0339,
       "chRed": 0.0154,
-      "nosePore": 0.0009,
+      "nosePore": 0.0007,
       "q": 0.982
      },
      "Sp": [
-      0.3823,
-      0.5261,
-      0.0915
+      0.3955,
+      0.5119,
+      0.0926
      ],
      "idx": {
-      "tzOil": 65,
-      "noseOil": 56,
+      "tzOil": 66,
+      "noseOil": 58,
       "pore": 10,
-      "cheekOil": 45,
+      "cheekOil": 46,
       "red": 10
      },
      "q": 0.982,
@@ -1189,50 +1189,50 @@
     },
     "zoomIn": {
      "raw": {
-      "tzShine": 0.0507,
-      "chShine": 0.0216,
-      "noseShine": 0.0447,
+      "tzShine": 0.0532,
+      "chShine": 0.022,
+      "noseShine": 0.0461,
       "chRed": 0.0199,
       "nosePore": 0.0006,
       "q": 0.857
      },
      "Sp": [
-      0.4327,
-      0.4743,
-      0.0929
+      0.4538,
+      0.4527,
+      0.0935
      ],
      "idx": {
-      "tzOil": 68,
-      "noseOil": 65,
+      "tzOil": 70,
+      "noseOil": 66,
       "pore": 10,
       "cheekOil": 48,
       "red": 10
      },
      "q": 0.857,
      "types": {
-      "neutral": 1,
+      "neutral": 0,
       "oily": 0,
       "dry": 1,
       "acne": 2,
-      "oilyAcne": 2
+      "oilyAcne": 0
      }
     },
     "shift": {
      "raw": {
-      "tzShine": 0.0461,
-      "chShine": 0.0247,
-      "noseShine": 0.0395,
+      "tzShine": 0.0492,
+      "chShine": 0.0252,
+      "noseShine": 0.0405,
       "chRed": 0.0169,
-      "nosePore": 0.0008,
+      "nosePore": 0.0007,
       "q": 0.889
      },
      "Sp": [
-      0.3817,
-      0.5233,
-      0.095
+      0.4078,
+      0.4963,
+      0.0959
      ],
      "idx": {
-      "tzOil": 66,
+      "tzOil": 68,
       "noseOil": 62,
       "pore": 10,
       "cheekOil": 51,
@@ -1251,42 +1251,42 @@
   },
   "oilyMild": {
    "agree": {
-    "neutral": 0.846,
+    "neutral": 0.923,
     "oily": 1,
     "dry": 1,
     "acne": 1,
-    "oilyAcne": 0.923
+    "oilyAcne": 1
    },
-   "agreeMean": 0.954,
+   "agreeMean": 0.985,
    "SpSpread": {
-    "oily": 0.7175,
-    "dry": 0.7264,
-    "acne": 0.0247
+    "oily": 0.4319,
+    "dry": 0.4398,
+    "acne": 0.0184
    },
    "idxSpread": {
-    "tzOil": 85,
-    "pore": 0,
+    "tzOil": 33,
+    "pore": 35,
     "red": 0
    },
    "variants": {
     "base": {
      "raw": {
-      "tzShine": 0.089,
-      "chShine": 0.035,
-      "noseShine": 0.0869,
+      "tzShine": 0.0961,
+      "chShine": 0.0357,
+      "noseShine": 0.0907,
       "chRed": 0.0141,
-      "nosePore": 0.0017,
+      "nosePore": 0.0014,
       "q": 0.994
      },
      "Sp": [
-      0.7824,
-      0.1139,
-      0.1037
+      0.7971,
+      0.1015,
+      0.1015
      ],
      "idx": {
-      "tzOil": 87,
-      "noseOil": 86,
-      "pore": 10,
+      "tzOil": 90,
+      "noseOil": 88,
+      "pore": 37,
       "cheekOil": 59,
       "red": 10
      },
@@ -1301,23 +1301,23 @@
     },
     "dark20": {
      "raw": {
-      "tzShine": 0.086,
-      "chShine": 0.0348,
-      "noseShine": 0.0871,
+      "tzShine": 0.0935,
+      "chShine": 0.0355,
+      "noseShine": 0.0912,
       "chRed": 0.0143,
-      "nosePore": 0.001,
+      "nosePore": 0.0008,
       "q": 0.994
      },
      "Sp": [
-      0.7586,
-      0.1401,
-      0.1013
+      0.7946,
+      0.1027,
+      0.1027
      ],
      "idx": {
-      "tzOil": 86,
-      "noseOil": 87,
-      "pore": 10,
-      "cheekOil": 58,
+      "tzOil": 89,
+      "noseOil": 88,
+      "pore": 16,
+      "cheekOil": 59,
       "red": 10
      },
      "q": 0.994,
@@ -1331,23 +1331,23 @@
     },
     "dark35": {
      "raw": {
-      "tzShine": 0.0858,
-      "chShine": 0.034,
-      "noseShine": 0.0883,
+      "tzShine": 0.0946,
+      "chShine": 0.0354,
+      "noseShine": 0.0942,
       "chRed": 0.0143,
       "nosePore": 0.0005,
       "q": 1
      },
      "Sp": [
-      0.7574,
-      0.1418,
-      0.1008
+      0.7965,
+      0.1018,
+      0.1018
      ],
      "idx": {
-      "tzOil": 86,
-      "noseOil": 87,
+      "tzOil": 90,
+      "noseOil": 90,
       "pore": 10,
-      "cheekOil": 58,
+      "cheekOil": 59,
       "red": 10
      },
      "q": 1,
@@ -1361,52 +1361,52 @@
     },
     "bright20": {
      "raw": {
-      "tzShine": 0,
-      "chShine": 0,
-      "noseShine": 0,
+      "tzShine": 0.0578,
+      "chShine": 0.0242,
+      "noseShine": 0.0778,
       "chRed": 0.0144,
-      "nosePore": 0.0025,
+      "nosePore": 0.0018,
       "q": 0.982
      },
      "Sp": [
-      0.0882,
-      0.8235,
-      0.0882
+      0.5278,
+      0.3833,
+      0.0889
      ],
      "idx": {
-      "tzOil": 10,
-      "noseOil": 10,
-      "pore": 10,
-      "cheekOil": 10,
+      "tzOil": 72,
+      "noseOil": 82,
+      "pore": 45,
+      "cheekOil": 50,
       "red": 10
      },
      "q": 0.982,
      "types": {
-      "neutral": 1,
+      "neutral": 0,
       "oily": 0,
       "dry": 1,
       "acne": 2,
-      "oilyAcne": 1
+      "oilyAcne": 0
      }
     },
     "gammaLo": {
      "raw": {
-      "tzShine": 0.1062,
+      "tzShine": 0.1101,
       "chShine": 0.0381,
-      "noseShine": 0.1044,
+      "noseShine": 0.1068,
       "chRed": 0.0181,
-      "nosePore": 0.002,
+      "nosePore": 0.0016,
       "q": 0.778
      },
      "Sp": [
-      0.8057,
-      0.0971,
-      0.0971
+      0.8101,
+      0.0949,
+      0.0949
      ],
      "idx": {
-      "tzOil": 95,
-      "noseOil": 94,
-      "pore": 10,
+      "tzOil": 96,
+      "noseOil": 95,
+      "pore": 41,
       "cheekOil": 61,
       "red": 10
      },
@@ -1421,23 +1421,23 @@
     },
     "gammaHi": {
      "raw": {
-      "tzShine": 0.0655,
-      "chShine": 0.0256,
-      "noseShine": 0.0618,
+      "tzShine": 0.0753,
+      "chShine": 0.0277,
+      "noseShine": 0.0709,
       "chRed": 0.0093,
-      "nosePore": 0.0014,
+      "nosePore": 0.0012,
       "q": 1
      },
      "Sp": [
-      0.5693,
-      0.3349,
-      0.0958
+      0.6627,
+      0.2403,
+      0.097
      ],
      "idx": {
-      "tzOil": 76,
-      "noseOil": 74,
-      "pore": 10,
-      "cheekOil": 51,
+      "tzOil": 81,
+      "noseOil": 79,
+      "pore": 33,
+      "cheekOil": 53,
       "red": 10
      },
      "q": 1,
@@ -1451,22 +1451,22 @@
     },
     "warmWB": {
      "raw": {
-      "tzShine": 0.0676,
-      "chShine": 0.0167,
+      "tzShine": 0.0675,
+      "chShine": 0.0166,
       "noseShine": 0.0537,
       "chRed": 0.0146,
-      "nosePore": 0.0017,
+      "nosePore": 0.0013,
       "q": 0.954
      },
      "Sp": [
-      0.5903,
-      0.3168,
-      0.0929
+      0.5921,
+      0.3157,
+      0.0922
      ],
      "idx": {
       "tzOil": 77,
       "noseOil": 70,
-      "pore": 10,
+      "pore": 36,
       "cheekOil": 43,
       "red": 10
      },
@@ -1481,23 +1481,23 @@
     },
     "coolWB": {
      "raw": {
-      "tzShine": 0.0222,
-      "chShine": 0.0107,
-      "noseShine": 0.0226,
+      "tzShine": 0.0412,
+      "chShine": 0.0202,
+      "noseShine": 0.0553,
       "chRed": 0.0141,
-      "nosePore": 0.0017,
+      "nosePore": 0.0014,
       "q": 1
      },
      "Sp": [
-      0.2206,
-      0.6947,
-      0.0847
+      0.3782,
+      0.5347,
+      0.0871
      ],
      "idx": {
-      "tzOil": 49,
-      "noseOil": 49,
-      "pore": 10,
-      "cheekOil": 37,
+      "tzOil": 63,
+      "noseOil": 71,
+      "pore": 37,
+      "cheekOil": 47,
       "red": 10
      },
      "q": 1,
@@ -1511,23 +1511,23 @@
     },
     "noisy": {
      "raw": {
-      "tzShine": 0.0864,
-      "chShine": 0.0342,
-      "noseShine": 0.0851,
+      "tzShine": 0.0943,
+      "chShine": 0.0353,
+      "noseShine": 0.0907,
       "chRed": 0.0141,
-      "nosePore": 0.0084,
+      "nosePore": 0.0016,
       "q": 0.988
      },
      "Sp": [
-      0.7607,
-      0.1372,
-      0.1021
+      0.7971,
+      0.1015,
+      0.1015
      ],
      "idx": {
-      "tzOil": 86,
-      "noseOil": 86,
-      "pore": 10,
-      "cheekOil": 58,
+      "tzOil": 90,
+      "noseOil": 88,
+      "pore": 42,
+      "cheekOil": 59,
       "red": 10
      },
      "q": 0.988,
@@ -1541,21 +1541,21 @@
     },
     "blur": {
      "raw": {
-      "tzShine": 0.0893,
-      "chShine": 0.035,
-      "noseShine": 0.0869,
+      "tzShine": 0.0961,
+      "chShine": 0.0354,
+      "noseShine": 0.0901,
       "chRed": 0.014,
       "nosePore": 0,
       "q": 0.716
      },
      "Sp": [
-      0.7848,
-      0.1112,
-      0.1039
+      0.7951,
+      0.1024,
+      0.1024
      ],
      "idx": {
-      "tzOil": 87,
-      "noseOil": 86,
+      "tzOil": 90,
+      "noseOil": 88,
       "pore": 10,
       "cheekOil": 59,
       "red": 10
@@ -1571,23 +1571,23 @@
     },
     "tiltLight": {
      "raw": {
-      "tzShine": 0.0899,
-      "chShine": 0.0311,
-      "noseShine": 0.0679,
+      "tzShine": 0.097,
+      "chShine": 0.0329,
+      "noseShine": 0.0733,
       "chRed": 0.0141,
-      "nosePore": 0.0017,
+      "nosePore": 0.0013,
       "q": 0.976
      },
      "Sp": [
-      0.7804,
-      0.1102,
-      0.1094
+      0.7889,
+      0.1055,
+      0.1055
      ],
      "idx": {
-      "tzOil": 88,
-      "noseOil": 78,
-      "pore": 10,
-      "cheekOil": 56,
+      "tzOil": 91,
+      "noseOil": 80,
+      "pore": 36,
+      "cheekOil": 57,
       "red": 10
      },
      "q": 0.976,
@@ -1601,22 +1601,22 @@
     },
     "zoomIn": {
      "raw": {
-      "tzShine": 0.0985,
-      "chShine": 0.0352,
-      "noseShine": 0.0931,
+      "tzShine": 0.1063,
+      "chShine": 0.0358,
+      "noseShine": 0.0966,
       "chRed": 0.0129,
-      "nosePore": 0.0012,
+      "nosePore": 0.0011,
       "q": 0.847
      },
      "Sp": [
-      0.7976,
-      0.1012,
-      0.1012
+      0.8032,
+      0.0984,
+      0.0984
      ],
      "idx": {
-      "tzOil": 91,
-      "noseOil": 89,
-      "pore": 10,
+      "tzOil": 95,
+      "noseOil": 91,
+      "pore": 29,
       "cheekOil": 59,
       "red": 10
      },
@@ -1631,23 +1631,23 @@
     },
     "shift": {
      "raw": {
-      "tzShine": 0.0892,
-      "chShine": 0.0376,
-      "noseShine": 0.0888,
+      "tzShine": 0.0978,
+      "chShine": 0.0383,
+      "noseShine": 0.0921,
       "chRed": 0.0118,
-      "nosePore": 0.0014,
+      "nosePore": 0.0013,
       "q": 0.883
      },
      "Sp": [
-      0.785,
-      0.1116,
-      0.1034
+      0.7982,
+      0.1009,
+      0.1009
      ],
      "idx": {
-      "tzOil": 87,
-      "noseOil": 87,
-      "pore": 10,
-      "cheekOil": 60,
+      "tzOil": 91,
+      "noseOil": 89,
+      "pore": 34,
+      "cheekOil": 61,
       "red": 10
      },
      "q": 0.883,
@@ -1663,43 +1663,43 @@
   },
   "oily": {
    "agree": {
-    "neutral": 0.846,
+    "neutral": 0.923,
     "oily": 1,
     "dry": 1,
     "acne": 1,
-    "oilyAcne": 0.923
+    "oilyAcne": 1
    },
-   "agreeMean": 0.954,
+   "agreeMean": 0.985,
    "SpSpread": {
-    "oily": 0.7213,
-    "dry": 0.7283,
-    "acne": 0.0151
+    "oily": 0.3767,
+    "dry": 0.3826,
+    "acne": 0.0109
    },
    "idxSpread": {
-    "tzOil": 86,
-    "pore": 0,
+    "tzOil": 30,
+    "pore": 46,
     "red": 0
    },
    "variants": {
     "base": {
      "raw": {
-      "tzShine": 0.1054,
-      "chShine": 0.0468,
-      "noseShine": 0.1198,
+      "tzShine": 0.1207,
+      "chShine": 0.0477,
+      "noseShine": 0.1306,
       "chRed": 0.0126,
-      "nosePore": 0.0025,
+      "nosePore": 0.002,
       "q": 0.999
      },
      "Sp": [
-      0.8078,
-      0.0961,
-      0.0961
+      0.8126,
+      0.0937,
+      0.0937
      ],
      "idx": {
-      "tzOil": 94,
+      "tzOil": 96,
       "noseOil": 96,
-      "pore": 10,
-      "cheekOil": 66,
+      "pore": 49,
+      "cheekOil": 67,
       "red": 10
      },
      "q": 0.999,
@@ -1713,22 +1713,22 @@
     },
     "dark20": {
      "raw": {
-      "tzShine": 0.106,
-      "chShine": 0.0459,
-      "noseShine": 0.1216,
+      "tzShine": 0.1214,
+      "chShine": 0.047,
+      "noseShine": 0.1326,
       "chRed": 0.0127,
-      "nosePore": 0.0015,
+      "nosePore": 0.0013,
       "q": 0.998
      },
      "Sp": [
-      0.808,
-      0.096,
-      0.096
+      0.8107,
+      0.0946,
+      0.0946
      ],
      "idx": {
-      "tzOil": 94,
+      "tzOil": 96,
       "noseOil": 96,
-      "pore": 10,
+      "pore": 34,
       "cheekOil": 66,
       "red": 10
      },
@@ -1743,23 +1743,23 @@
     },
     "dark35": {
      "raw": {
-      "tzShine": 0.1049,
-      "chShine": 0.0475,
-      "noseShine": 0.1178,
+      "tzShine": 0.1216,
+      "chShine": 0.0494,
+      "noseShine": 0.1317,
       "chRed": 0.0128,
-      "nosePore": 0.0008,
+      "nosePore": 0.0007,
       "q": 0.99
      },
      "Sp": [
-      0.8076,
-      0.0962,
-      0.0962
+      0.8095,
+      0.0952,
+      0.0952
      ],
      "idx": {
-      "tzOil": 94,
+      "tzOil": 96,
       "noseOil": 96,
       "pore": 10,
-      "cheekOil": 67,
+      "cheekOil": 68,
       "red": 10
      },
      "q": 0.99,
@@ -1773,52 +1773,52 @@
     },
     "bright20": {
      "raw": {
-      "tzShine": 0,
-      "chShine": 0,
-      "noseShine": 0,
+      "tzShine": 0.0594,
+      "chShine": 0.0358,
+      "noseShine": 0.1375,
       "chRed": 0.013,
-      "nosePore": 0.0035,
+      "nosePore": 0.0026,
       "q": 0.948
      },
      "Sp": [
-      0.0882,
-      0.8235,
-      0.0882
+      0.5588,
+      0.3519,
+      0.0893
      ],
      "idx": {
-      "tzOil": 10,
-      "noseOil": 10,
-      "pore": 10,
-      "cheekOil": 10,
+      "tzOil": 73,
+      "noseOil": 96,
+      "pore": 56,
+      "cheekOil": 59,
       "red": 10
      },
      "q": 0.948,
      "types": {
-      "neutral": 1,
+      "neutral": 0,
       "oily": 0,
       "dry": 1,
       "acne": 2,
-      "oilyAcne": 1
+      "oilyAcne": 0
      }
     },
     "gammaLo": {
      "raw": {
-      "tzShine": 0.1257,
+      "tzShine": 0.1396,
       "chShine": 0.0527,
-      "noseShine": 0.1502,
+      "noseShine": 0.1582,
       "chRed": 0.0164,
-      "nosePore": 0.003,
+      "nosePore": 0.0023,
       "q": 0.816
      },
      "Sp": [
-      0.8095,
-      0.0952,
-      0.0952
+      0.8132,
+      0.0934,
+      0.0934
      ],
      "idx": {
       "tzOil": 96,
       "noseOil": 96,
-      "pore": 10,
+      "pore": 53,
       "cheekOil": 70,
       "red": 10
      },
@@ -1833,23 +1833,23 @@
     },
     "gammaHi": {
      "raw": {
-      "tzShine": 0.0783,
-      "chShine": 0.0357,
-      "noseShine": 0.08,
+      "tzShine": 0.0953,
+      "chShine": 0.0391,
+      "noseShine": 0.1025,
       "chRed": 0.0086,
-      "nosePore": 0.0021,
+      "nosePore": 0.0018,
       "q": 1
      },
      "Sp": [
-      0.6839,
-      0.2149,
-      0.1011
+      0.8032,
+      0.0984,
+      0.0984
      ],
      "idx": {
-      "tzOil": 83,
-      "noseOil": 83,
-      "pore": 10,
-      "cheekOil": 59,
+      "tzOil": 90,
+      "noseOil": 93,
+      "pore": 44,
+      "cheekOil": 61,
       "red": 10
      },
      "q": 1,
@@ -1863,22 +1863,22 @@
     },
     "warmWB": {
      "raw": {
-      "tzShine": 0.122,
+      "tzShine": 0.1219,
       "chShine": 0.0232,
       "noseShine": 0.1058,
       "chRed": 0.0132,
-      "nosePore": 0.0024,
+      "nosePore": 0.0019,
       "q": 0.943
      },
      "Sp": [
-      0.8078,
-      0.0961,
-      0.0961
+      0.8107,
+      0.0947,
+      0.0947
      ],
      "idx": {
       "tzOil": 96,
       "noseOil": 94,
-      "pore": 10,
+      "pore": 47,
       "cheekOil": 49,
       "red": 10
      },
@@ -1893,23 +1893,23 @@
     },
     "coolWB": {
      "raw": {
-      "tzShine": 0.0248,
-      "chShine": 0.0126,
-      "noseShine": 0.0166,
+      "tzShine": 0.0464,
+      "chShine": 0.0259,
+      "noseShine": 0.0764,
       "chRed": 0.0127,
-      "nosePore": 0.0024,
+      "nosePore": 0.002,
       "q": 1
      },
      "Sp": [
-      0.2196,
-      0.6943,
-      0.086
+      0.4365,
+      0.476,
+      0.0875
      ],
      "idx": {
-      "tzOil": 51,
-      "noseOil": 43,
-      "pore": 10,
-      "cheekOil": 39,
+      "tzOil": 66,
+      "noseOil": 82,
+      "pore": 49,
+      "cheekOil": 52,
       "red": 10
      },
      "q": 1,
@@ -1923,23 +1923,23 @@
     },
     "noisy": {
      "raw": {
-      "tzShine": 0.1021,
-      "chShine": 0.0458,
-      "noseShine": 0.1176,
+      "tzShine": 0.1184,
+      "chShine": 0.0475,
+      "noseShine": 0.131,
       "chRed": 0.0129,
-      "nosePore": 0.0089,
+      "nosePore": 0.0022,
       "q": 0.992
      },
      "Sp": [
-      0.8065,
-      0.0967,
-      0.0967
+      0.8131,
+      0.0935,
+      0.0935
      ],
      "idx": {
-      "tzOil": 93,
+      "tzOil": 96,
       "noseOil": 96,
-      "pore": 10,
-      "cheekOil": 65,
+      "pore": 52,
+      "cheekOil": 66,
       "red": 10
      },
      "q": 0.992,
@@ -1953,20 +1953,20 @@
     },
     "blur": {
      "raw": {
-      "tzShine": 0.1059,
-      "chShine": 0.0467,
-      "noseShine": 0.1197,
+      "tzShine": 0.1207,
+      "chShine": 0.0472,
+      "noseShine": 0.1291,
       "chRed": 0.0126,
       "nosePore": 0,
       "q": 0.719
      },
      "Sp": [
-      0.808,
-      0.096,
-      0.096
+      0.8095,
+      0.0952,
+      0.0952
      ],
      "idx": {
-      "tzOil": 94,
+      "tzOil": 96,
       "noseOil": 96,
       "pore": 10,
       "cheekOil": 66,
@@ -1983,23 +1983,23 @@
     },
     "tiltLight": {
      "raw": {
-      "tzShine": 0.1062,
-      "chShine": 0.0391,
-      "noseShine": 0.1079,
+      "tzShine": 0.1214,
+      "chShine": 0.0413,
+      "noseShine": 0.122,
       "chRed": 0.0127,
-      "nosePore": 0.0025,
+      "nosePore": 0.002,
       "q": 0.985
      },
      "Sp": [
-      0.8072,
-      0.0964,
-      0.0964
+      0.8126,
+      0.0937,
+      0.0937
      ],
      "idx": {
-      "tzOil": 94,
-      "noseOil": 95,
-      "pore": 10,
-      "cheekOil": 61,
+      "tzOil": 96,
+      "noseOil": 96,
+      "pore": 49,
+      "cheekOil": 63,
       "red": 10
      },
      "q": 0.985,
@@ -2013,23 +2013,23 @@
     },
     "zoomIn": {
      "raw": {
-      "tzShine": 0.1237,
-      "chShine": 0.0489,
-      "noseShine": 0.1185,
+      "tzShine": 0.1396,
+      "chShine": 0.0498,
+      "noseShine": 0.1306,
       "chRed": 0.0055,
-      "nosePore": 0.0019,
+      "nosePore": 0.0018,
       "q": 0.838
      },
      "Sp": [
-      0.8095,
-      0.0952,
-      0.0952
+      0.812,
+      0.094,
+      0.094
      ],
      "idx": {
       "tzOil": 96,
       "noseOil": 96,
-      "pore": 10,
-      "cheekOil": 67,
+      "pore": 45,
+      "cheekOil": 68,
       "red": 10
      },
      "q": 0.838,
@@ -2043,23 +2043,23 @@
     },
     "shift": {
      "raw": {
-      "tzShine": 0.109,
-      "chShine": 0.0507,
-      "noseShine": 0.1187,
+      "tzShine": 0.1229,
+      "chShine": 0.0516,
+      "noseShine": 0.1299,
       "chRed": 0.0087,
-      "nosePore": 0.0021,
+      "nosePore": 0.0018,
       "q": 0.873
      },
      "Sp": [
-      0.8091,
-      0.0954,
-      0.0954
+      0.8121,
+      0.0939,
+      0.0939
      ],
      "idx": {
       "tzOil": 96,
       "noseOil": 96,
-      "pore": 10,
-      "cheekOil": 68,
+      "pore": 46,
+      "cheekOil": 69,
       "red": 10
      },
      "q": 0.873,
@@ -2083,34 +2083,34 @@
    },
    "agreeMean": 0.985,
    "SpSpread": {
-    "oily": 0.4528,
-    "dry": 0.5226,
-    "acne": 0.1538
+    "oily": 0.3472,
+    "dry": 0.3731,
+    "acne": 0.1493
    },
    "idxSpread": {
-    "tzOil": 77,
-    "pore": 0,
+    "tzOil": 30,
+    "pore": 29,
     "red": 22
    },
    "variants": {
     "base": {
      "raw": {
-      "tzShine": 0.0707,
-      "chShine": 0.0338,
-      "noseShine": 0.0725,
+      "tzShine": 0.0756,
+      "chShine": 0.0341,
+      "noseShine": 0.0752,
       "chRed": 0.0867,
-      "nosePore": 0.0014,
+      "nosePore": 0.0011,
       "q": 0.994
      },
      "Sp": [
-      0.4288,
-      0.2016,
-      0.3696
+      0.462,
+      0.1679,
+      0.3701
      ],
      "idx": {
-      "tzOil": 79,
-      "noseOil": 80,
-      "pore": 10,
+      "tzOil": 81,
+      "noseOil": 81,
+      "pore": 31,
       "cheekOil": 58,
       "red": 72
      },
@@ -2125,23 +2125,23 @@
     },
     "dark20": {
      "raw": {
-      "tzShine": 0.0718,
-      "chShine": 0.0348,
-      "noseShine": 0.0727,
+      "tzShine": 0.077,
+      "chShine": 0.0353,
+      "noseShine": 0.0756,
       "chRed": 0.0867,
-      "nosePore": 0.0008,
+      "nosePore": 0.0007,
       "q": 0.996
      },
      "Sp": [
-      0.4338,
-      0.1943,
-      0.3719
+      0.4667,
+      0.1595,
+      0.3738
      ],
      "idx": {
-      "tzOil": 79,
-      "noseOil": 80,
+      "tzOil": 82,
+      "noseOil": 81,
       "pore": 10,
-      "cheekOil": 58,
+      "cheekOil": 59,
       "red": 72
      },
      "q": 0.996,
@@ -2155,21 +2155,21 @@
     },
     "dark35": {
      "raw": {
-      "tzShine": 0.0681,
-      "chShine": 0.0337,
-      "noseShine": 0.0738,
+      "tzShine": 0.0742,
+      "chShine": 0.0344,
+      "noseShine": 0.0779,
       "chRed": 0.0863,
       "nosePore": 0.0004,
       "q": 1
      },
      "Sp": [
-      0.4156,
-      0.2181,
-      0.3663
+      0.4546,
+      0.1771,
+      0.3683
      ],
      "idx": {
-      "tzOil": 78,
-      "noseOil": 80,
+      "tzOil": 81,
+      "noseOil": 82,
       "pore": 10,
       "cheekOil": 58,
       "red": 71
@@ -2185,23 +2185,23 @@
     },
     "bright20": {
      "raw": {
-      "tzShine": 0,
-      "chShine": 0,
-      "noseShine": 0,
+      "tzShine": 0.0468,
+      "chShine": 0.0288,
+      "noseShine": 0.064,
       "chRed": 0.0879,
-      "nosePore": 0.002,
+      "nosePore": 0.0015,
       "q": 0.998
      },
      "Sp": [
-      0.0638,
-      0.5951,
-      0.3412
+      0.2965,
+      0.3508,
+      0.3527
      ],
      "idx": {
-      "tzOil": 10,
-      "noseOil": 10,
-      "pore": 10,
-      "cheekOil": 10,
+      "tzOil": 66,
+      "noseOil": 76,
+      "pore": 39,
+      "cheekOil": 54,
       "red": 72
      },
      "q": 0.998,
@@ -2215,22 +2215,22 @@
     },
     "gammaLo": {
      "raw": {
-      "tzShine": 0.0888,
-      "chShine": 0.039,
-      "noseShine": 0.0889,
+      "tzShine": 0.0915,
+      "chShine": 0.0389,
+      "noseShine": 0.0906,
       "chRed": 0.1082,
-      "nosePore": 0.0016,
+      "nosePore": 0.0013,
       "q": 0.762
      },
      "Sp": [
-      0.4939,
-      0.0725,
-      0.4336
+      0.5031,
+      0.0649,
+      0.4319
      ],
      "idx": {
-      "tzOil": 87,
-      "noseOil": 87,
-      "pore": 10,
+      "tzOil": 88,
+      "noseOil": 88,
+      "pore": 35,
       "cheekOil": 61,
       "red": 81
      },
@@ -2245,23 +2245,23 @@
     },
     "gammaHi": {
      "raw": {
-      "tzShine": 0.0525,
-      "chShine": 0.0276,
-      "noseShine": 0.0528,
+      "tzShine": 0.0603,
+      "chShine": 0.0291,
+      "noseShine": 0.0592,
       "chRed": 0.0615,
-      "nosePore": 0.0012,
+      "nosePore": 0.001,
       "q": 1
      },
      "Sp": [
-      0.3546,
-      0.3657,
-      0.2798
+      0.4113,
+      0.3061,
+      0.2826
      ],
      "idx": {
-      "tzOil": 69,
-      "noseOil": 70,
-      "pore": 10,
-      "cheekOil": 53,
+      "tzOil": 74,
+      "noseOil": 73,
+      "pore": 26,
+      "cheekOil": 54,
       "red": 59
      },
      "q": 1,
@@ -2276,21 +2276,21 @@
     "warmWB": {
      "raw": {
       "tzShine": 0.0529,
-      "chShine": 0.0146,
+      "chShine": 0.0144,
       "noseShine": 0.0433,
       "chRed": 0.0889,
-      "nosePore": 0.0014,
+      "nosePore": 0.0011,
       "q": 0.952
      },
      "Sp": [
-      0.3315,
-      0.322,
-      0.3466
+      0.3329,
+      0.3217,
+      0.3454
      ],
      "idx": {
       "tzOil": 70,
       "noseOil": 64,
-      "pore": 10,
+      "pore": 28,
       "cheekOil": 41,
       "red": 73
      },
@@ -2305,23 +2305,23 @@
     },
     "coolWB": {
      "raw": {
-      "tzShine": 0.0196,
-      "chShine": 0.0198,
-      "noseShine": 0.0211,
+      "tzShine": 0.0349,
+      "chShine": 0.0283,
+      "noseShine": 0.0469,
       "chRed": 0.0855,
-      "nosePore": 0.0014,
+      "nosePore": 0.0012,
       "q": 1
      },
      "Sp": [
-      0.122,
-      0.5408,
-      0.3372
+      0.2136,
+      0.438,
+      0.3484
      ],
      "idx": {
-      "tzOil": 46,
-      "noseOil": 48,
-      "pore": 10,
-      "cheekOil": 46,
+      "tzOil": 58,
+      "noseOil": 66,
+      "pore": 31,
+      "cheekOil": 54,
       "red": 71
      },
      "q": 1,
@@ -2335,23 +2335,23 @@
     },
     "noisy": {
      "raw": {
-      "tzShine": 0.0685,
-      "chShine": 0.0333,
-      "noseShine": 0.0708,
+      "tzShine": 0.074,
+      "chShine": 0.0339,
+      "noseShine": 0.0748,
       "chRed": 0.0862,
-      "nosePore": 0.0077,
+      "nosePore": 0.0014,
       "q": 0.979
      },
      "Sp": [
-      0.4164,
-      0.2164,
-      0.3672
+      0.4546,
+      0.1788,
+      0.3666
      ],
      "idx": {
-      "tzOil": 78,
-      "noseOil": 79,
-      "pore": 10,
-      "cheekOil": 57,
+      "tzOil": 81,
+      "noseOil": 81,
+      "pore": 38,
+      "cheekOil": 58,
       "red": 71
      },
      "q": 0.979,
@@ -2365,21 +2365,21 @@
     },
     "blur": {
      "raw": {
-      "tzShine": 0.0708,
-      "chShine": 0.0337,
-      "noseShine": 0.0724,
+      "tzShine": 0.0756,
+      "chShine": 0.0338,
+      "noseShine": 0.0743,
       "chRed": 0.0867,
       "nosePore": 0,
       "q": 0.716
      },
      "Sp": [
-      0.4294,
-      0.2009,
-      0.3697
+      0.46,
+      0.1685,
+      0.3715
      ],
      "idx": {
-      "tzOil": 79,
-      "noseOil": 80,
+      "tzOil": 81,
+      "noseOil": 81,
       "pore": 10,
       "cheekOil": 58,
       "red": 72
@@ -2395,23 +2395,23 @@
     },
     "tiltLight": {
      "raw": {
-      "tzShine": 0.0686,
-      "chShine": 0.0287,
-      "noseShine": 0.0508,
+      "tzShine": 0.0733,
+      "chShine": 0.03,
+      "noseShine": 0.0543,
       "chRed": 0.0865,
-      "nosePore": 0.0014,
+      "nosePore": 0.0011,
       "q": 0.974
      },
      "Sp": [
-      0.4062,
-      0.222,
-      0.3718
+      0.4371,
+      0.1891,
+      0.3737
      ],
      "idx": {
-      "tzOil": 78,
-      "noseOil": 68,
-      "pore": 10,
-      "cheekOil": 54,
+      "tzOil": 80,
+      "noseOil": 70,
+      "pore": 30,
+      "cheekOil": 55,
       "red": 72
      },
      "q": 0.974,
@@ -2425,22 +2425,22 @@
     },
     "zoomIn": {
      "raw": {
-      "tzShine": 0.0813,
-      "chShine": 0.0373,
-      "noseShine": 0.0795,
+      "tzShine": 0.0879,
+      "chShine": 0.0375,
+      "noseShine": 0.0825,
       "chRed": 0.0766,
       "nosePore": 0.001,
       "q": 0.834
      },
      "Sp": [
-      0.5166,
-      0.1366,
-      0.3468
+      0.5608,
+      0.0906,
+      0.3486
      ],
      "idx": {
-      "tzOil": 84,
-      "noseOil": 83,
-      "pore": 10,
+      "tzOil": 87,
+      "noseOil": 84,
+      "pore": 24,
       "cheekOil": 60,
       "red": 67
      },
@@ -2455,22 +2455,22 @@
     },
     "shift": {
      "raw": {
-      "tzShine": 0.0736,
-      "chShine": 0.037,
-      "noseShine": 0.0737,
+      "tzShine": 0.0807,
+      "chShine": 0.0373,
+      "noseShine": 0.0758,
       "chRed": 0.091,
-      "nosePore": 0.0011,
+      "nosePore": 0.001,
       "q": 0.867
      },
      "Sp": [
-      0.433,
-      0.1791,
-      0.388
+      0.4777,
+      0.1321,
+      0.3901
      ],
      "idx": {
-      "tzOil": 80,
-      "noseOil": 80,
-      "pore": 10,
+      "tzOil": 84,
+      "noseOil": 81,
+      "pore": 27,
       "cheekOil": 60,
       "red": 74
      },
@@ -2495,32 +2495,32 @@
    },
    "agreeMean": 0.954,
    "SpSpread": {
-    "oily": 0.0786,
-    "dry": 0.12,
+    "oily": 0.0584,
+    "dry": 0.118,
     "acne": 0.1275
    },
    "idxSpread": {
-    "tzOil": 36,
-    "pore": 0,
+    "tzOil": 15,
+    "pore": 17,
     "red": 22
    },
    "variants": {
     "base": {
      "raw": {
-      "tzShine": 0.0155,
-      "chShine": 0.0106,
-      "noseShine": 0.0103,
+      "tzShine": 0.0158,
+      "chShine": 0.0107,
+      "noseShine": 0.0104,
       "chRed": 0.0796,
-      "nosePore": 0.0005,
+      "nosePore": 0.0004,
       "q": 0.985
      },
      "Sp": [
-      0.1198,
-      0.5627,
-      0.3175
+      0.1212,
+      0.5615,
+      0.3174
      ],
      "idx": {
-      "tzOil": 42,
+      "tzOil": 43,
       "noseOil": 36,
       "pore": 10,
       "cheekOil": 37,
@@ -2537,21 +2537,21 @@
     },
     "dark20": {
      "raw": {
-      "tzShine": 0.0155,
-      "chShine": 0.0105,
-      "noseShine": 0.0103,
+      "tzShine": 0.0158,
+      "chShine": 0.0107,
+      "noseShine": 0.0105,
       "chRed": 0.0802,
-      "nosePore": 0.0003,
+      "nosePore": 0.0002,
       "q": 0.985
      },
      "Sp": [
-      0.1199,
-      0.5609,
+      0.1212,
+      0.5597,
       0.3192
      ],
      "idx": {
-      "tzOil": 42,
-      "noseOil": 36,
+      "tzOil": 43,
+      "noseOil": 37,
       "pore": 10,
       "cheekOil": 37,
       "red": 69
@@ -2567,23 +2567,23 @@
     },
     "dark35": {
      "raw": {
-      "tzShine": 0.0153,
-      "chShine": 0.0103,
-      "noseShine": 0.0101,
+      "tzShine": 0.016,
+      "chShine": 0.0106,
+      "noseShine": 0.0105,
       "chRed": 0.0798,
       "nosePore": 0.0002,
       "q": 1
      },
      "Sp": [
-      0.1197,
-      0.5625,
-      0.3178
+      0.1224,
+      0.56,
+      0.3176
      ],
      "idx": {
-      "tzOil": 42,
-      "noseOil": 36,
+      "tzOil": 43,
+      "noseOil": 37,
       "pore": 10,
-      "cheekOil": 36,
+      "cheekOil": 37,
       "red": 68
      },
      "q": 1,
@@ -2597,23 +2597,23 @@
     },
     "bright20": {
      "raw": {
-      "tzShine": 0,
-      "chShine": 0,
-      "noseShine": 0,
+      "tzShine": 0.0085,
+      "chShine": 0.0079,
+      "noseShine": 0.0055,
       "chRed": 0.0802,
-      "nosePore": 0.0008,
+      "nosePore": 0.0006,
       "q": 1
      },
      "Sp": [
-      0.0658,
-      0.6142,
-      0.32
+      0.088,
+      0.5898,
+      0.3221
      ],
      "idx": {
-      "tzOil": 10,
-      "noseOil": 10,
+      "tzOil": 34,
+      "noseOil": 29,
       "pore": 10,
-      "cheekOil": 10,
+      "cheekOil": 33,
       "red": 69
      },
      "q": 1,
@@ -2628,16 +2628,16 @@
     "gammaLo": {
      "raw": {
       "tzShine": 0.0157,
-      "chShine": 0.0108,
+      "chShine": 0.0106,
       "noseShine": 0.0108,
       "chRed": 0.1003,
-      "nosePore": 0.0006,
+      "nosePore": 0.0005,
       "q": 0.934
      },
      "Sp": [
-      0.1111,
-      0.5168,
-      0.3721
+      0.1114,
+      0.5166,
+      0.3719
      ],
      "idx": {
       "tzOil": 42,
@@ -2657,21 +2657,21 @@
     },
     "gammaHi": {
      "raw": {
-      "tzShine": 0.0123,
-      "chShine": 0.0086,
-      "noseShine": 0.0075,
+      "tzShine": 0.0127,
+      "chShine": 0.0088,
+      "noseShine": 0.0079,
       "chRed": 0.0566,
       "nosePore": 0.0004,
       "q": 1
      },
      "Sp": [
-      0.1186,
-      0.6368,
-      0.2446
+      0.121,
+      0.6346,
+      0.2444
      ],
      "idx": {
       "tzOil": 39,
-      "noseOil": 32,
+      "noseOil": 33,
       "pore": 10,
       "cheekOil": 34,
       "red": 56
@@ -2687,23 +2687,23 @@
     },
     "warmWB": {
      "raw": {
-      "tzShine": 0.0073,
-      "chShine": 0.004,
-      "noseShine": 0.0051,
+      "tzShine": 0.0068,
+      "chShine": 0.0035,
+      "noseShine": 0.0046,
       "chRed": 0.0823,
-      "nosePore": 0.0005,
+      "nosePore": 0.0004,
       "q": 0.942
      },
      "Sp": [
-      0.0937,
-      0.5821,
-      0.3241
+      0.0927,
+      0.5833,
+      0.324
      ],
      "idx": {
-      "tzOil": 32,
-      "noseOil": 29,
+      "tzOil": 31,
+      "noseOil": 28,
       "pore": 10,
-      "cheekOil": 26,
+      "cheekOil": 25,
       "red": 70
      },
      "q": 0.942,
@@ -2717,23 +2717,23 @@
     },
     "coolWB": {
      "raw": {
-      "tzShine": 0.008,
-      "chShine": 0.0076,
-      "noseShine": 0.0031,
+      "tzShine": 0.0106,
+      "chShine": 0.0098,
+      "noseShine": 0.0057,
       "chRed": 0.0779,
-      "nosePore": 0.0005,
+      "nosePore": 0.0004,
       "q": 1
      },
      "Sp": [
-      0.0845,
-      0.5991,
-      0.3164
+      0.0935,
+      0.5902,
+      0.3163
      ],
      "idx": {
-      "tzOil": 33,
-      "noseOil": 24,
+      "tzOil": 37,
+      "noseOil": 30,
       "pore": 10,
-      "cheekOil": 33,
+      "cheekOil": 36,
       "red": 67
      },
      "q": 1,
@@ -2747,23 +2747,23 @@
     },
     "noisy": {
      "raw": {
-      "tzShine": 0.015,
-      "chShine": 0.0102,
-      "noseShine": 0.0098,
+      "tzShine": 0.0156,
+      "chShine": 0.0105,
+      "noseShine": 0.0101,
       "chRed": 0.0787,
-      "nosePore": 0.0072,
+      "nosePore": 0.001,
       "q": 0.984
      },
      "Sp": [
-      0.1183,
-      0.5667,
-      0.315
+      0.1228,
+      0.5631,
+      0.3141
      ],
      "idx": {
       "tzOil": 42,
       "noseOil": 36,
-      "pore": 10,
-      "cheekOil": 36,
+      "pore": 27,
+      "cheekOil": 37,
       "red": 68
      },
      "q": 0.984,
@@ -2777,16 +2777,16 @@
     },
     "blur": {
      "raw": {
-      "tzShine": 0.0154,
-      "chShine": 0.0105,
-      "noseShine": 0.0102,
+      "tzShine": 0.0156,
+      "chShine": 0.0106,
+      "noseShine": 0.0103,
       "chRed": 0.0804,
       "nosePore": 0,
       "q": 0.709
      },
      "Sp": [
-      0.1193,
-      0.5611,
+      0.1201,
+      0.5603,
       0.3196
      ],
      "idx": {
@@ -2807,23 +2807,23 @@
     },
     "tiltLight": {
      "raw": {
-      "tzShine": 0.013,
-      "chShine": 0.0105,
-      "noseShine": 0.0068,
+      "tzShine": 0.0135,
+      "chShine": 0.0114,
+      "noseShine": 0.0071,
       "chRed": 0.0799,
-      "nosePore": 0.0005,
+      "nosePore": 0.0004,
       "q": 0.986
      },
      "Sp": [
-      0.1036,
-      0.5752,
-      0.3212
+      0.103,
+      0.5751,
+      0.3219
      ],
      "idx": {
       "tzOil": 40,
-      "noseOil": 31,
+      "noseOil": 32,
       "pore": 10,
-      "cheekOil": 37,
+      "cheekOil": 38,
       "red": 68
      },
      "q": 0.986,
@@ -2837,17 +2837,17 @@
     },
     "zoomIn": {
      "raw": {
-      "tzShine": 0.0191,
+      "tzShine": 0.0195,
       "chShine": 0.0083,
-      "noseShine": 0.0106,
+      "noseShine": 0.0108,
       "chRed": 0.0798,
       "nosePore": 0.0004,
       "q": 0.85
      },
      "Sp": [
-      0.1444,
-      0.5422,
-      0.3133
+      0.1464,
+      0.5405,
+      0.3131
      ],
      "idx": {
       "tzOil": 46,
@@ -2867,17 +2867,17 @@
     },
     "shift": {
      "raw": {
-      "tzShine": 0.0162,
-      "chShine": 0.0121,
-      "noseShine": 0.0094,
+      "tzShine": 0.0165,
+      "chShine": 0.0122,
+      "noseShine": 0.0095,
       "chRed": 0.0827,
       "nosePore": 0.0005,
       "q": 0.883
      },
      "Sp": [
-      0.1156,
-      0.5562,
-      0.3281
+      0.117,
+      0.555,
+      0.328
      ],
      "idx": {
       "tzOil": 43,
@@ -2899,9 +2899,9 @@
   }
  },
  "photoConsistencySummary": {
-  "agreeMean": 0.952,
-  "worstProfile": "normal",
-  "tzOilIdxSpreadMax": 86
+  "agreeMean": 0.967,
+  "worstProfile": "dry",
+  "tzOilIdxSpreadMax": 33
  },
  "typeMatrix": {
   "veryDry": {

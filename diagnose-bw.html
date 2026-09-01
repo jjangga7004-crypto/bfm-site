@@ -60,7 +60,7 @@ h1 .ac{color:var(--accent)}
 .i2sub{margin-top:12px;font-size:13.5px;color:var(--mut);line-height:1.65}
 .i2bottle{margin-top:22px;height:min(34vh,300px);filter:drop-shadow(0 24px 30px rgba(0,0,0,.55));-webkit-box-reflect:below -6px linear-gradient(transparent 80%,rgba(0,0,0,.16))}
 .i2priv{margin-top:22px;font-size:11.5px;color:var(--mut-2)}
-.oval{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}.oval svg{width:74%;max-width:300px}
+.oval{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}.oval svg{width:74%;max-width:300px;transform-origin:center;will-change:transform}
 .oval text{paint-order:stroke;stroke:rgba(8,9,11,.8);stroke-width:3.5px;stroke-linejoin:round} /* 밝은 배경(벽·천장)에서도 안내 문구가 읽히게 외곽선 */
 .coach{position:absolute;left:0;right:0;bottom:14px;display:flex;justify-content:center;pointer-events:none}
 .coach .pill{background:rgba(8,9,11,.82);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-size:14px;font-weight:500;display:flex;align-items:center;gap:8px}
@@ -240,19 +240,16 @@ canvas#work{display:none}
 </div>
 
 <script type="module">
-/* ===== 피부 타입 페르소나 (★ 이름·매핑은 사용자 확정 후 여기만 고치면 됨) =====
-   underlying 분석은 {지성, 건성, 여드름} 점수 → 우세 타입을 페르소나로 표시. 제품은 BfM. */
-const PERSONAS = {
-  지성: {name:'타입 B',  en:'지성',  tag:'유분·번들거림을 단정하게 다스리는 타입'},
-  건성: {name:'타입 A',  en:'건성',  tag:'수분 부족한 피부를 매끈하게 채우는 타입'},
-  여드름:{name:'타입 C', en:'복합',  tag:'유분과 자극을 함께 다스리는 타입'},
-};
-const TYPES=['지성','건성','여드름'];
+/* ============================================================
+ * 이 페이지는 '화면(디자인)'만 담당한다. 측정·판정 로직은 전부
+ * engine/bfm-skin-engine.js (단일 소스) — 디자인을 갈아엎어도
+ * 엔진 import + 아래 호출부만 유지하면 진단이 그대로 동작한다.
+ * 판정 상수 조정·검증 방법은 engine/README.md 참고.
+ * ============================================================ */
+import * as ENGINE from './engine/bfm-skin-engine.js';
+const {clamp,normalize,argmax,PIDX,P100,CAL,VF,TYPES,PERSONAS}=ENGINE;
 const $=s=>document.querySelector(s);
 const show=id=>{document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$(id).classList.add('on');scrollTo(0,0);};
-const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
-const normalize=v=>{const s=v.reduce((a,b)=>a+Math.max(0,b),0)||1;return v.map(x=>Math.max(0,x)/s);};
-const argmax=v=>{let m=0;for(let i=1;i<v.length;i++)if(v[i]>v[m])m=i;return m;};
 
 const ua=navigator.userAgent||'';
 const inApp=/Instagram|FBAN|FBAV|FB_IAB|KAKAOTALK|NAVER|Line\//i.test(ua);
@@ -261,12 +258,11 @@ try{if(window.parent!==window)document.documentElement.style.setProperty('--host
 /* 가이드 촬영이 메인(유도). 라이브 카메라 불가(인앱 등)면 가이드 숨기고 셀카를 메인 버튼으로 승격 */
 if(inApp||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){$('#startCam').style.display='none';$('#pickFile').className='btn';}
 
-let faceResult=null, capCanvas=null, Q=[], ans=[], qi=0, primeText='';
+let faceResult=null, Q=[], ans=[], qi=0, primeText='';
 
-/* ===== v2: 3부위 촬영 (얼굴→코→볼) ===== */
-let stepMode='face', regionData={};
+/* ===== v2: 3부위 촬영 (T존→볼→코) ===== */
+let stepMode='tzone', regionData={};
 const GUIDES={
- face:'<svg viewBox="0 0 300 380" fill="none"><ellipse cx="150" cy="190" rx="120" ry="158" stroke="rgba(255,255,255,.55)" stroke-width="3" stroke-dasharray="9 9"/></svg>',
  tzone:'<svg viewBox="0 0 300 380" fill="none"><path d="M48 64 H252 V150 H182 V306 H118 V150 H48 Z" stroke="rgba(255,255,255,.75)" stroke-width="3" stroke-dasharray="9 9" stroke-linejoin="round"/><path d="M62 176 Q88 164 114 174" stroke="rgba(91,141,239,.65)" stroke-width="3" stroke-dasharray="6 6"/><path d="M186 174 Q212 164 238 176" stroke="rgba(91,141,239,.65)" stroke-width="3" stroke-dasharray="6 6"/><text x="150" y="342" text-anchor="middle" fill="rgba(234,238,245,.98)" font-size="13" font-weight="500" font-family="inherit">폰을 눈높이로 들고 — 이마·콧대를 T자에</text></svg>',
  cheek:'<svg viewBox="0 0 300 380" fill="none"><circle cx="150" cy="182" r="84" stroke="rgba(255,255,255,.72)" stroke-width="3" stroke-dasharray="9 9"/><text x="150" y="191" text-anchor="middle" fill="rgba(255,255,255,.9)" font-size="21" font-weight="500" font-family="inherit">볼</text><text x="150" y="322" text-anchor="middle" fill="rgba(174,182,195,.95)" font-size="13" font-weight="500" font-family="inherit">볼이 원 안에 꽉 차게</text></svg>',
  nose:'<svg viewBox="0 0 300 380" fill="none"><ellipse cx="94" cy="88" rx="26" ry="12" stroke="rgba(91,141,239,.65)" stroke-width="2.5"/><ellipse cx="206" cy="88" rx="26" ry="12" stroke="rgba(91,141,239,.65)" stroke-width="2.5"/><text x="150" y="58" text-anchor="middle" fill="rgba(174,182,195,.95)" font-size="12.5" font-weight="500" font-family="inherit">눈을 위 타원에 맞춰요</text><path d="M139 132 C138 148 135 162 128 174 C122 182 116 187 116 195 C116 205 126 210 139 210 C144 210 147 207 150 207 C153 207 156 210 161 210 C174 210 184 205 184 195 C184 187 178 182 172 174 C165 162 162 148 161 132" stroke="rgba(255,255,255,.78)" stroke-width="3" stroke-dasharray="8 8" stroke-linecap="round"/><path d="M126 197 Q135 203 144 198" stroke="rgba(91,141,239,.65)" stroke-width="2" stroke-dasharray="4 4"/><path d="M156 198 Q165 203 174 197" stroke="rgba(91,141,239,.65)" stroke-width="2" stroke-dasharray="4 4"/><text x="150" y="246" text-anchor="middle" fill="rgba(255,255,255,.82)" font-size="13" font-weight="500" font-family="inherit">코</text><path d="M120 284 Q150 300 180 284" stroke="rgba(91,141,239,.6)" stroke-width="2.5" stroke-dasharray="5 5"/><text x="150" y="318" text-anchor="middle" fill="rgba(174,182,195,.9)" font-size="12" font-weight="500" font-family="inherit">턱</text></svg>'
@@ -278,148 +274,21 @@ const RSTEP={
  nose:{label:'코 클로즈업',coach:'코를 점선 실루엣에 — 눈은 위 타원에',next:null}
 };
 
-/* ===== MediaPipe ===== */
-let vision=null,detector=null,landmarker=null;
+/* ===== MediaPipe — BlazeFace 얼굴검출(위치·크기 게이트 + 능동형 가이드 앵커) ===== */
+let vision=null,detector=null;
 async function loadVision(){ if(vision)return vision; const mod=await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14');
   vision={mod,fileset:await mod.FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm')}; return vision; }
 async function getDetector(){ if(detector)return detector; const {mod,fileset}=await loadVision();
   const dg=/Android/i.test(navigator.userAgent||'')?'CPU':'GPU'; /* 갤럭시 등 안드로이드: GPU 델리게이트가 추론결과 비는 문제 → CPU 강제 */
   const mk=d=>mod.FaceDetector.createFromOptions(fileset,{baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite',delegate:d},runningMode:'VIDEO',minDetectionConfidence:0.4});
   try{detector=await mk(dg);}catch(e){detector=await mk('CPU');} return detector; }
-async function getLandmarker(){ if(landmarker)return landmarker; const {mod,fileset}=await loadVision();
-  const dg=/Android/i.test(navigator.userAgent||'')?'CPU':'GPU';
-  const mk=d=>mod.FaceLandmarker.createFromOptions(fileset,{baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task',delegate:d},runningMode:'IMAGE',numFaces:2,minFaceDetectionConfidence:0.3,minFacePresenceConfidence:0.3});
-  try{landmarker=await mk(dg);}catch(e){landmarker=await mk('CPU');} return landmarker; }
-
-/* ===== image helpers ===== */
-function brightnessOf(d){let s=0;for(let i=0;i<d.length;i+=4)s+=0.299*d[i]+0.587*d[i+1]+0.114*d[i+2];return s/(d.length/4);}
-function toGray(d,w,h){const g=new Float32Array(w*h);for(let i=0,j=0;i<d.length;i+=4,j++)g[j]=0.299*d[i]+0.587*d[i+1]+0.114*d[i+2];return g;}
-function laplacianVar(g,w,h){let s=0,s2=0,n=0;for(let y=1;y<h-1;y++)for(let x=1;x<w-1;x++){const i=y*w+x;const l=4*g[i]-g[i-1]-g[i+1]-g[i-w]-g[i+w];s+=l;s2+=l*l;n++;}const m=s/n;return s2/n-m*m;}
-function isSkin(r,g,b){const mx=Math.max(r,g,b),mn=Math.min(r,g,b);return r>60&&g>40&&b>20&&r>=g&&r>=b&&(r-g)>=8&&(mx-mn)>=12;}
-function wbFactors(d){let r=0,g=0,b=0,n=0;for(let i=0;i<d.length;i+=4){r+=d[i];g+=d[i+1];b+=d[i+2];n++;}r/=n||1;g/=n||1;b/=n||1;const gr=(r+g+b)/3;return[gr/(r||1),gr/(g||1),gr/(b||1)];}
-function analyzeROI(ctx,fx,fy,fw,fh,roi,wb){const cw=ctx.canvas.width,ch=ctx.canvas.height;
-  const x=clamp(Math.floor(fx+roi[0]*fw),0,cw-2),y=clamp(Math.floor(fy+roi[1]*fh),0,ch-2);
-  const w=Math.max(2,Math.min(Math.floor(roi[2]*fw),cw-x)),h=Math.max(2,Math.min(Math.floor(roi[3]*fh),ch-y));
-  const d=ctx.getImageData(x,y,w,h).data; let skin=0,clip=0,sumV=0; const rg=[],vs=[],ss=[];
-  for(let i=0;i<d.length;i+=4){const r=Math.min(255,d[i]*wb[0]),g=Math.min(255,d[i+1]*wb[1]),b=Math.min(255,d[i+2]*wb[2]);
-    if(!isSkin(r,g,b))continue;skin++;const mx=Math.max(r,g,b),mn=Math.min(r,g,b);const V=mx/255,S=mx===0?0:(mx-mn)/mx;
-    vs.push(V);ss.push(S);sumV+=V; if(V>0.97)clip++; rg.push(r/(g+1));}
-  if(!skin)return{shine:0,redness:0,clip:0,skin:0};
-  // 광택 = '그 사진의 평균 피부 밝기'보다 확 밝은 저채도 픽셀 (실내광에서도 잡히게 상대 기준)
-  const meanV=sumV/skin,vthr=Math.min(0.95,Math.max(0.72,meanV+0.18));
-  let shine=0;for(let k=0;k<vs.length;k++)if(vs[k]>vthr&&ss[k]<0.24)shine++;
-  rg.sort((a,b)=>a-b);const med=rg[(rg.length/2)|0]||1;let red=0;for(const v of rg)if(v>med*1.18)red++;
-  return{shine:shine/skin,redness:red/skin,clip:clip/skin,skin};}
-
-/* ===== v2 부위 촬영 검증 파라미터 (★팀 캘리브레이션 — 여기 숫자만 조정) ===== */
-const VF={
-  brDark:44, brDim:50, brHot:232, clipLive:0.16, clipHot:0.18, unevenLR:48, // 조명(완화 — 인식 덜 민감하게)
-  skinFar:0.12,        // 근접 강요 완화(2026-07) — 보통 거리에서도 통과, 벽·빈화면만 거름
-  faceSkinMin:0.06,    // 얼굴피부(색도)비율(완화 — 벽만 걸러낼 정도)
-  lapBlur:18,          // 초점(완화 — 웬만하면 통과)
-  motionMax:20,        // 흔들림(완화)
-  symBlock:0.06, symCoach:0.30, // 좌우대칭(거의 차단 안 함 — 코 인식 위해)
-  readyFrames:2        // 더 빨리 촬영 허용
-};
-/* 얼굴 피부 색도 판정 — 정규화 rg-chromaticity. 피부톤 넓게 허용, 회색·무채색·엉뚱한 색 거름 */
-function isFaceSkin(r,g,b){const s=r+g+b;if(s<95)return false;const nr=r/s,ng=g/s,nb=b/s;
-  return nr>0.345&&nr<0.475&&ng>0.275&&ng<0.350&&nr>=ng&&(nr-nb)>0.015;}
-/* 좌우 구조 대칭도 0~1 (그래디언트 기반 → 조명 치우침에 강함). T존·코는 얼굴 중심선이라 대칭이어야 함 */
-function structSymmetry(g,w,h){let sMin=0,sMax=0;const hw=w>>1;
-  for(let y=1;y<h-1;y++)for(let x=1;x<hw;x++){const i=y*w+x,mi=y*w+(w-1-x);
-    const m=Math.abs(g[i+1]-g[i-1])+Math.abs(g[i+w]-g[i-w]);
-    const mm=Math.abs(g[mi+1]-g[mi-1])+Math.abs(g[mi+w]-g[mi-w]);
-    sMin+=Math.min(m,mm);sMax+=Math.max(m,mm);}
-  return sMax?sMin/sMax:1;}
-
-/* ⚠️ 도달 불가(레거시 face 모드) — 현재 진입점은 전부 부위 촬영(tzone)으로 감. 유분·측정 수정은 여기가 아니라 analyzeRegionShot·applyRegions에서 */
-async function analyzePhoto(c){
-  let lm; try{lm=await getLandmarker();}catch(e){return{ok:false,reason:'model'};}
-  const res=lm.detect(c); const faces=res.faceLandmarks||[];
-  if(faces.length===0)return{ok:false,reason:'noface'};         // 강아지·풍경·물체 등
-  if(faces.length>1)return{ok:false,reason:'multi'};
-  const pts=faces[0],W=c.width,H=c.height; let mnx=1,mny=1,mxx=0,mxy=0;
-  for(const p of pts){if(p.x<mnx)mnx=p.x;if(p.y<mny)mny=p.y;if(p.x>mxx)mxx=p.x;if(p.y>mxy)mxy=p.y;}
-  const fx=mnx*W,fy=mny*H,fw=(mxx-mnx)*W,fh=(mxy-mny)*H,areaFrac=(fw*fh)/(W*H);
-  const nose=pts[1],le=pts[33],re=pts[263];const yaw=Math.abs((nose.x-(le.x+re.x)/2)/(Math.abs(re.x-le.x)||0.01));const frontal=yaw<0.40;
-  const ctx=c.getContext('2d',{willReadFrequently:true});
-  const cx=clamp(Math.floor(fx),0,W-1),cy=clamp(Math.floor(fy),0,H-1),cw=clamp(Math.floor(fw),2,W-cx),ch=clamp(Math.floor(fh),2,H-cy);
-  const fd=ctx.getImageData(cx,cy,cw,ch);const bright=brightnessOf(fd.data);const sharp=laplacianVar(toGray(fd.data,cw,ch),cw,ch);const wb=wbFactors(fd.data);
-  const tz=analyzeROI(ctx,fx,fy,fw,fh,[0.34,0.06,0.32,0.55],wb),lc=analyzeROI(ctx,fx,fy,fw,fh,[0.08,0.45,0.24,0.26],wb),rc=analyzeROI(ctx,fx,fy,fw,fh,[0.68,0.45,0.24,0.26],wb);
-  const cheekShine=(lc.shine+rc.shine)/2,shineDiff=Math.max(0,tz.shine-cheekShine*0.6),redness=Math.max(lc.redness,rc.redness),glare=Math.max(tz.clip,(lc.clip+rc.clip)/2);
-  // 얼굴이 잡혔으면 통과. 품질이 낮으면 막지 않고 q(가중치)만 낮춰 설문 위주로 본다.
-  let reason=null;
-  const light_ok=clamp((bright-45)/35,0,1)*clamp((215-bright)/35,0,1)*clamp((0.22-glare)/0.22,0.15,1),sharp_ok=clamp((sharp-60)/120,0,1),size_ok=clamp((areaFrac-0.10)/0.10,0,1)*clamp((0.75-areaFrac)/0.15,0,1);
-  const q=(frontal?1:0)*light_ok*sharp_ok*size_ok;
-  const oily=clamp(shineDiff/0.13,0,1),dry=clamp((0.05-tz.shine)/0.05,0,1),acne=clamp((redness-0.05)/0.11,0,1);
-  return{ok:reason===null,reason,q,Sp:normalize([oily+0.05,dry,acne]),shine:tz.shine,shineDiff,redness,glare,frontal,pts,fx,fy,fw,fh,srcW:W,srcH:H};
-}
 
 /* ===== scan + overlay drawing ===== */
 function roundRect(x,a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath();}
-function tag(x,cx,cy,text,color){x.font='700 12px '+getComputedStyle(document.body).fontFamily;const w=x.measureText(text).width+18;x.fillStyle='rgba(8,9,11,.82)';x.strokeStyle=color;x.lineWidth=1;roundRect(x,cx-w/2,cy-11,w,22,11);x.fill();x.stroke();x.fillStyle='#fff';x.textAlign='center';x.textBaseline='middle';x.fillText(text,cx,cy);}
-function showScan(src){
-  capCanvas=src; show('#s-scan'); $('#stepLabel').textContent='분석';
-  $('#scanEyebrow').textContent='분석 중'; $('#scanTitle').textContent='얼굴을 읽고 있어요';
-  $('#sigChips').innerHTML=''; $('#toSurvey').disabled=true; $('#scanStat').style.display='';
-  const f=faceResult, cv=$('#faceCanvas'); const dispW=Math.min(440,$('#scanwrap').clientWidth||360);
-  const sc=dispW/src.width; cv.width=dispW; cv.height=Math.round(src.height*sc);
-  const x=cv.getContext('2d'); const base=()=>{x.clearRect(0,0,cv.width,cv.height);x.drawImage(src,0,0,cv.width,cv.height);};
-  const fy0=f.fy*sc, fy1=(f.fy+f.fh)*sc; let t0=null;
-  function scan(ts){ if(!t0)t0=ts; const p=Math.min(1,(ts-t0)/1300); base();
-    const y=fy0+(fy1-fy0)*p;
-    x.save();x.fillStyle='rgba(11,12,14,.30)';x.fillRect(0,y,cv.width,cv.height-y);
-    const g=x.createLinearGradient(0,y-20,0,y);g.addColorStop(0,'rgba(91,141,239,0)');g.addColorStop(1,'rgba(91,141,239,.45)');x.fillStyle=g;x.fillRect(0,y-20,cv.width,20);
-    x.strokeStyle='rgba(130,175,255,.95)';x.lineWidth=2;x.beginPath();x.moveTo(0,y);x.lineTo(cv.width,y);x.stroke();x.restore();
-    if(p<1)requestAnimationFrame(scan); else setTimeout(()=>drawOverlay(x,base,sc),250);
-  }
-  requestAnimationFrame(scan);
-}
-function drawOverlay(x,base,sc){
-  base(); const f=faceResult; const fx=f.fx*sc,fy=f.fy*sc,fw=f.fw*sc,fh=f.fh*sc;
-  // subtle landmark dots
-  if(f.pts){x.fillStyle='rgba(130,175,255,.30)';for(let i=0;i<f.pts.length;i+=8){const p=f.pts[i];x.beginPath();x.arc(p.x*x.canvas.width,p.y*x.canvas.height,1,0,7);x.fill();}}
-  // T-zone box
-  const tx=fx+fw*0.30,ty=fy+fh*0.03,tw=fw*0.40,th=fh*0.56;
-  x.setLineDash([6,5]);x.strokeStyle='rgba(91,141,239,.95)';x.lineWidth=2;roundRect(x,tx,ty,tw,th,9);x.stroke();x.setLineDash([]);
-  // cheeks
-  const lcx=fx+fw*0.18,rcx=fx+fw*0.82,ccy=fy+fh*0.58,cr=fw*0.11;
-  x.strokeStyle='rgba(226,114,91,.85)';x.lineWidth=2;[lcx,rcx].forEach(cx=>{x.beginPath();x.arc(cx,ccy,cr,0,7);x.stroke();});
-  // tags from real signals
-  tag(x,tx+tw/2,ty-2,f.shineDiff>0.06?'T존 · 광택↑':(f.shine<0.05?'T존 · 광택 낮음':'T존'),'#5B8DEF');
-  if(f.redness>0.06) tag(x,rcx,ccy+cr+12,'붉은기 감지','#E2725B');
-  // finalize UI
-  $('#scanStat').style.display='none'; $('#scanEyebrow').textContent='분석 완료'; $('#scanTitle').textContent='얼굴에서 이런 신호가 보여요';
-  $('#toSurvey').textContent='다음 · 부위 클로즈업 (T존 → 볼 → 코) →';
-  const chips=[];
-  if(f.shineDiff>0.06)chips.push(['#5B8DEF','T존 광택 ↑ — 유분 신호']); else if(f.shine<0.05)chips.push(['#8A93A0','광택 적음 — 유분 낮음']);
-  if(f.redness>0.06)chips.push(['#E2725B','볼 붉은기 — 여드름 신호']);
-  if(chips.length===0)chips.push(['#46c98b','전반적으로 균형 잡힌 피부']);
-  $('#sigChips').innerHTML=chips.map(c=>`<span class="sigchip"><span class="d" style="background:${c[0]}"></span>${c[1]}</span>`).join('');
-  $('#toSurvey').disabled=false;
-}
-
 /* ===== adaptive survey ===== */
-const CORE=[
- {sec:'유분·수분',q:'세수하고 30분 뒤, 아무것도 안 바른 얼굴은?',o:['이마·코가 번들거린다|o3','T존만 번들, 볼은 당긴다|o2d1','전체적으로 당기고 건조하다|d3','잘 모르겠다|']},
- {sec:'유분·수분',q:'점심쯤 이마·코 상태는?',o:['번들거려 닦아낸다|o2','약간 번들거린다|o1','보송하다|','오히려 당긴다|d2']},
- {sec:'유분·수분',q:'모공이 눈에 띄는 편인가요?',o:['넓고 많이 보인다|o2','보통이다|','거의 안 보인다|d1']},
- {sec:'유분·수분',q:'피부가 자주 당기거나 각질이 일어나나요?',o:['자주 그렇다|d3','가끔 그렇다|d1','거의 없다|']},
- {sec:'유분·수분',q:'보습제를 바른 뒤 느낌은?',o:['금세 번들거린다|o2','적당히 촉촉하다|','발라도 당긴다|d2']},
- {sec:'트러블',q:'여드름·뾰루지 같은 트러블이 얼마나 있나요?',o:['자주, 여러 개 난다|a5','가끔 한두 개|a2','거의 없다|']}, /* 직접 질문 배점 강화 — 유분 문항 5개에 파묻혀 '여드름 있는 지성'이 늘 B로 가던 문제 */
-];
-const FOCUS={
- oily:[{sec:'유분',q:'시간이 지나면 화장·선크림이 잘 무너지나요?',o:['자주 무너진다|o2','가끔|o1','잘 안 무너진다|']},{sec:'유분',q:'오후나 여름에 유분이 특히 심해지나요?',o:['매우 심하다|o2','약간|o1','비슷하다|']}],
- dry:[{sec:'건성',q:'각질이 일어나거나 가루처럼 보일 때가 있나요?',o:['자주 있다|d2','가끔|d1','거의 없다|']},{sec:'건성',q:'실내·겨울 등 건조한 곳에서 더 당기나요?',o:['많이 당긴다|d2','조금|d1','별 차이 없다|']}],
- acne:[{sec:'트러블',q:'면도 후 붉어지거나 따가운가요?',o:['자주 그렇다|a2','가끔|a1','괜찮다|']},{sec:'트러블',q:'같은 부위에 트러블이 반복되나요?',o:['자주 반복된다|a2','가끔|a1','거의 없다|']}],
- def:[{sec:'트러블',q:'얼굴에 붉은기나 자극을 자주 느끼나요?',o:['자주|a2','가끔|a1','거의 없다|']},{sec:'마무리',q:'가장 신경 쓰이는 점은?',o:['번들거림·모공|o2','당김·각질|d2','트러블·붉은기|a2','딱히 없다|']}],
-};
-function parseOpt(s){const[t,code]=s.split('|');const m={o:0,d:0,a:0};(code||'').replace(/([oda])(\d)/g,(_,k,n)=>{m[k]=+n;});return{t,...m};}
-function dominantHint(f){if(!f||!f.ok||f.q<0.4)return null;return['oily','dry','acne'][argmax(f.Sp)];}
 function buildSurvey(){
-  const hint=dominantHint(faceResult); let focus=FOCUS[hint]||FOCUS.def;
-  if(hint==='oily'||hint==='dry')focus=[...focus,FOCUS.acne[1]]; /* 사진이 유분/건성으로 읽혀도 트러블을 표현할 문항 통로 확보 */
-  Q=[...CORE,...focus].map(x=>({sec:x.sec,q:x.q,opts:x.o.map(parseOpt)}));
+  const hint=ENGINE.dominantHint(faceResult);
+  Q=ENGINE.buildSurveyQuestions(faceResult);
   ans=new Array(Q.length).fill(-1); qi=0; $('#qTot').textContent=Q.length;
   primeText=(faceResult&&faceResult.ok&&hint)?{oily:'셀카에서 T존 광택이 보였어요. 유분 쪽을 확인할게요.',dry:'셀카상 광택이 적은 편이었어요. 수분 쪽을 확인할게요.',acne:'셀카에서 볼 붉은기가 보였어요. 트러블을 확인할게요.'}[hint]:'';
 }
@@ -431,56 +300,23 @@ function renderQ(){
   $('#qOpts').querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ans[qi]=+b.dataset.j;renderQ();setTimeout(()=>{if(qi<Q.length-1){qi++;renderQ();}},170);});
   $('#qPrev').style.visibility=qi===0?'hidden':'visible'; $('#qNext').disabled=ans[qi]===-1; $('#qNext').textContent=qi===Q.length-1?'결과 보기':'다음';
 }
-function surveyVector(){let o=0,d=0,a=0;Q.forEach((q,i)=>{const opt=q.opts[ans[i]]||{};o+=opt.o||0;d+=opt.d||0;a+=opt.a||0;});o+=1.5;d+=1.4;a+=1.0;return normalize([o,d,a]);} /* 세 축 공통 바닥값(동점 방지용 미세 차등) — 예전 o+=2는 유분만 가산해 지성 쏠림 */
+const surveyVector=()=>ENGINE.scoreSurvey(Q,ans);
 
-/* ===== fusion + result ===== */
-/* 판정 상수 — 값 바꿀 땐 근거를 주석으로 남길 것 */
-const CAL={
-  troubleMin:0.28, // 트러블 합성점수가 이 값 이상이면 타입 C(트러블) 유지 — 초기 0.34에서 하향('여드름 있는 지성' 응답이 경계에서 B로 쏠려서). A/B/C 목표 배분에 따라 대표가 조정
-  shineFull:0.11,  // 유분: 광택 픽셀 비율이 이 값이면 지수 최대 — 근거 없음, 손으로 맞춘 값(실기기 재보정 예정)
-  dryZero:0.09,    // 건성: 광택이 이 값 이상이면 건성 신호 0 — shineFull과 대칭에 가깝게(근거 동일)
-  redOffset:0.02,  // 붉은기 하한(이 이하는 정상 혈색으로 봄) — 근거 없음, 손으로 맞춘 값
-  redFull:0.13,    // 붉은기: (redness-redOffset)/redFull 로 정규화 — 근거 없음, 손으로 맞춘 값
-  poreLo:70,       // (구) 모공 라플라시안 하한 — poreDen 없을 때 폴백용으로만 유지
-  poreHi:620,      // (구) 모공 정규화 분모 — 폴백용
-  poreDenLo:0.010, // 모공 국소최소점 밀도 하한 — 근거 없음, 손으로 맞춘 값(9회 측정으로 재보정 예정)
-  poreDenSpan:0.045,// 모공 밀도 정규화 폭 — 근거 없음, 손으로 맞춘 값
-  relOilW:0.55,    // 유분 판정에서 '부위 간 상대신호(T존-볼)' 가중 — 같은 사진 안 비교라 조명이 소거됨
-};
-function fuse(Sv,photo){
-  const usedPhoto=photo&&photo.ok&&photo.q>=0.5;const w_p=usedPhoto?(photo.regions?0.45:0.30)*clamp(photo.q,0,1):0;const w_v=1-w_p;const Sp=usedPhoto?photo.Sp:[0,0,0];
-  const F=[0,1,2].map(i=>w_v*Sv[i]+w_p*Sp[i]);let primary=argmax(F);const flags=[];
-  /* 트러블 우선 규칙 — C 처방은 '유분과 자극을 함께' 커버하므로, 트러블 신호가 임계 이상이면
-     유분이 1위여도 C로 보낸다. (여드름 피부는 번들거림도 같이 답해 유분이 산술적으로 늘 이기던 문제)
-     예전 코드는 반대로 트러블 1위를 무조건 지성/건성으로 되돌려 타입 C가 절대 나올 수 없었음 */
-  if(F[2]>=CAL.troubleMin)primary=2;
-  else if(F[2]>0.24||(usedPhoto&&photo.Sp[2]>0.45))flags.push('여드름 주의');
-  if(usedPhoto&&photo.shine!=null&&photo.shine<0.05&&primary===0&&Sv[1]>0.25)flags.push('부분 건성');
-  const sorted=[...F].sort((a,b)=>b-a);const margin=sorted[0]-sorted[1];const agree=!usedPhoto?0.6:(argmax(Sv)===argmax(photo.Sp)?1:0.4);
-  const conf=(usedPhoto?clamp(photo.q,0,1):0.55)*0.4+clamp(margin/0.3,0,1)*0.35+agree*0.25;
-  return{F,primary,flags,band:conf>0.7?'높은 확신':conf>0.45?'보통 확신':'낮은 확신',usedPhoto};
-}
-function reasonText(r,photo,Sv){let s='';
-  if(r.usedPhoto){s+=photo.regions?'T존·볼·코 부위 사진과 설문을 함께 분석했어요. ':'셀카와 설문을 함께 분석했어요. ';
-    if(photo.shineDiff>0.06)s+='<b>T존 광택이 높아</b> 유분이 많은 편이고, ';else if(photo.shine<0.05)s+='광택이 적어 유분은 낮은 편이고, ';
-    if(photo.redness>0.06)s+='볼에 약한 붉은기가 보여 <b>진정 케어</b>도 함께 고려했어요. ';
-    if(photo.regions&&photo.idx){const i=photo.idx;s+=`부위 지수 — T존 유분 <b>${i.tzOil}</b>${i.pore!=null?` · 코 모공 <b>${i.pore}</b>`:''}${i.red!=null?` · 볼 붉은기 <b>${i.red}</b>`:''}. `;}
-    s+='이 신호에 가장 맞는 처방을 매칭했습니다.';}
-  else s+='설문 답변을 분석해, 당신에게 <b>가장 맞는 처방</b>을 매칭했어요.';return s;}
+/* ===== fusion + result — 판정은 엔진(fuse), 여기선 표시만 ===== */
 function renderResult(){
-  const Sv=surveyVector();const r=fuse(Sv,faceResult);show('#s-result');$('#stepLabel').textContent='결과';
+  const Sv=surveyVector();const r=ENGINE.fuse(Sv,faceResult);show('#s-result');$('#stepLabel').textContent='결과';
   const cb=$('#confBadge');cb.textContent=r.band;cb.style.color=r.band[0]==='높'?'#bff0d6':r.band[0]==='보'?'#e8d3a6':'#f0c9bf';cb.style.background=r.band[0]==='높'?'rgba(70,201,139,.15)':r.band[0]==='보'?'rgba(226,180,91,.14)':'rgba(226,114,91,.14)';
   $('#flagWrap').innerHTML=r.flags.map(f=>`<span class="flag">${f}</span>`).join(' ');
   const pct=r.F.map(x=>Math.round(x*100));['#t0','#t1','#t2'].forEach((id,i)=>setTimeout(()=>{$(id).style.width=pct[i]+'%';},60));
   $('#t0v').textContent=pct[0]+'%';$('#t1v').textContent=pct[1]+'%';$('#t2v').textContent=pct[2]+'%';
-  $('#reason').innerHTML=reasonText(r,faceResult,Sv);
+  $('#reason').innerHTML=ENGINE.reasonText(r,faceResult);
   /* ?bfmdebug 일 때만: 판정 내부값을 결과 화면에 표시(폰 테스트 원인 확인용) — 라이브 URL엔 안 뜸 */
   if(location.search.includes('bfmdebug')){const dbg=document.createElement('p');dbg.style.cssText='margin:10px 0 0;font-size:11px;color:#8a8f98;word-break:break-all';
     dbg.textContent='[debug] F(유분/건성/트러블)='+r.F.map(x=>x.toFixed(2)).join(' / ')+' · 설문Sv='+Sv.map(x=>x.toFixed(2)).join('/')+(r.usedPhoto?' · 사진Sp='+faceResult.Sp.map(x=>x.toFixed(2)).join('/')+' q='+faceResult.q.toFixed(2):' · 사진 미사용')+' · troubleMin='+CAL.troubleMin;
     $('#reason').appendChild(dbg);}
   $('#usedPhoto').querySelector('span:last-child').textContent=r.usedPhoto?((faceResult&&faceResult.regions?'부위(T존·볼·코) 분석':'얼굴 분석')+' + 설문 반영 · 사진은 기기에서만 처리(서버 전송 없음)'):'설문만 반영 · 사진 없이 분석';
   populateIdx(); /* 한 페이지 결과 리포트: 부위 썸네일·칩·지수 통합 */
-  const tkey={지성:'oily',건성:'dry',여드름:'trouble'}[TYPES[r.primary]];
+  const tkey=r.typeKey;
   /* 처방 번호: 시간 진행 + 기기별 테스트 횟수로 계속 증가 */
   let fnoInc=1;try{fnoInc=(parseInt(localStorage.getItem('bfm_fno')||'0',10)||0)+1;localStorage.setItem('bfm_fno',String(fnoInc));}catch(e){}
   const fnoNew=1500+Math.floor((Date.now()-Date.UTC(2026,6,1))/3900000)+fnoInc;
@@ -490,18 +326,6 @@ function renderResult(){
 }
 
 /* ===== retake ===== */
-const RETAKE={
-  noface:['사람 얼굴이 안 보여요','정면 셀카로 다시 찍어주세요. (얼굴이 또렷하게 나와야 분석할 수 있어요)'],
-  multi:['얼굴이 여러 개 보여요','혼자 나오게 다시 찍어주세요.'],
-  pose:['정면이 아니에요','카메라를 정면으로 보고 다시 찍어주세요.'],
-  small:['얼굴이 너무 작아요','조금 더 가까이서 다시 찍어주세요.'],
-  dark:['너무 어두워요','밝은 곳에서 다시 찍어주세요. (직사광·플래시는 피해요)'],
-  bright:['빛 반사가 강해요','직사광·플래시를 피해 다시 찍어주세요.'],
-  blur:['흔들렸어요','또렷하게 다시 찍어주세요.'],
-  model:['분석을 불러오지 못했어요','네트워크를 확인하고 다시 시도하거나, 설문만으로 진행하세요.'],
-};
-function goRetake(reason){retakeCtx=null;const m=RETAKE[reason]||RETAKE.noface;$('#retakeTitle').textContent=m[0];$('#retakeMsg').textContent=m[1];$('#retakeBtn').textContent='다시 찍기';$('#retakeSkip').textContent='그냥 설문으로 진행 →';$('#stepLabel').textContent='다시 찍기';show('#s-retake');}
-let retakeCtx=null;
 function goRegionRetake(r,forceWhy){const d=regionData[r]||{};const lb=RSTEP[r].label;
   let why=forceWhy||'사진이 흔들렸어요 — 잠깐 멈춘 뒤 찍어요';
   if(!forceWhy){
@@ -524,79 +348,91 @@ function goSurvey(){buildSurvey();renderQ();$('#stepLabel').textContent='설문'
 let stream=null,rafId=null,detLive=null,detFailed=false;
 let prevTiny=null,faceSeen=false,faceSeenAt=0,dframe=0;
 const tinyC=document.createElement('canvas');tinyC.width=32;tinyC.height=40;const tinyX=tinyC.getContext('2d',{willReadFrequently:true});
-async function startCamera(mode='face'){stepMode=mode;show('#s-cam');
-  $('#stepLabel').textContent=mode==='face'?'촬영':RSTEP[mode].label;
+async function startCamera(mode='tzone'){stepMode=mode;show('#s-cam');
+  $('#stepLabel').textContent=RSTEP[mode].label;
   $('#guideBox').innerHTML=GUIDES[mode];
-  $('#regionSkip').style.display=mode==='face'?'none':'';
-  $('#camCancel').textContent=mode==='face'?'취소':'부위 촬영 그만하기';
+  $('#regionSkip').style.display='';
+  $('#camCancel').textContent='부위 촬영 그만하기';
   $('#coachText').textContent='카메라 권한을 허용해주세요…';$('#coachPill').classList.remove('ready');$('#shoot').disabled=true;
   try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1080},height:{ideal:1440}},audio:false});
     const v=$('#video');v.srcObject=stream;try{await v.play();}catch(e){}
     // 지원되는 카메라면 연속 자동초점 켜기 (고정초점 웹캠·아이폰은 무시됨)
     try{const trk=stream.getVideoTracks()[0];const cap=trk.getCapabilities?trk.getCapabilities():{};
       if(cap.focusMode&&cap.focusMode.includes('continuous'))await trk.applyConstraints({advanced:[{focusMode:'continuous'}]});}catch(e){}
-    // 부위 모드 = 디지털 줌: 멀리서 찍어도(초점 범위 안) 클로즈업 효과
-    v.style.transform=mode==='face'?'scaleX(-1)':'scaleX(-1) scale('+RZOOM+')';
-    if(mode==='face'){loopGuide();if(!detLive)getDetector().then(d=>{detLive=d;}).catch(()=>{detFailed=true;});}
-    else{if(!detLive)getDetector().then(d=>{detLive=d;}).catch(()=>{detFailed=true;});loopRegion();}
+    v.style.transform='scaleX(-1) scale('+RZOOM+')';
+    if(!detLive)getDetector().then(d=>{detLive=d;}).catch(()=>{detFailed=true;});
+    loopRegion();
   }catch(e){stopCamera();show('#s-intro');$('#introErr').classList.add('on');$('#introErr').textContent='카메라를 열 수 없어요. 권한을 허용했는지 확인하거나, 위의 ‘셀카로 바로 찍기’으로 진행하세요.';}}
-function loopRegion(){const v=$('#video'),pill=$('#coachPill'),txt=$('#coachText'),c=$('#work'),cx=c.getContext('2d',{willReadFrequently:true});let okRun=0,facePos=null;prevTiny=null;faceSeen=false;
-  function step(){if(stepMode==='face')return;if(!v.videoWidth){txt.textContent='카메라 켜는 중…';rafId=requestAnimationFrame(step);return;}
+
+/* ===== 능동형 가이드 — BlazeFace 키포인트(눈·코·귀)로 가이드 SVG를 사람 얼굴에 맞춰 이동·스케일 =====
+   사람마다 눈코입 위치가 달라 고정 가이드가 안 맞던 문제. 얼굴이 잡히면 가이드가 따라가고,
+   놓치면 부드럽게 기본 위치로 복귀. 판정 게이트와는 무관(순수 코칭 UI). */
+const GUIDE_EYES={tzone:[[88,184],[212,184]],nose:[[94,88],[206,88]]}; // viewBox(300×380) 좌표의 '설계상 눈 위치'
+let gTf={tx:0,ty:0,s:1},gSeenAt=0;
+function updateGuideTransform(v,det){
+  const svg=$('#guideBox svg');if(!svg)return;
+  const cam=$('#s-cam .cam');const cw=cam.clientWidth,ch=cam.clientHeight;if(!cw||!ch)return;
+  const vw=v.videoWidth,vh=v.videoHeight;if(!vw||!vh)return;
+  let target=null;
+  const kp=det&&det.keypoints;
+  if(kp&&kp.length>=6){
+    const sc=Math.max(cw/vw,ch/vh),ox=(cw-vw*sc)/2,oy=(ch-vh*sc)/2;
+    const P=k=>[cw-(ox+k.x*vw*sc),oy+k.y*vh*sc]; // 미러(scaleX(-1)) 반영한 화면 좌표
+    const eyeR=P(kp[0]),eyeL=P(kp[1]),nose=P(kp[2]),earR=P(kp[4]),earL=P(kp[5]);
+    const eyeDist=Math.hypot(eyeL[0]-eyeR[0],eyeL[1]-eyeR[1]);
+    const gw=Math.min(0.74*cw,300),gh=gw*380/300,gx0=(cw-gw)/2,gy0=(ch-gh)/2,cx0=cw/2,cy0=ch/2;
+    const V=a=>[gx0+a[0]/300*gw,gy0+a[1]/380*gh]; // viewBox → 화면
+    if(eyeDist>cw*0.04){
+      if(GUIDE_EYES[stepMode]){
+        const [d1,d2]=GUIDE_EYES[stepMode].map(V);
+        const dDist=Math.hypot(d2[0]-d1[0],d2[1]-d1[1])||1;
+        const s=clamp(eyeDist/dDist,0.55,1.7);
+        const midDet=[(eyeL[0]+eyeR[0])/2,(eyeL[1]+eyeR[1])/2],midDes=[(d1[0]+d2[0])/2,(d1[1]+d2[1])/2];
+        target={s,tx:midDet[0]-(cx0+(midDes[0]-cx0)*s),ty:midDet[1]-(cy0+(midDes[1]-cy0)*s)};
+      }else{ // cheek: 원 중심(150,182)을 화면 중앙에 가까운 쪽 볼에
+        const chL=[earL[0]*0.45+nose[0]*0.55,(earL[1]*0.45+nose[1]*0.55)+eyeDist*0.12];
+        const chR=[earR[0]*0.45+nose[0]*0.55,(earR[1]*0.45+nose[1]*0.55)+eyeDist*0.12];
+        const pt=Math.abs(chL[0]-cx0)<Math.abs(chR[0]-cx0)?chL:chR;
+        const des=V([150,182]);const s=clamp(eyeDist*1.15/(84*2/300*gw),0.55,1.7);
+        target={s,tx:pt[0]-(cx0+(des[0]-cx0)*s),ty:pt[1]-(cy0+(des[1]-cy0)*s)};
+      }
+      target.tx=clamp(target.tx,-cw*0.4,cw*0.4);target.ty=clamp(target.ty,-ch*0.4,ch*0.4);
+      gSeenAt=performance.now();
+    }
+  }
+  const a=target?0.30:(performance.now()-gSeenAt>1200?0.06:0); // 잡히면 따라가고, 오래 놓치면 기본 위치로 복귀
+  const t=target||{tx:0,ty:0,s:1};
+  if(a){gTf.tx+=(t.tx-gTf.tx)*a;gTf.ty+=(t.ty-gTf.ty)*a;gTf.s+=(t.s-gTf.s)*a;
+    svg.style.transform=`translate(${gTf.tx.toFixed(1)}px,${gTf.ty.toFixed(1)}px) scale(${gTf.s.toFixed(3)})`;}
+}
+function loopRegion(){const v=$('#video'),pill=$('#coachPill'),txt=$('#coachText'),c=$('#work'),cx=c.getContext('2d',{willReadFrequently:true});let okRun=0,facePos=null,lastDet=null;prevTiny=null;faceSeen=false;gTf={tx:0,ty:0,s:1};
+  function step(){if(!stream)return;if(!v.videoWidth){txt.textContent='카메라 켜는 중…';rafId=requestAnimationFrame(step);return;}
     const zs=1/RZOOM,zw=v.videoWidth*zs,zh=v.videoHeight*zs,zx=(v.videoWidth-zw)/2,zy=(v.videoHeight-zh)/2;
     c.width=140;c.height=180;cx.drawImage(v,zx,zy,zw,zh,0,0,140,180);const d=cx.getImageData(20,26,100,128).data;
-    let brL=0,brR=0,nL=0,nR=0,clip=0,tot=0,skin=0,fskin=0;
-    for(let y=0;y<128;y++)for(let x=0;x<100;x++){const i=(y*100+x)*4;const R=d[i],G=d[i+1],B=d[i+2];const lum=0.299*R+0.587*G+0.114*B;tot++;if(lum>247)clip++;const mxp=Math.max(R,G,B),mnp=Math.min(R,G,B);if(isSkin(R,G,B)&&(mxp-mnp)/(mxp||1)>=0.13)skin++;/* 채도 하한 — 따뜻한 벽지·천장이 피부로 잡히던 오탐 차단 */if(isFaceSkin(R,G,B))fskin++;if(x<50){brL+=lum;nL++;}else{brR+=lum;nR++;}}
-    brL/=nL||1;brR/=nR||1;const br=(brL+brR)/2,clipR=clip/(tot||1),skinR=skin/(tot||1),fskinR=fskin/(tot||1);
-    const gray=toGray(d,100,128),lap=laplacianVar(gray,100,128);
-    const sym=(stepMode==='tzone'||stepMode==='nose')?structSymmetry(gray,100,128):1;
     // 모션: 32x40 축소본 프레임차
     let motion=0;tinyX.drawImage(v,zx,zy,zw,zh,0,0,32,40);const td=tinyX.getImageData(0,0,32,40).data;
     if(prevTiny){let s=0;for(let i=0;i<td.length;i+=4)s+=Math.abs(td[i]-prevTiny[i]);motion=s/(td.length/4);}prevTiny=td;
-    // 얼굴감지 기회주의적 활용 (5프레임마다) — 잡히면 실사람 확인, 안 잡히면(초근접) 휴리스틱 폴백
+    // 얼굴감지 기회주의적 활용 (5프레임마다) — 잡히면 실사람 확인 + 능동형 가이드 앵커, 안 잡히면(초근접) 휴리스틱 폴백
     if(detLive&&((dframe++%5)===0)){try{const r=detLive.detectForVideo(v,performance.now()).detections||[];
       if(r.length){faceSeen=true;faceSeenAt=performance.now();
-        const bb=r.slice().sort((a,b)=>b.boundingBox.width*b.boundingBox.height-a.boundingBox.width*a.boundingBox.height)[0].boundingBox;
+        const det=r.slice().sort((a,b)=>b.boundingBox.width*b.boundingBox.height-a.boundingBox.width*a.boundingBox.height)[0];lastDet=det;
+        const bb=det.boundingBox;
         facePos={cx:(bb.originX+bb.width/2)/(v.videoWidth||1),cy:(bb.originY+bb.height/2)/(v.videoHeight||1),frac:(bb.width*bb.height)/((v.videoWidth*v.videoHeight)||1)};}
-      else facePos=null;}catch(e){}}
+      else{facePos=null;lastDet=null;}}catch(e){}}
+    updateGuideTransform(v,lastDet);
     const faceActive=faceSeen&&(performance.now()-faceSeenAt<1600);
-    /* 얼굴 '존재'만으로 게이트를 풀던 버그 수정 — 위치·크기까지 봐야 통과 (구석에 얼굴, 화면엔 천장인 상태로 '좋아요'가 뜨던 문제) */
+    /* 얼굴 '존재'만으로 게이트를 풀던 버그 수정 — 위치·크기까지 봐야 통과 */
     const facePosBad=faceActive&&facePos&&(facePos.cx<0.22||facePos.cx>0.78||facePos.cy<0.15||facePos.cy>0.85);
     const faceFar=faceActive&&facePos&&facePos.frac<0.03;
     const faceGood=faceActive&&facePos&&!facePosBad&&!faceFar;
-    let reason=null;
-    if(br<VF.brDark)reason='너무 어두워요 — 밝은 곳으로';
-    else if(br<VF.brDim)reason='조금 어두워요 — 빛을 더 받게';
-    else if(clipR>VF.clipLive||br>VF.brHot)reason='빛이 너무 세요 — 창·조명 정면을 피해요';
-    else if(Math.abs(brL-brR)>VF.unevenLR)reason='빛이 한쪽에 치우쳤어요 — 정면에서 받게';
-    else if(facePosBad)reason='얼굴이 화면 구석에 있어요 — 점선 가이드 중앙에 오게';
-    else if(faceFar)reason='더 가까이 — 부위가 화면에 크게 오게';
-    else if(fskinR<VF.faceSkinMin&&skinR<0.30&&!faceGood)reason='피부가 화면에 꽉 차게 — 얼굴을 더 가까이';
-    else if(skinR<VF.skinFar)reason='더 가까이 — 피부만 화면에 차게';
-    else if(lap<VF.lapBlur)reason='초점이 안 맞아요 — 살짝 멀리';
-    else if(motion>VF.motionMax)reason='잠깐 멈춰요 — 흔들리고 있어요';
-    else if(sym<VF.symBlock&&!faceGood)reason=(stepMode==='nose'?'코를':'콧대를')+' 세로 가운데 점선에 맞춰요';
-    const softNudge=(!reason&&sym<VF.symCoach&&!faceGood)?((stepMode==='nose'?'코가':'콧대가')+' 살짝 치우쳤어요 — 가운데면 더 좋아요'):null;
-    if(reason){okRun=0;txt.textContent=reason;pill.classList.remove('ready');$('#shoot').disabled=true;}
-    else{okRun++;const rdy=okRun>=VF.readyFrames;txt.textContent=rdy?(softNudge||(faceGood?'좋아요 — 인식됨, 촬영하세요':'좋아요 — 촬영하세요')):'조금만 더 — 자세 유지';pill.classList.toggle('ready',rdy);$('#shoot').disabled=!rdy;}
+    const fr=ENGINE.assessRegionFrame(d,100,128,{region:stepMode,motion,face:{active:faceActive,posBad:facePosBad,far:faceFar,good:faceGood}});
+    if(fr.reason){okRun=0;txt.textContent=fr.reason;pill.classList.remove('ready');$('#shoot').disabled=true;}
+    else{okRun++;const rdy=okRun>=VF.readyFrames;txt.textContent=rdy?(fr.softNudge||(faceGood?'좋아요 — 인식됨, 촬영하세요':'좋아요 — 촬영하세요')):'조금만 더 — 자세 유지';pill.classList.toggle('ready',rdy);$('#shoot').disabled=!rdy;}
     rafId=requestAnimationFrame(step);}
   step();}
 function stopCamera(){if(rafId)cancelAnimationFrame(rafId);rafId=null;if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}}
-/* ⚠️ 도달 불가(레거시 face 모드) — 라이브 코칭은 loopRegion이 담당 */
-function loopGuide(){const v=$('#video'),pill=$('#coachPill'),txt=$('#coachText'),c=$('#work'),cx=c.getContext('2d',{willReadFrequently:true});const t0=performance.now();
-  function step(){if(stepMode!=='face')return;
-    if(!v.videoWidth){txt.textContent=performance.now()-t0>7000?'카메라가 응답하지 않아요 — 취소 후 ‘셀카로 바로 찍기’으로':'카메라 켜는 중…';rafId=requestAnimationFrame(step);return;}
-    let msg='',good=false;const det=detLive;
-    if(det){const r=det.detectForVideo(v,performance.now()).detections||[];
-      if(r.length===0)msg='얼굴이 보이지 않아요';else if(r.length>1)msg='얼굴이 하나만 보이게';
-      else{const bb=r[0].boundingBox,fw=bb.width/v.videoWidth,cxF=(bb.originX+bb.width/2)/v.videoWidth,cyF=(bb.originY+bb.height/2)/v.videoHeight;
-        c.width=120;c.height=160;cx.drawImage(v,0,0,120,160);const br=brightnessOf(cx.getImageData(0,0,120,160).data);
-        if(fw<0.18)msg='조금 더 가까이';else if(br<40)msg='더 밝은 곳에서';else{msg='좋아요 — 촬영하세요';good=true;}}
-    }else{msg='분석 도구 준비 중 — 지금 촬영해도 돼요';good=true;}
-    txt.textContent=msg;pill.classList.toggle('ready',good);$('#shoot').disabled=false;rafId=requestAnimationFrame(step);}
-  step();}
-function captureStill(){const v=$('#video'),c=$('#work'),W=Math.min(stepMode==='face'?720:1080,v.videoWidth||640),H=Math.round(W*((v.videoHeight/v.videoWidth)||1.33));
+function captureStill(){const v=$('#video'),c=$('#work'),W=Math.min(1080,v.videoWidth||640),H=Math.round(W*((v.videoHeight/v.videoWidth)||1.33));
   c.width=W;c.height=H;c.getContext('2d',{willReadFrequently:true}).drawImage(v,0,0,W,H);stopCamera();
-  if(stepMode==='face'){runFace(c);return;}
   // 디지털 줌 크롭: 미리보기에서 보이던 중앙부만 잘라 분석
   const zs=1/RZOOM,sw=(W*zs)|0,sh=(H*zs)|0,sx=((W-sw)/2)|0,sy=((H-sh)/2)|0;
   const cp=document.createElement('canvas');cp.width=sw;cp.height=sh;cp.getContext('2d').drawImage(c,sx,sy,sw,sh,0,0,sw,sh);
@@ -604,82 +440,12 @@ function captureStill(){const v=$('#video'),c=$('#work'),W=Math.min(stepMode==='
   const rd=regionData[stepMode];rd.faceSeen=faceSeen;
   if(rd.reason==='noskin'||rd.reason==='dark')goRegionRetake(stepMode);else nextAfterRegion();}
 
-/* ===== v2 부위 분석 (룰베이스 지수) ===== */
-function analyzeRegionShot(c,region){const ctx=c.getContext('2d',{willReadFrequently:true});
-  const w=c.width,h=c.height,rx=(w*0.16)|0,ry=(h*0.16)|0,rw=(w*0.68)|0,rh=(h*0.68)|0;
-  /* 게이트용(원본 해상도 유지 — lapBlur 등 기존 임계값과 호환) */
-  const d=ctx.getImageData(rx,ry,rw,rh);const dd=d.data;const bright=brightnessOf(dd);
-  const gray=toGray(dd,rw,rh),lap=laplacianVar(gray,rw,rh);
-  const sym=(region==='tzone'||region==='nose')?structSymmetry(gray,rw,rh):1;
-  /* ── 측정용: 분석 해상도 640 고정 — 카메라(1080)와 업로드(720)가 같은 척도를 갖게 ── */
-  const AW=640,AH=Math.max(2,Math.round(rh*AW/rw));
-  const ac=analyzeRegionShot._ac||(analyzeRegionShot._ac=document.createElement('canvas'));
-  ac.width=AW;ac.height=AH;const actx=ac.getContext('2d',{willReadFrequently:true});
-  actx.imageSmoothingQuality='high';actx.drawImage(c,rx,ry,rw,rh,0,0,AW,AH);
-  const ad=actx.getImageData(0,0,AW,AH).data;
-  /* 1차: 피부 마스크(색도 기반 isFaceSkin — 조명에 강함, isSkin 이중 기준 문제 제거) + 평균 휘도 */
-  let tot=0,fskin=0,skinLoose=0,sumLum=0;const mask=new Uint8Array(AW*AH);
-  for(let p=0;p<AW*AH;p++){const i=p*4;tot++;const R=ad[i],G=ad[i+1],B=ad[i+2];
-    if(isSkin(R,G,B))skinLoose++;
-    if(isFaceSkin(R,G,B)){fskin++;mask[p]=1;sumLum+=0.299*R+0.587*G+0.114*B;}}
-  const useLoose=fskin<500; /* 초근접 등으로 색도 마스크가 빈약하면 느슨한 마스크로 폴백 */
-  if(useLoose){sumLum=0;let n=0;for(let p=0;p<AW*AH;p++){const i=p*4;const R=ad[i],G=ad[i+1],B=ad[i+2];mask[p]=isSkin(R,G,B)?1:0;if(mask[p]){sumLum+=0.299*R+0.587*G+0.114*B;n++}}fskin=n;}
-  const meanSkinLum=fskin?sumLum/fskin:bright;
-  const gain=clamp(165/(meanSkinLum||1),0.75,1.35); /* 휘도 게인 — 회색세계 가정 대신 피부 평균 밝기 기준 */
-  /* 2차: 광택(적응형 분위수 문턱 — 절대 하한 0.72 제거: 어두운 피부톤·저노출 편향 원인이었음) */
-  const vs=[],rg=[];let sk=0;
-  for(let p=0;p<AW*AH;p++){if(!mask[p])continue;const i=p*4;sk++;
-    const R=Math.min(255,ad[i]*gain),G=Math.min(255,ad[i+1]*gain),B=Math.min(255,ad[i+2]*gain);
-    const mx=Math.max(R,G,B);vs.push(mx/255);rg.push(ad[i]/(ad[i+1]+1));}
-  let shine=0,clipR=0;
-  if(sk){const sv=vs.slice().sort((a,b)=>a-b);
-    const p60=sv[(sv.length*0.60)|0],p97=sv[Math.min(sv.length-1,(sv.length*0.97)|0)];
-    const vthr=Math.min(0.96,p60+0.55*(p97-p60)); /* 분위수 문턱 — 근거 없음, 손으로 맞춘 형태(9회 측정으로 재보정 예정) */
-    let s=0,cl=0;for(let k=0;k<vs.length;k++){if(vs[k]>vthr)s++;if(vs[k]>=0.985)cl++;}
-    shine=s/sk;clipR=cl/sk;}
-  let red=0;if(rg.length){rg.sort((a,b)=>a-b);const med=rg[(rg.length/2)|0]||1;for(const v of rg)if(v>med*1.18)red++;}
-  /* 모공: 라플라시안(=초점 선명도) 재사용 대신 국소최소점 밀도 — 5x5 이웃 평균보다 어두운 점의 비율 */
-  const ag=toGray(ad,AW,AH);let pits=0,pitN=0;
-  for(let py=2;py<AH-2;py+=2)for(let px=2;px<AW-2;px+=2){const p=py*AW+px;if(!mask[p])continue;pitN++;
-    let s5=0;for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)s5+=ag[p+dy*AW+dx];
-    if(s5/25-ag[p]>14)pits++;}
-  const poreDen=pitN?pits/pitN:0;
-  const skinRatio=skinLoose/(tot||1),faceSkinRatio=(useLoose?fskin:fskin)/(tot||1);
-  const light=clamp((bright-45)/30,0,1)*clamp((225-bright)/30,0,1);
-  const glareOk=clamp((0.15-clipR)/0.15,0.3,1); /* 클리핑 많으면 신뢰 하락 */
-  const q=(0.30*light+0.28*clamp((lap-25)/120,0,1)+0.24*clamp((skinRatio-0.20)/0.30,0,1)+0.18*clamp((faceSkinRatio-0.15)/0.30,0,1))*glareOk;
-  let reason=null; // 정지영상 하드 차단(재촬영) 사유
-  if(bright<VF.brDark)reason='dark';else if(bright>VF.brHot)reason='bright';
-  else if(faceSkinRatio<VF.faceSkinMin&&skinRatio<0.5)reason='noskin';
-  else if(skinRatio<VF.skinFar)reason='far';else if(lap<VF.lapBlur)reason='blur';
-  else if(sym<VF.symBlock&&(region==='tzone'||region==='nose'))reason='offcenter';
-  return{shine,redness:sk?red/sk:0,lap,bright,skinRatio,faceSkinRatio,sym,q,reason,poreDen,clipR};}
+/* ===== v2 부위 분석 — 측정은 엔진이 담당 ===== */
 function makeThumb(c){const t=document.createElement('canvas');t.width=160;t.height=Math.round(160*c.height/c.width);t.getContext('2d').drawImage(c,0,0,t.width,t.height);return t.toDataURL('image/jpeg',0.72);}
-function storeRegion(r,c){regionData[r]={...analyzeRegionShot(c,r),thumb:makeThumb(c),cv:c};}
+function storeRegion(r,c){regionData[r]={...ENGINE.analyzeRegionShot(c,r),thumb:makeThumb(c),cv:c};}
 function beginRegion(r){if(!inApp&&navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)startCamera(r);else{stepMode=r;$('#fileInput').click();}}
 function nextAfterRegion(){const nx=RSTEP[stepMode]&&RSTEP[stepMode].next;if(nx)beginRegion(nx);else{applyRegions();regionTheater();}}
-const P100=x=>Math.round(clamp(x,0,1)*100);
-/* 표시용 지수: √커브(저신호 증폭)+최소 10 — 웬만해선 0 안 나오게 */
-const PIDX=x=>x==null?null:Math.round(10+86*Math.sqrt(clamp(x,0,1)));
-function applyRegions(){const tz=regionData.tzone,n=regionData.nose,ch=regionData.cheek;if(!tz&&!n&&!ch)return;
-  const tzOilC=tz?clamp(tz.shine/CAL.shineFull,0,1):null,noseOil=n?clamp(n.shine/CAL.shineFull,0,1):null;
-  const pore=n?(n.poreDen!=null?clamp((n.poreDen-CAL.poreDenLo)/CAL.poreDenSpan,0,1):clamp((n.lap-CAL.poreLo)/CAL.poreHi,0,1)):null; /* 국소최소점 밀도 우선, 구버전 데이터만 lap 폴백 */
-  const cheekOil=ch?clamp(ch.shine/CAL.shineFull,0,1):null,cheekRed=ch?clamp((ch.redness-CAL.redOffset)/CAL.redFull,0,1):null;
-  let oilSig=tzOilC??noseOil??0.3;
-  /* 상대 측정: T존 vs 볼은 같은 조명을 받으므로 둘의 차이는 촬영 조건에 거의 불변 — 절대값보다 신뢰도 높음 */
-  if(tz&&ch){const rel=clamp((tz.shine-ch.shine)/0.05,0,1);oilSig=CAL.relOilW*rel+(1-CAL.relOilW)*oilSig;}
-  const oily=clamp(0.45*oilSig+0.30*(noseOil??oilSig)+0.10*(pore??oilSig)+0.15*oilSig,0,1); /* 모공 가중 0.25→0.10 (모공은 유분의 간접 신호일 뿐) */
-  const shineTz=tz?tz.shine:(n?n.shine:0);
-  const dryBase=clamp((CAL.dryZero-shineTz)/CAL.dryZero,0,1); /* 0.05 절벽 완화 — shine 0.05만 넘으면 건성 신호가 0이 되던 문제, oily 정규화와 대칭에 가깝게 */
-  const dry=clamp(0.55*dryBase+0.45*(cheekOil!=null?clamp((1-cheekOil)*dryBase*1.6,0,1):dryBase),0,1);
-  const acne=clamp(cheekRed??(n?clamp((n.redness-CAL.redOffset)/CAL.redFull,0,1):0),0,1); /* 볼 없을 때 코 폴백도 같은 상수 사용(예전엔 0.05/0.12로 세대가 달랐음) */
-  const parts=[tz,n,ch].filter(Boolean);const rq=parts.reduce((s,p)=>s+p.q,0)/(parts.length||1);
-  const anyFace=parts.some(p=>p.faceSeen); // 촬영 중 얼굴 감지된 부위 있으면 실사람 확인 → 신뢰↑
-  const q=clamp(rq*(0.55+0.45*parts.length/3)*(anyFace?1.08:1),0,1); // 찍은 부위 많을수록·얼굴 잡힐수록 신뢰↑
-  const shineDiff=(tz&&ch)?Math.max(0,tz.shine-ch.shine):(oily>0.5?0.08:0); // T존 vs 볼 = 복합성 판단 (*0.6 제거 — 두 부위가 같아도 차이가 있다고 말하던 문제)
-  faceResult={ok:true,regions:true,q,Sp:normalize([oily+0.12,dry+0.12,acne+0.12]),shine:shineTz,shineDiff, /* 세 축 동일 가산 — argmax 보존, [1,0,0] 포화·oily 단독 특혜 제거 */
-    redness:ch?ch.redness:(n?n.redness:0),
-    idx:{tzOil:PIDX(tzOilC),noseOil:PIDX(noseOil),pore:PIDX(pore),cheekOil:PIDX(cheekOil),red:PIDX(cheekRed)}};}
+function applyRegions(){const r=ENGINE.combineRegions(regionData);if(r)faceResult=r;}
 function idxBar(lb,v){return v==null?'':`<div class="bar"><div class="bt"><span>${lb}</span><b>${v}</b></div><div class="tr"><div class="fl" style="width:${v}%"></div></div></div>`;}
 /* ===== 부위 분석 씨어터 — 찍은 사진 위 스캔·측정 연출(실측값 기반) ===== */
 function regionTheater(){
@@ -717,7 +483,7 @@ function regionTheater(){
     /* 결과 리포트와 같은 상수·같은 커브(PIDX) — 연출과 결과가 다른 숫자를 말하던 문제 해결 */
     const shineP=PIDX(clamp((rd.shine||0)/CAL.shineFull,0,1));
     const redP=PIDX(clamp(((rd.redness||0)-CAL.redOffset)/CAL.redFull,0,1));
-    const poreP=PIDX(clamp(((rd.lap||0)-CAL.poreLo)/CAL.poreHi,0,1));
+    const poreP=PIDX(clamp(((rd.poreDen??0)-CAL.poreDenLo)/CAL.poreDenSpan,0,1)); /* 결과 리포트(applyRegions)와 같은 poreDen 상수 — 연출과 결과가 다른 모공 숫자를 말하던 문제 해결 */
     const AC={tzone:'#5B8DEF',cheek:(rd.redness>0.05?'#E2725B':'#46c98b'),nose:'#9CC1E8'}[rk];
     const LABEL={tzone:'T-ZONE SCAN',cheek:'CHEEK SCAN',nose:'NOSE SCAN'}[rk];
     const CALL={
@@ -775,7 +541,6 @@ function regionTheater(){
 function showIdx(){populateIdx();show('#s-idx');$('#stepLabel').textContent='부위 분석';}
 function populateIdx(){
   const idx=(faceResult&&faceResult.idx)||{};const th=[];
-  if(capCanvas)th.push(`<div class="th"><img src="${makeThumb(capCanvas)}"><span class="lb">얼굴</span></div>`);
   if(regionData.tzone)th.push(`<div class="th"><img src="${regionData.tzone.thumb}"><span class="lb">T존</span>${regionData.tzone.q<0.35?'<span class="lq">품질 낮음</span>':''}</div>`);
   if(regionData.cheek)th.push(`<div class="th"><img src="${regionData.cheek.thumb}"><span class="lb">볼</span>${regionData.cheek.q<0.35?'<span class="lq">품질 낮음</span>':''}</div>`);
   if(regionData.nose)th.push(`<div class="th"><img src="${regionData.nose.thumb}"><span class="lb">코</span>${regionData.nose.q<0.35?'<span class="lq">품질 낮음</span>':''}</div>`);
@@ -791,22 +556,10 @@ function populateIdx(){
   const bars=idxBar('T존 유분·광택',idx.tzOil)+idxBar('코 유분',idx.noseOil)+idxBar('코 모공·결 가시도',idx.pore)+idxBar('볼 유분',idx.cheekOil)+idxBar('볼 붉은기',idx.red);
   $('#idxRep').innerHTML='<div class="h"><span class="t">부위별 상대 지수 (0~100 · 절대 측정값 아님)</span></div>'+(bars?bars+'<p class="note" style="text-align:left;margin:6px 0 0">촬영 조건(조명·거리)에 따라 달라질 수 있어요</p>':'<p class="note" style="text-align:left;margin:6px 0 0">부위 사진이 없어 얼굴 분석만 반영해요.</p>');}
 function imageToCanvas(img){const c=document.createElement('canvas'),W=Math.min(720,img.naturalWidth||640),H=Math.round(W*(((img.naturalHeight||480)/(img.naturalWidth||640))));c.width=W;c.height=H;c.getContext('2d',{willReadFrequently:true}).drawImage(img,0,0,W,H);return c;}
-/* ⚠️ 도달 불가(레거시 face 모드) — stepMode가 'face'가 되는 실경로 없음 */
-async function runFace(canvas){
-  show('#s-scan');$('#stepLabel').textContent='분석 중';$('#scanEyebrow').textContent='분석 중';$('#scanTitle').textContent='얼굴을 읽고 있어요';
-  $('#sigChips').innerHTML='';$('#toSurvey').disabled=true;$('#scanStat').style.display='';
-  // draw immediately so user sees their photo while model loads
-  const cv=$('#faceCanvas'),dispW=Math.min(440,$('#scanwrap').clientWidth||360),sc=dispW/canvas.width;cv.width=dispW;cv.height=Math.round(canvas.height*sc);cv.getContext('2d').drawImage(canvas,0,0,cv.width,cv.height);
-  let photo; try{photo=await analyzePhoto(canvas);}catch(e){photo={ok:false,reason:'model'};}
-  faceResult=photo;
-  if(!photo.ok){ goRetake(photo.reason); return; }
-  showScan(canvas);
-}
-
 /* ===== wires ===== */
 $('#pickFile').onclick=()=>{stepMode='tzone';$('#fileInput').click();};
 $('#fileInput').onchange=async e=>{const f=e.target.files[0];if(!f)return;e.target.value='';
-  const handle=async c=>{if(stepMode==='face'){runFace(c);return;}
+  const handle=async c=>{
     /* T존 얼굴검증 제거(클로즈업+갤럭시 대응): 아래 skinRatio 검사로 사람/벽 구분 */
     storeRegion(stepMode,c);const rd=regionData[stepMode];if(rd.reason==='noskin'||rd.reason==='dark')goRegionRetake(stepMode);else nextAfterRegion();};
   try{const bmp=await createImageBitmap(f,{imageOrientation:'from-image'});const c=document.createElement('canvas'),W=Math.min(720,bmp.width||640),H=Math.round(W*((bmp.height||480)/(bmp.width||640)));c.width=W;c.height=H;c.getContext('2d',{willReadFrequently:true}).drawImage(bmp,0,0,W,H);handle(c);}
@@ -818,14 +571,14 @@ $('#regionSkip').onclick=()=>{stopCamera();nextAfterRegion();};
 /* '사진 없이 설문만' 링크 제거(2026-07-14 사용자 요청) */
 $('#toSurvey').onclick=()=>beginRegion('tzone');
 $('#idxToSurvey').onclick=goSurvey;
-$('#retakeBtn').onclick=()=>{if(retakeCtx){const r=retakeCtx.region;retakeCtx=null;beginRegion(r);return;}$('#introErr').classList.remove('on');stepMode='face';if(!inApp&&navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)startCamera('face');else $('#fileInput').click();};
+$('#retakeBtn').onclick=()=>{if(retakeCtx){const r=retakeCtx.region;retakeCtx=null;beginRegion(r);return;}$('#introErr').classList.remove('on');beginRegion('tzone');};
 $('#retakeSkip').onclick=()=>{if(retakeCtx){retakeCtx=null;nextAfterRegion();return;}faceResult=null;regionData={};goSurvey();};
 $('#qPrev').onclick=()=>{if(qi>0){qi--;renderQ();}};
 $('#qNext').onclick=()=>{if(ans[qi]===-1)return;if(qi<Q.length-1){qi++;renderQ();}else renderResult();};
 $('#retry').onclick=()=>{faceResult=null;regionData={};stepMode='tzone';$('#introErr').classList.remove('on');$('#stepLabel').textContent='AI 피부 진단';show('#s-intro');};
 
 /* 검증용 훅 — 라이브 URL엔 ?bfmdebug가 없으므로 사용자에게 노출·동작 변화 없음 */
-if(location.search.includes('bfmdebug'))window.__BFM={fuse,surveyVector,applyRegions,analyzeRegionShot,VF,CORE,FOCUS,CAL,parseOpt,_setRegion:(k,v)=>{regionData[k]=v;},_getFace:()=>faceResult};
+if(location.search.includes('bfmdebug'))window.__BFM={ENGINE,fuse:ENGINE.fuse,surveyVector,applyRegions,analyzeRegionShot:ENGINE.analyzeRegionShot,VF,CORE:ENGINE.CORE,FOCUS:ENGINE.FOCUS,CAL,parseOpt:ENGINE.parseOpt,_setRegion:(k,v)=>{regionData[k]=v;},_getFace:()=>faceResult,_goSurvey:goSurvey,_renderResult:renderResult,_guide:updateGuideTransform,_setStep:m=>{stepMode=m;}};
 </script>
 </body>
 </html>
