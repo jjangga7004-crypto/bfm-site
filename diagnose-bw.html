@@ -304,7 +304,12 @@ const surveyVector=()=>ENGINE.scoreSurvey(Q,ans);
 
 /* ===== fusion + result — 판정은 엔진(fuse), 여기선 표시만 ===== */
 function renderResult(){
-  const Sv=surveyVector();const r=ENGINE.fuse(Sv,faceResult);show('#s-result');$('#stepLabel').textContent='결과';
+  const Sv=surveyVector();
+  /* 재촬영 히스테리시스(v2.3): 같은 기기에서 2시간 이내 직전 진단이 있으면 fuse에 전달 —
+     경계 마진 안에서만 직전 타입을 유지해 "다시 찍었더니 타입이 바뀜"을 줄인다 */
+  let prev=null;try{const lg=JSON.parse(localStorage.getItem('bfm_runlog')||'[]');const L=lg[lg.length-1];
+    if(L&&Date.now()-L.t<2*3600*1000&&L.F)prev={primary:{oily:0,dry:1,trouble:2}[L.type],F:L.F};}catch(e){}
+  const r=ENGINE.fuse(Sv,faceResult,prev);show('#s-result');$('#stepLabel').textContent='결과';
   const cb=$('#confBadge');cb.textContent=r.band;cb.style.color=r.band[0]==='높'?'#bff0d6':r.band[0]==='보'?'#e8d3a6':'#f0c9bf';cb.style.background=r.band[0]==='높'?'rgba(70,201,139,.15)':r.band[0]==='보'?'rgba(226,180,91,.14)':'rgba(226,114,91,.14)';
   $('#flagWrap').innerHTML=r.flags.map(f=>`<span class="flag">${f}</span>`).join(' ');
   const pct=r.F.map(x=>Math.round(x*100));['#t0','#t1','#t2'].forEach((id,i)=>setTimeout(()=>{$(id).style.width=pct[i]+'%';},60));
@@ -594,15 +599,25 @@ function populateIdx(){
   if(idx.cheekOil!=null&&idx.cheekOil<28&&(idx.tzOil==null||idx.tzOil<42))chips.push(['#7FB4FF','수분 보강 권장']);
   if(!chips.length)chips.push(['#46c98b','전반적으로 균형 잡힌 피부']);
   const cbox=$('#idxChips');if(cbox)cbox.innerHTML=chips.map(c=>`<span class="sigchip"><span class="d" style="background:${c[0]}"></span>${c[1]}</span>`).join('');
-  const bars=idxBar('T존 유분·광택',idx.tzOil)+idxBar('코 유분',idx.noseOil)+idxBar('코 모공·결 가시도',idx.pore)+idxBar('볼 유분',idx.cheekOil)+idxBar('볼 붉은기',idx.red)+idxBar('피부결 각질 신호',idx.flake);
+  const bars=idxBar('T존 유분·광택',idx.tzOil)+idxBar('코 유분',idx.noseOil)+idxBar('코 모공·결 (참고치)',idx.pore)+idxBar('볼 유분',idx.cheekOil)+idxBar('볼 붉은기',idx.red)+idxBar('피부결 각질 신호',idx.flake);
   $('#idxRep').innerHTML='<div class="h"><span class="t">부위별 상대 지수 (0~100 · 절대 측정값 아님)</span></div>'+(bars?bars+'<p class="note" style="text-align:left;margin:6px 0 0">촬영 조건(조명·거리)에 따라 달라질 수 있어요</p>':'<p class="note" style="text-align:left;margin:6px 0 0">부위 사진이 없어 얼굴 분석만 반영해요.</p>');}
 function imageToCanvas(img){const c=document.createElement('canvas'),W=Math.min(720,img.naturalWidth||640),H=Math.round(W*(((img.naturalHeight||480)/(img.naturalWidth||640))));c.width=W;c.height=H;c.getContext('2d',{willReadFrequently:true}).drawImage(img,0,0,W,H);return c;}
 /* ===== wires ===== */
 $('#pickFile').onclick=()=>{stepMode='tzone';$('#fileInput').click();};
+/* 정지 이미지 얼굴검출 — IMAGE 모드 검출기 지연 생성(업로드 검증·디버그 공용) */
+let imgDet=null;
+async function detectStill(img){if(!imgDet){const {mod,fileset}=await loadVision();
+  imgDet=await mod.FaceDetector.createFromOptions(fileset,{baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite'},runningMode:'IMAGE',minDetectionConfidence:0.5});}
+  return imgDet.detect(img).detections||[];}
 $('#fileInput').onchange=async e=>{const f=e.target.files[0];if(!f)return;e.target.value='';
   const handle=async c=>{
-    /* T존 얼굴검증 제거(클로즈업+갤럭시 대응): 아래 skinRatio 검사로 사람/벽 구분 */
-    storeRegion(stepMode,c);const rd=regionData[stepMode];if(rd.reason==='noskin'||rd.reason==='dark')goRegionRetake(stepMode);else nextAfterRegion();};
+    /* 업로드 경로 얼굴 검증(v2.3, FINDINGS R4): 얼굴이 잡히면 촬영 경로처럼 키포인트 ROI·오염원 제외를
+       적용하고 faceSeen 신뢰 가산. 못 잡거나 2.5초 초과면 기존 동작 그대로(막지 않음 — 초근접은 검출 실패가 정상) */
+    let opts={},seen=false;
+    try{const dets=await Promise.race([detectStill(c),new Promise(r=>setTimeout(()=>r(null),2500))]);
+      if(dets&&dets.length===1){seen=true;opts=regionOptsFromDet(dets[0],c.width,c.height);}}catch(err){}
+    regionData[stepMode]={...ENGINE.analyzeRegionShot(c,stepMode,opts),thumb:makeThumb(c),cv:c,faceSeen:seen};
+    const rd=regionData[stepMode];if(rd.reason==='noskin'||rd.reason==='dark')goRegionRetake(stepMode);else nextAfterRegion();};
   try{const bmp=await createImageBitmap(f,{imageOrientation:'from-image'});const c=document.createElement('canvas'),W=Math.min(720,bmp.width||640),H=Math.round(W*((bmp.height||480)/(bmp.width||640)));c.width=W;c.height=H;c.getContext('2d',{willReadFrequently:true}).drawImage(bmp,0,0,W,H);handle(c);}
   catch(err){const img=new Image();img.onload=()=>handle(imageToCanvas(img));img.src=URL.createObjectURL(f);}};
 $('#startCam').onclick=()=>startCamera('tzone');
@@ -620,10 +635,7 @@ $('#retry').onclick=()=>{faceResult=null;regionData={};stepMode='tzone';$('#intr
 
 /* 검증용 훅 — 라이브 URL엔 ?bfmdebug가 없으므로 사용자에게 노출·동작 변화 없음 */
 if(location.search.includes('bfmdebug'))window.__BFM={ENGINE,fuse:ENGINE.fuse,surveyVector,applyRegions,analyzeRegionShot:ENGINE.analyzeRegionShot,VF,CORE:ENGINE.CORE,FOCUS:ENGINE.FOCUS,CAL,parseOpt:ENGINE.parseOpt,_setRegion:(k,v)=>{regionData[k]=v;},_getFace:()=>faceResult,_goSurvey:goSurvey,_renderResult:renderResult,_guide:updateGuideTransform,_setStep:m=>{stepMode=m;},
-  /* 정지 이미지 얼굴검출(디버그·실사진 검증용) — IMAGE 모드 검출기를 지연 생성 */
-  _detectImage:async img=>{if(!window.__BFM.__imgDet){const {mod,fileset}=await loadVision();
-    window.__BFM.__imgDet=await mod.FaceDetector.createFromOptions(fileset,{baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite'},runningMode:'IMAGE',minDetectionConfidence:0.5});}
-    return window.__BFM.__imgDet.detect(img).detections||[];}};
+  _detectImage:detectStill};
 </script>
 </body>
 </html>

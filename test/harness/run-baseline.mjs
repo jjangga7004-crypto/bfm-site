@@ -84,6 +84,7 @@ function runSurvey(photo, kind) {
         raw: { tzShine: +regionData.tzone.shine.toFixed(4), chShine: +regionData.cheek.shine.toFixed(4), noseShine: +regionData.nose.shine.toFixed(4), chRed: +regionData.cheek.redness.toFixed(4), nosePore: +regionData.nose.poreDen.toFixed(4), q: +photo.q.toFixed(3) },
         Sp: photo.Sp.map(x => +x.toFixed(4)), idx: photo.idx, q: +photo.q.toFixed(3),
         types: Object.fromEntries(PERSONAS.map(k => { const r = E.fuse(runSurvey(photo, k), photo); return [k, r.primary]; })),
+        margins: Object.fromEntries(PERSONAS.map(k => { const r = E.fuse(runSurvey(photo, k), photo); const srt = [...r.F].sort((a, b) => b - a); return [k, +(srt[0] - srt[1]).toFixed(4)]; })),
       };
     }
     // 일관성: 각 페르소나에서 base 타입과 같은 변형 비율
@@ -96,22 +97,35 @@ function runSurvey(photo, kind) {
     }
     const spread = axis => { const vals = names.map(nm => variants[nm].Sp[axis]); return +(Math.max(...vals) - Math.min(...vals)).toFixed(4); };
     const idxSpread = key => { const vals = names.map(nm => variants[nm].idx[key]).filter(v => v != null); return vals.length ? Math.max(...vals) - Math.min(...vals) : null; };
+    /* 재촬영 일치율(핵심 지표): 임의의 두 촬영 조건 쌍에서 같은 타입이 나오는 비율 — 사용자는 base와
+       비교하는 게 아니라 아무 두 번을 찍어 비교한다. + 경계 마진(<0.03이면 답 하나로 뒤집힘) 비율 */
+    let paSum = 0, mSmall = 0, mTot = 0;
+    for (const k of PERSONAS) {
+      const ts = names.map(nm => variants[nm].types[k]);
+      let same = 0, tot = 0;
+      for (let i = 0; i < ts.length; i++) for (let j = i + 1; j < ts.length; j++) { tot++; if (ts[i] === ts[j]) same++; }
+      paSum += same / tot;
+      for (const nm of names) { mTot++; if (variants[nm].margins[k] < 0.03) mSmall++; }
+    }
     out[pname] = {
+      retakeAgree: +(paSum / PERSONAS.length).toFixed(3), marginSmallFrac: +(mSmall / mTot).toFixed(3),
       agree, agreeMean: +(agreeSum / PERSONAS.length).toFixed(3),
       SpSpread: { oily: spread(0), dry: spread(1), acne: spread(2) },
       idxSpread: { tzOil: idxSpread('tzOil'), pore: idxSpread('pore'), red: idxSpread('red') },
       variants,
     };
-    console.log('[2]', pname.padEnd(8), '일치율', out[pname].agreeMean, '· Sp흔들림', JSON.stringify(out[pname].SpSpread), '· idx흔들림', JSON.stringify(out[pname].idxSpread));
+    console.log('[2]', pname.padEnd(8), '재촬영쌍 일치', out[pname].retakeAgree, '· 경계마진<0.03', out[pname].marginSmallFrac, '· base대비 일치', out[pname].agreeMean, '· idx흔들림', JSON.stringify(out[pname].idxSpread));
   }
   res.photoConsistency = out;
   const all = Object.values(out);
   res.photoConsistencySummary = {
     agreeMean: +(all.reduce((s, p) => s + p.agreeMean, 0) / all.length).toFixed(3),
-    worstProfile: Object.entries(out).sort((a, b) => a[1].agreeMean - b[1].agreeMean)[0][0],
+    retakeAgreeMean: +(all.reduce((s, p) => s + p.retakeAgree, 0) / all.length).toFixed(3),
+    marginSmallMean: +(all.reduce((s, p) => s + p.marginSmallFrac, 0) / all.length).toFixed(3),
+    worstProfile: Object.entries(out).sort((a, b) => a[1].retakeAgree - b[1].retakeAgree)[0][0],
     tzOilIdxSpreadMax: Math.max(...all.map(p => p.idxSpread.tzOil ?? 0)),
   };
-  console.log('[2] 전체 평균 일치율', res.photoConsistencySummary.agreeMean, '· 최악 프로필', res.photoConsistencySummary.worstProfile, '·', ((Date.now() - t0) / 1000).toFixed(1) + 's');
+  console.log('[2] 재촬영쌍 일치 평균', res.photoConsistencySummary.retakeAgreeMean, '· base대비', res.photoConsistencySummary.agreeMean, '· 최악(재촬영)', res.photoConsistencySummary.worstProfile, '·', ((Date.now() - t0) / 1000).toFixed(1) + 's');
 }
 
 /* ───────── 3. 프로필 × 페르소나 → 최종 타입 매트릭스 (base 변형만) ───────── */
@@ -176,6 +190,30 @@ function runSurvey(photo, kind) {
     console.log('[4c] 연사 효과 — 단일 편차', out.burst.singleMeanDev, '→ 3장 중앙값', out.burst.burstMeanDev);
   }
   res.strengthen = out;
+}
+
+/* ───────── 5. 재촬영 히스테리시스 — 직전 결과(prev)를 넘겼을 때 타입 뒤집힘 감소 측정 ───────── */
+{
+  let flipNo = 0, flipPrev = 0, tot = 0;
+  for (const [pname, prof] of Object.entries(PROFILES)) {
+    const baseImgs = { tzone: makeRegion(prof.tzone, 'tzone', 11), cheek: makeRegion(prof.cheek, 'cheek', 22), nose: makeRegion(prof.nose, 'nose', 33) };
+    const photos = Object.fromEntries(Object.entries(TRANSFORMS).map(([tn, tf]) => {
+      const rd = {}; for (const rk of ['tzone', 'cheek', 'nose']) rd[rk] = E.analyzeRegionShot(tf(baseImgs[rk]), rk);
+      return [tn, E.combineRegions(rd)];
+    }));
+    const names = Object.keys(TRANSFORMS);
+    for (const k of PERSONAS) {
+      for (let i = 0; i < names.length; i++) for (let j = 0; j < names.length; j++) { if (i === j) continue;
+        const Sv1 = runSurvey(photos[names[i]], k), Sv2 = runSurvey(photos[names[j]], k);
+        const r1 = E.fuse(Sv1, photos[names[i]]);
+        const r2no = E.fuse(Sv2, photos[names[j]]);
+        const r2prev = E.fuse(Sv2, photos[names[j]], { primary: r1.primary, F: r1.F });
+        tot++; if (r2no.primary !== r1.primary) flipNo++; if (r2prev.primary !== r1.primary) flipPrev++;
+      }
+    }
+  }
+  res.retakeHysteresis = { pairs: tot, flipRateNoPrev: +(flipNo / tot).toFixed(4), flipRateWithPrev: +(flipPrev / tot).toFixed(4) };
+  console.log('[5] 재촬영 뒤집힘율 — prev 없이', res.retakeHysteresis.flipRateNoPrev, '→ prev 전달 시', res.retakeHysteresis.flipRateWithPrev, '(' + tot + '쌍)');
 }
 
 const file = path.join(OUT_DIR, LABEL + '.json');

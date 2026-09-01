@@ -1,0 +1,3741 @@
+{
+ "label": "retake-baseline",
+ "engineVersion": "2.2.1",
+ "when": "2026-09-01T16:00:29.421Z",
+ "surveySweep": {
+  "total": 15552,
+  "dist": {
+   "oily_B": 0.22820216049382716,
+   "dry_A": 0.22916666666666666,
+   "trouble_C": 0.5426311728395061
+  },
+  "nearBoundaryFrac": 0.15676440329218108,
+  "troubleCliffFrac": 0.10577417695473251
+ },
+ "photoConsistency": {
+  "veryDry": {
+   "retakeAgree": 0.941,
+   "marginSmallFrac": 0.185,
+   "agree": {
+    "neutral": 1,
+    "oily": 1,
+    "dry": 1,
+    "acne": 1,
+    "oilyAcne": 0.846
+   },
+   "agreeMean": 0.969,
+   "SpSpread": {
+    "oily": 0.0073,
+    "dry": 0.0065,
+    "acne": 0.0007
+   },
+   "idxSpread": {
+    "tzOil": 13,
+    "pore": 28,
+    "red": 0
+   },
+   "variants": {
+    "base": {
+     "raw": {
+      "tzShine": 0,
+      "chShine": 0,
+      "noseShine": 0,
+      "chRed": 0.0056,
+      "nosePore": 0.0003,
+      "q": 1
+     },
+     "Sp": [
+      0.0882,
+      0.8235,
+      0.0882
+     ],
+     "idx": {
+      "tzOil": 10,
+      "noseOil": 10,
+      "pore": 10,
+      "cheekOil": 10,
+      "red": 10,
+      "flake": 89
+     },
+     "q": 1,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 1
+     },
+     "margins": {
+      "neutral": 0.2853,
+      "oily": 0.1056,
+      "dry": 0.7675,
+      "acne": 0.0638,
+      "oilyAcne": 0.0284
+     }
+    },
+    "dark20": {
+     "raw": {
+      "tzShine": 0,
+      "chShine": 0,
+      "noseShine": 0,
+      "chRed": 0.0056,
+      "nosePore": 0.0001,
+      "q": 1
+     },
+     "Sp": [
+      0.0882,
+      0.8235,
+      0.0882
+     ],
+     "idx": {
+      "tzOil": 10,
+      "noseOil": 10,
+      "pore": 10,
+      "cheekOil": 10,
+      "red": 10,
+      "flake": 78
+     },
+     "q": 1,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 1
+     },
+     "margins": {
+      "neutral": 0.2853,
+      "oily": 0.1056,
+      "dry": 0.7675,
+      "acne": 0.0638,
+      "oilyAcne": 0.0284
+     }
+    },
+    "dark35": {
+     "raw": {
+      "tzShine": 0,
+      "chShine": 0,
+      "noseShine": 0,
+      "chRed": 0.0057,
+      "nosePore": 0,
+      "q": 1
+     },
+     "Sp": [
+      0.0882,
+      0.8235,
+      0.0882
+     ],
+     "idx": {
+      "tzOil": 10,
+      "noseOil": 10,
+      "pore": 10,
+      "cheekOil": 10,
+      "red": 10,
+      "flake": 68
+     },
+     "q": 1,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 1
+     },
+     "margins": {
+      "neutral": 0.2854,
+      "oily": 0.1054,
+      "dry": 0.7675,
+      "acne": 0.0636,
+      "oilyAcne": 0.0285
+     }
+    },
+    "bright20": {
+     "raw": {
+      "tzShine": 0,
+      "chShine": 0,
+      "noseShine": 0,
+      "chRed": 0.0056,
+      "nosePore": 0.0006,
+      "q": 1
+     },
+     "Sp": [
+      0.0883,
+      0.8235,
+      0.0882
+     ],
+     "idx": {
+      "tzOil": 11,
+      "noseOil": 11,
+      "pore": 10,
+      "cheekOil": 11,
+      "red": 10,
+      "flake": 96
+     },
+     "q": 1,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 1
+     },
+     "margins": {
+      "neutral": 0.2854,
+      "oily": 0.1054,
+      "dry": 0.7674,
+      "acne": 0.0636,
+      "oilyAcne": 0.0285
+     }
+    },
+    "gammaLo": {
+     "raw": {
+      "tzShine": 0,
+      "chShine": 0,
+      "noseShine": 0,
+      "chRed": 0.0073,
+      "nosePore": 0.0004,
+      "q": 0.991
+     },
+     "Sp": [
+      0.0882,
+      0.8235,
+      0.0882
+     ],
+     "idx": {
+      "tzOil": 10,
+      "noseOil": 10,
+      "pore": 10,
+      "cheekOil": 10,
+      "red": 10,
+      "flake": 94
+     },
+     "q": 0.991,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 1
+     },
+     "margins": {
+      "neutral": 0.2827,
+      "oily": 0.1105,
+      "dry": 0.7676,
+      "acne": 0.0683,
+      "oilyAcne": 0.0243
+     }
+    },
+    "gammaHi": {
+     "raw": {
+      "tzShine": 0,
+      "chShine": 0,
+      "noseShine": 0,
+      "chRed": 0.0037,
+      "nosePore": 0.0002,
+      "q": 1
+     },
+     "Sp": [
+      0.0882,
+      0.8235,
+      0.0882
+     ],
+     "idx": {
+      "tzOil": 10,
+      "noseOil": 10,
+      "pore": 10,
+      "cheekOil": 10,
+      "red": 10,
+      "flake": 84
+     },
+     "q": 1,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 1
+     },
+     "margins": {
+      "neutral": 0.2854,
+      "oily": 0.1054,
+      "dry": 0.7675,
+      "acne": 0.0636,
+      "oilyAcne": 0.0285
+     }
+    },
+    "warmWB": {
+     "raw": {
+      "tzShine": 0,
+      "chShine": 0,
+      "noseShine": 0,
+      "chRed": 0.0059,
+      "nosePore": 0.0003,
+      "q": 0.994
+     },
+     "Sp": [
+      0.0882,
+      0.8235,
+      0.0882
+     ],
+     "idx": {
+      "tzOil": 10,
+      "noseOil": 10,
+      "pore": 10,
+      "cheekOil": 10,
+      "red": 10,
+      "flake": 90
+     },
+     "q": 0.994,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 1
+     },
+     "margins": {
+      "neutral": 0.2835,
+      "oily": 0.109,
+      "dry": 0.7676,
+      "acne": 0.0669,
+      "oilyAcne": 0.0256
+     }
+    },
+    "coolWB": {
+     "raw": {
+      "tzShine": 0.0026,
+      "chShine": 0.0034,
+      "noseShine": 0.0011,
+      "chRed": 0.0054,
+      "nosePore": 0.0003,
+      "q": 1
+     },
+     "Sp": [
+      0.0946,
+      0.8178,
+      0.0876
+     ],
+     "idx": {
+      "tzOil": 23,
+      "noseOil": 19,
+      "pore": 10,
+      "cheekOil": 25,
+      "red": 10,
+      "flake": 89
+     },
+     "q": 1,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 1
+     },
+     "margins": {
+      "neutral": 0.2804,
+      "oily": 0.1104,
+      "dry": 0.7624,
+      "acne": 0.0655,
+      "oilyAcne": 0.0235
+     }
+    },
+    "noisy": {
+     "raw": {
+      "tzShine": 0,
+      "chShine": 0,
+      "noseShine": 0,
+      "chRed": 0.0057,
+      "nosePore": 0.0015,
+      "q": 0.999
+     },
+     "Sp": [
+      0.0955,
+      0.817,
+      0.0875
+     ],
+     "idx": {
+      "tzOil": 10,
+      "noseOil": 10,
+      "pore": 38,
+      "cheekOil": 10,
+      "red": 10,
+      "flake": 86
+     },
+     "q": 0.999,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 1
+     },
+     "margins": {
+      "neutral": 0.2794,
+      "oily": 0.1116,
+      "dry": 0.7617,
+      "acne": 0.0662,
+      "oilyAcne": 0.0224
+     }
+    },
+    "blur": {
+     "raw": {
+      "tzShine": 0,
+      "chShine": 0,
+      "noseShine": 0,
+      "chRed": 0.0053,
+      "nosePore": 0,
+      "q": 0.72
+     },
+     "Sp": [
+      0.0882,
+      0.8235,
+      0.0882
+     ],
+     "idx": {
+      "tzOil": 10,
+      "noseOil": 10,
+      "pore": 10,
+      "cheekOil": 10,
+      "red": 10,
+      "flake": 78
+     },
+     "q": 0.72,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.1983,
+      "oily": 0.2734,
+      "dry": 0.7733,
+      "acne": 0.2153,
+      "oilyAcne": 0.0798
+     }
+    },
+    "tiltLight": {
+     "raw": {
+      "tzShine": 0,
+      "chShine": 0,
+      "noseShine": 0,
+      "chRed": 0.0056,
+      "nosePore": 0.0003,
+      "q": 0.997
+     },
+     "Sp": [
+      0.0882,
+      0.8235,
+      0.0882
+     ],
+     "idx": {
+      "tzOil": 10,
+      "noseOil": 10,
+      "pore": 10,
+      "cheekOil": 10,
+      "red": 10,
+      "flake": 89
+     },
+     "q": 0.997,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 1
+     },
+     "margins": {
+      "neutral": 0.2844,
+      "oily": 0.1072,
+      "dry": 0.7675,
+      "acne": 0.0653,
+      "oilyAcne": 0.027
+     }
+    },
+    "zoomIn": {
+     "raw": {
+      "tzShine": 0,
+      "chShine": 0,
+      "noseShine": 0,
+      "chRed": 0.0061,
+      "nosePore": 0.0002,
+      "q": 0.914
+     },
+     "Sp": [
+      0.0882,
+      0.8235,
+      0.0882
+     ],
+     "idx": {
+      "tzOil": 10,
+      "noseOil": 10,
+      "pore": 10,
+      "cheekOil": 10,
+      "red": 10,
+      "flake": 96
+     },
+     "q": 0.914,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.2586,
+      "oily": 0.157,
+      "dry": 0.7693,
+      "acne": 0.1102,
+      "oilyAcne": 0.0133
+     }
+    },
+    "shift": {
+     "raw": {
+      "tzShine": 0,
+      "chShine": 0,
+      "noseShine": 0,
+      "chRed": 0.0062,
+      "nosePore": 0.0002,
+      "q": 0.959
+     },
+     "Sp": [
+      0.0882,
+      0.8235,
+      0.0882
+     ],
+     "idx": {
+      "tzOil": 10,
+      "noseOil": 10,
+      "pore": 10,
+      "cheekOil": 10,
+      "red": 10,
+      "flake": 96
+     },
+     "q": 0.959,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 1
+     },
+     "margins": {
+      "neutral": 0.2727,
+      "oily": 0.1299,
+      "dry": 0.7683,
+      "acne": 0.0857,
+      "oilyAcne": 0.0087
+     }
+    }
+   }
+  },
+  "dry": {
+   "retakeAgree": 0.944,
+   "marginSmallFrac": 0.031,
+   "agree": {
+    "neutral": 1,
+    "oily": 1,
+    "dry": 1,
+    "acne": 1,
+    "oilyAcne": 0.846
+   },
+   "agreeMean": 0.969,
+   "SpSpread": {
+    "oily": 0.0774,
+    "dry": 0.0719,
+    "acne": 0.0057
+   },
+   "idxSpread": {
+    "tzOil": 16,
+    "pore": 28,
+    "red": 0
+   },
+   "variants": {
+    "base": {
+     "raw": {
+      "tzShine": 0.0185,
+      "chShine": 0.0087,
+      "noseShine": 0.018,
+      "chRed": 0.0091,
+      "nosePore": 0.0005,
+      "q": 0.988
+     },
+     "Sp": [
+      0.1914,
+      0.7265,
+      0.0822
+     ],
+     "idx": {
+      "tzOil": 45,
+      "noseOil": 45,
+      "pore": 10,
+      "cheekOil": 34,
+      "red": 10,
+      "flake": 66
+     },
+     "q": 0.988,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.1991,
+      "oily": 0.1953,
+      "dry": 0.6852,
+      "acne": 0.1044,
+      "oilyAcne": 0.0599
+     }
+    },
+    "dark20": {
+     "raw": {
+      "tzShine": 0.0184,
+      "chShine": 0.0087,
+      "noseShine": 0.0181,
+      "chRed": 0.0091,
+      "nosePore": 0.0003,
+      "q": 0.988
+     },
+     "Sp": [
+      0.1934,
+      0.7234,
+      0.0832
+     ],
+     "idx": {
+      "tzOil": 45,
+      "noseOil": 45,
+      "pore": 10,
+      "cheekOil": 34,
+      "red": 10,
+      "flake": 56
+     },
+     "q": 0.988,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.1971,
+      "oily": 0.1971,
+      "dry": 0.6831,
+      "acne": 0.1057,
+      "oilyAcne": 0.0618
+     }
+    },
+    "dark35": {
+     "raw": {
+      "tzShine": 0.0183,
+      "chShine": 0.0087,
+      "noseShine": 0.0181,
+      "chRed": 0.0093,
+      "nosePore": 0.0002,
+      "q": 1
+     },
+     "Sp": [
+      0.1941,
+      0.7218,
+      0.084
+     ],
+     "idx": {
+      "tzOil": 45,
+      "noseOil": 45,
+      "pore": 10,
+      "cheekOil": 34,
+      "red": 10,
+      "flake": 46
+     },
+     "q": 1,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.1989,
+      "oily": 0.1919,
+      "dry": 0.6809,
+      "acne": 0.1007,
+      "oilyAcne": 0.058
+     }
+    },
+    "bright20": {
+     "raw": {
+      "tzShine": 0.0109,
+      "chShine": 0.0078,
+      "noseShine": 0.0151,
+      "chRed": 0.0091,
+      "nosePore": 0.0008,
+      "q": 1
+     },
+     "Sp": [
+      0.144,
+      0.7731,
+      0.0828
+     ],
+     "idx": {
+      "tzOil": 37,
+      "noseOil": 42,
+      "pore": 16,
+      "cheekOil": 33,
+      "red": 10,
+      "flake": 73
+     },
+     "q": 1,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.241,
+      "oily": 0.1497,
+      "dry": 0.7231,
+      "acne": 0.0806,
+      "oilyAcne": 0.0158
+     }
+    },
+    "gammaLo": {
+     "raw": {
+      "tzShine": 0.019,
+      "chShine": 0.0087,
+      "noseShine": 0.0182,
+      "chRed": 0.0121,
+      "nosePore": 0.0007,
+      "q": 0.929
+     },
+     "Sp": [
+      0.1933,
+      0.725,
+      0.0817
+     ],
+     "idx": {
+      "tzOil": 46,
+      "noseOil": 45,
+      "pore": 10,
+      "cheekOil": 34,
+      "red": 10,
+      "flake": 70
+     },
+     "q": 0.929,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.1844,
+      "oily": 0.2268,
+      "dry": 0.69,
+      "acne": 0.1344,
+      "oilyAcne": 0.0848
+     }
+    },
+    "gammaHi": {
+     "raw": {
+      "tzShine": 0.0151,
+      "chShine": 0.0072,
+      "noseShine": 0.0148,
+      "chRed": 0.0058,
+      "nosePore": 0.0005,
+      "q": 1
+     },
+     "Sp": [
+      0.1728,
+      0.7442,
+      0.083
+     ],
+     "idx": {
+      "tzOil": 42,
+      "noseOil": 42,
+      "pore": 10,
+      "cheekOil": 32,
+      "red": 10,
+      "flake": 62
+     },
+     "q": 1,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.217,
+      "oily": 0.1738,
+      "dry": 0.699,
+      "acne": 0.0917,
+      "oilyAcne": 0.0399
+     }
+    },
+    "warmWB": {
+     "raw": {
+      "tzShine": 0.008,
+      "chShine": 0.0037,
+      "noseShine": 0.008,
+      "chRed": 0.0095,
+      "nosePore": 0.0005,
+      "q": 0.937
+     },
+     "Sp": [
+      0.1329,
+      0.7832,
+      0.0839
+     ],
+     "idx": {
+      "tzOil": 33,
+      "noseOil": 33,
+      "pore": 10,
+      "cheekOil": 26,
+      "red": 10,
+      "flake": 67
+     },
+     "q": 0.937,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.2326,
+      "oily": 0.1764,
+      "dry": 0.7355,
+      "acne": 0.1104,
+      "oilyAcne": 0.0353
+     }
+    },
+    "coolWB": {
+     "raw": {
+      "tzShine": 0.0112,
+      "chShine": 0.0077,
+      "noseShine": 0.0145,
+      "chRed": 0.0088,
+      "nosePore": 0.0005,
+      "q": 1
+     },
+     "Sp": [
+      0.1457,
+      0.771,
+      0.0832
+     ],
+     "idx": {
+      "tzOil": 37,
+      "noseOil": 41,
+      "pore": 10,
+      "cheekOil": 33,
+      "red": 10,
+      "flake": 65
+     },
+     "q": 1,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.2395,
+      "oily": 0.1513,
+      "dry": 0.7215,
+      "acne": 0.0815,
+      "oilyAcne": 0.0174
+     }
+    },
+    "noisy": {
+     "raw": {
+      "tzShine": 0.0182,
+      "chShine": 0.0085,
+      "noseShine": 0.0177,
+      "chRed": 0.0091,
+      "nosePore": 0.0014,
+      "q": 0.986
+     },
+     "Sp": [
+      0.1955,
+      0.7229,
+      0.0816
+     ],
+     "idx": {
+      "tzOil": 45,
+      "noseOil": 45,
+      "pore": 38,
+      "cheekOil": 34,
+      "red": 10,
+      "flake": 66
+     },
+     "q": 0.986,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.1955,
+      "oily": 0.1994,
+      "dry": 0.6822,
+      "acne": 0.1064,
+      "oilyAcne": 0.0639
+     }
+    },
+    "blur": {
+     "raw": {
+      "tzShine": 0.0184,
+      "chShine": 0.0085,
+      "noseShine": 0.0173,
+      "chRed": 0.0081,
+      "nosePore": 0,
+      "q": 0.713
+     },
+     "Sp": [
+      0.1915,
+      0.7259,
+      0.0826
+     ],
+     "idx": {
+      "tzOil": 45,
+      "noseOil": 44,
+      "pore": 10,
+      "cheekOil": 34,
+      "red": 10,
+      "flake": 63
+     },
+     "q": 0.713,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.1363,
+      "oily": 0.3375,
+      "dry": 0.7138,
+      "acne": 0.2442,
+      "oilyAcne": 0.1152
+     }
+    },
+    "tiltLight": {
+     "raw": {
+      "tzShine": 0.0154,
+      "chShine": 0.0077,
+      "noseShine": 0.0134,
+      "chRed": 0.0092,
+      "nosePore": 0.0006,
+      "q": 0.99
+     },
+     "Sp": [
+      0.169,
+      0.7482,
+      0.0829
+     ],
+     "idx": {
+      "tzOil": 42,
+      "noseOil": 40,
+      "pore": 10,
+      "cheekOil": 33,
+      "red": 10,
+      "flake": 66
+     },
+     "q": 0.99,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.2179,
+      "oily": 0.1756,
+      "dry": 0.7031,
+      "acne": 0.0951,
+      "oilyAcne": 0.0406
+     }
+    },
+    "zoomIn": {
+     "raw": {
+      "tzShine": 0.0228,
+      "chShine": 0.0091,
+      "noseShine": 0.0204,
+      "chRed": 0.0076,
+      "nosePore": 0.0004,
+      "q": 0.882
+     },
+     "Sp": [
+      0.2103,
+      0.7113,
+      0.0783
+     ],
+     "idx": {
+      "tzOil": 49,
+      "noseOil": 47,
+      "pore": 10,
+      "cheekOil": 35,
+      "red": 10,
+      "flake": 94
+     },
+     "q": 0.882,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.1623,
+      "oily": 0.2627,
+      "dry": 0.6836,
+      "acne": 0.1619,
+      "oilyAcne": 0.1153
+     }
+    },
+    "shift": {
+     "raw": {
+      "tzShine": 0.0202,
+      "chShine": 0.0091,
+      "noseShine": 0.0178,
+      "chRed": 0.0096,
+      "nosePore": 0.0005,
+      "q": 0.92
+     },
+     "Sp": [
+      0.1926,
+      0.7281,
+      0.0793
+     ],
+     "idx": {
+      "tzOil": 47,
+      "noseOil": 45,
+      "pore": 10,
+      "cheekOil": 35,
+      "red": 10,
+      "flake": 90
+     },
+     "q": 0.92,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.1838,
+      "oily": 0.2301,
+      "dry": 0.6923,
+      "acne": 0.1369,
+      "oilyAcne": 0.087
+     }
+    }
+   }
+  },
+  "normal": {
+   "retakeAgree": 0.851,
+   "marginSmallFrac": 0.138,
+   "agree": {
+    "neutral": 0.846,
+    "oily": 1,
+    "dry": 1,
+    "acne": 1,
+    "oilyAcne": 0.692
+   },
+   "agreeMean": 0.908,
+   "SpSpread": {
+    "oily": 0.2581,
+    "dry": 0.2653,
+    "acne": 0.0108
+   },
+   "idxSpread": {
+    "tzOil": 22,
+    "pore": 31,
+    "red": 0
+   },
+   "variants": {
+    "base": {
+     "raw": {
+      "tzShine": 0.0481,
+      "chShine": 0.0233,
+      "noseShine": 0.0448,
+      "chRed": 0.0105,
+      "nosePore": 0.0009,
+      "q": 0.989
+     },
+     "Sp": [
+      0.4077,
+      0.4992,
+      0.0931
+     ],
+     "idx": {
+      "tzOil": 67,
+      "noseOil": 65,
+      "pore": 21,
+      "cheekOil": 50,
+      "red": 10,
+      "flake": 31
+     },
+     "q": 0.989,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.0171,
+      "oily": 0.3768,
+      "dry": 0.5028,
+      "acne": 0.1943,
+      "oilyAcne": 0.2028
+     }
+    },
+    "dark20": {
+     "raw": {
+      "tzShine": 0.05,
+      "chShine": 0.0234,
+      "noseShine": 0.0446,
+      "chRed": 0.0105,
+      "nosePore": 0.0004,
+      "q": 0.987
+     },
+     "Sp": [
+      0.4227,
+      0.4833,
+      0.094
+     ],
+     "idx": {
+      "tzOil": 68,
+      "noseOil": 65,
+      "pore": 10,
+      "cheekOil": 50,
+      "red": 10,
+      "flake": 10
+     },
+     "q": 0.987,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.0044,
+      "oily": 0.3902,
+      "dry": 0.4909,
+      "acne": 0.1998,
+      "oilyAcne": 0.2089
+     }
+    },
+    "dark35": {
+     "raw": {
+      "tzShine": 0.0496,
+      "chShine": 0.0235,
+      "noseShine": 0.0443,
+      "chRed": 0.0105,
+      "nosePore": 0.0002,
+      "q": 1
+     },
+     "Sp": [
+      0.419,
+      0.487,
+      0.094
+     ],
+     "idx": {
+      "tzOil": 68,
+      "noseOil": 65,
+      "pore": 10,
+      "cheekOil": 50,
+      "red": 10,
+      "flake": 10
+     },
+     "q": 1,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.0079,
+      "oily": 0.3829,
+      "dry": 0.4899,
+      "acne": 0.1948,
+      "oilyAcne": 0.2084
+     }
+    },
+    "bright20": {
+     "raw": {
+      "tzShine": 0.0285,
+      "chShine": 0.0225,
+      "noseShine": 0.0421,
+      "chRed": 0.0107,
+      "nosePore": 0.0012,
+      "q": 1
+     },
+     "Sp": [
+      0.2574,
+      0.6548,
+      0.0878
+     ],
+     "idx": {
+      "tzOil": 54,
+      "noseOil": 63,
+      "pore": 33,
+      "cheekOil": 49,
+      "red": 10,
+      "flake": 34
+     },
+     "q": 1,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.1448,
+      "oily": 0.246,
+      "dry": 0.6268,
+      "acne": 0.128,
+      "oilyAcne": 0.1121
+     }
+    },
+    "gammaLo": {
+     "raw": {
+      "tzShine": 0.0546,
+      "chShine": 0.0242,
+      "noseShine": 0.0476,
+      "chRed": 0.0133,
+      "nosePore": 0.0011,
+      "q": 0.84
+     },
+     "Sp": [
+      0.4639,
+      0.4415,
+      0.0945
+     ],
+     "idx": {
+      "tzOil": 71,
+      "noseOil": 67,
+      "pore": 28,
+      "cheekOil": 50,
+      "red": 10,
+      "flake": 37
+     },
+     "q": 0.84,
+     "types": {
+      "neutral": 0,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.0291,
+      "oily": 0.5109,
+      "dry": 0.4687,
+      "acne": 0.2433,
+      "oilyAcne": 0.3043
+     }
+    },
+    "gammaHi": {
+     "raw": {
+      "tzShine": 0.0399,
+      "chShine": 0.0189,
+      "noseShine": 0.0361,
+      "chRed": 0.0072,
+      "nosePore": 0.0008,
+      "q": 1
+     },
+     "Sp": [
+      0.3409,
+      0.5692,
+      0.0899
+     ],
+     "idx": {
+      "tzOil": 62,
+      "noseOil": 59,
+      "pore": 10,
+      "cheekOil": 46,
+      "red": 10,
+      "flake": 23
+     },
+     "q": 1,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.0744,
+      "oily": 0.3164,
+      "dry": 0.5565,
+      "acne": 0.1616,
+      "oilyAcne": 0.175
+     }
+    },
+    "warmWB": {
+     "raw": {
+      "tzShine": 0.0289,
+      "chShine": 0.0103,
+      "noseShine": 0.0205,
+      "chRed": 0.0109,
+      "nosePore": 0.0009,
+      "q": 0.844
+     },
+     "Sp": [
+      0.2587,
+      0.6576,
+      0.0837
+     ],
+     "idx": {
+      "tzOil": 54,
+      "noseOil": 47,
+      "pore": 20,
+      "cheekOil": 36,
+      "red": 10,
+      "flake": 32
+     },
+     "q": 0.844,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.1186,
+      "oily": 0.3172,
+      "dry": 0.6524,
+      "acne": 0.1999,
+      "oilyAcne": 0.1383
+     }
+    },
+    "coolWB": {
+     "raw": {
+      "tzShine": 0.0223,
+      "chShine": 0.0213,
+      "noseShine": 0.036,
+      "chRed": 0.0103,
+      "nosePore": 0.0009,
+      "q": 1
+     },
+     "Sp": [
+      0.2058,
+      0.7068,
+      0.0874
+     ],
+     "idx": {
+      "tzOil": 49,
+      "noseOil": 59,
+      "pore": 23,
+      "cheekOil": 48,
+      "red": 10,
+      "flake": 10
+     },
+     "q": 1,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.1879,
+      "oily": 0.2029,
+      "dry": 0.6699,
+      "acne": 0.1079,
+      "oilyAcne": 0.069
+     }
+    },
+    "noisy": {
+     "raw": {
+      "tzShine": 0.0476,
+      "chShine": 0.0229,
+      "noseShine": 0.0446,
+      "chRed": 0.0106,
+      "nosePore": 0.0016,
+      "q": 0.978
+     },
+     "Sp": [
+      0.4081,
+      0.5003,
+      0.0916
+     ],
+     "idx": {
+      "tzOil": 67,
+      "noseOil": 65,
+      "pore": 41,
+      "cheekOil": 49,
+      "red": 10,
+      "flake": 45
+     },
+     "q": 0.978,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.0169,
+      "oily": 0.3803,
+      "dry": 0.5062,
+      "acne": 0.1979,
+      "oilyAcne": 0.2028
+     }
+    },
+    "blur": {
+     "raw": {
+      "tzShine": 0.0479,
+      "chShine": 0.0222,
+      "noseShine": 0.0411,
+      "chRed": 0.0098,
+      "nosePore": 0,
+      "q": 0.716
+     },
+     "Sp": [
+      0.401,
+      0.5063,
+      0.0927
+     ],
+     "idx": {
+      "tzOil": 67,
+      "noseOil": 63,
+      "pore": 10,
+      "cheekOil": 49,
+      "red": 10,
+      "flake": 48
+     },
+     "q": 0.716,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.0094,
+      "oily": 0.4634,
+      "dry": 0.5857,
+      "acne": 0.3057,
+      "oilyAcne": 0.1795
+     }
+    },
+    "tiltLight": {
+     "raw": {
+      "tzShine": 0.0468,
+      "chShine": 0.0184,
+      "noseShine": 0.0384,
+      "chRed": 0.0104,
+      "nosePore": 0.0009,
+      "q": 0.976
+     },
+     "Sp": [
+      0.3996,
+      0.5097,
+      0.0907
+     ],
+     "idx": {
+      "tzOil": 66,
+      "noseOil": 61,
+      "pore": 22,
+      "cheekOil": 45,
+      "red": 10,
+      "flake": 30
+     },
+     "q": 0.976,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.0241,
+      "oily": 0.3737,
+      "dry": 0.5141,
+      "acne": 0.1948,
+      "oilyAcne": 0.1993
+     }
+    },
+    "zoomIn": {
+     "raw": {
+      "tzShine": 0.0532,
+      "chShine": 0.0216,
+      "noseShine": 0.0469,
+      "chRed": 0.008,
+      "nosePore": 0.0005,
+      "q": 0.86
+     },
+     "Sp": [
+      0.4481,
+      0.4603,
+      0.0916
+     ],
+     "idx": {
+      "tzOil": 70,
+      "noseOil": 66,
+      "pore": 10,
+      "cheekOil": 48,
+      "red": 10,
+      "flake": 78
+     },
+     "q": 0.86,
+     "types": {
+      "neutral": 0,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.0169,
+      "oily": 0.4482,
+      "dry": 0.5117,
+      "acne": 0.2401,
+      "oilyAcne": 0.2089
+     }
+    },
+    "shift": {
+     "raw": {
+      "tzShine": 0.0492,
+      "chShine": 0.0238,
+      "noseShine": 0.0436,
+      "chRed": 0.0105,
+      "nosePore": 0.0007,
+      "q": 0.894
+     },
+     "Sp": [
+      0.4072,
+      0.5001,
+      0.0927
+     ],
+     "idx": {
+      "tzOil": 68,
+      "noseOil": 64,
+      "pore": 10,
+      "cheekOil": 50,
+      "red": 10,
+      "flake": 73
+     },
+     "q": 0.894,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.0135,
+      "oily": 0.408,
+      "dry": 0.5309,
+      "acne": 0.2334,
+      "oilyAcne": 0.1954
+     }
+    }
+   }
+  },
+  "oilyMild": {
+   "retakeAgree": 0.969,
+   "marginSmallFrac": 0.015,
+   "agree": {
+    "neutral": 0.923,
+    "oily": 1,
+    "dry": 1,
+    "acne": 1,
+    "oilyAcne": 1
+   },
+   "agreeMean": 0.985,
+   "SpSpread": {
+    "oily": 0.3789,
+    "dry": 0.3873,
+    "acne": 0.0186
+   },
+   "idxSpread": {
+    "tzOil": 29,
+    "pore": 51,
+    "red": 0
+   },
+   "variants": {
+    "base": {
+     "raw": {
+      "tzShine": 0.0937,
+      "chShine": 0.0293,
+      "noseShine": 0.0864,
+      "chRed": 0.0098,
+      "nosePore": 0.002,
+      "q": 0.995
+     },
+     "Sp": [
+      0.7958,
+      0.1021,
+      0.1021
+     ],
+     "idx": {
+      "tzOil": 89,
+      "noseOil": 86,
+      "pore": 48,
+      "cheekOil": 54,
+      "red": 10,
+      "flake": 38
+     },
+     "q": 0.995,
+     "types": {
+      "neutral": 0,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.3076,
+      "oily": 0.7399,
+      "dry": 0.1422,
+      "acne": 0.0327,
+      "oilyAcne": 0.4556
+     }
+    },
+    "dark20": {
+     "raw": {
+      "tzShine": 0.0952,
+      "chShine": 0.0292,
+      "noseShine": 0.0869,
+      "chRed": 0.0098,
+      "nosePore": 0.0011,
+      "q": 0.995
+     },
+     "Sp": [
+      0.794,
+      0.103,
+      0.103
+     ],
+     "idx": {
+      "tzOil": 90,
+      "noseOil": 86,
+      "pore": 28,
+      "cheekOil": 54,
+      "red": 10,
+      "flake": 24
+     },
+     "q": 0.995,
+     "types": {
+      "neutral": 0,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.3064,
+      "oily": 0.7389,
+      "dry": 0.1436,
+      "acne": 0.0341,
+      "oilyAcne": 0.4544
+     }
+    },
+    "dark35": {
+     "raw": {
+      "tzShine": 0.0923,
+      "chShine": 0.029,
+      "noseShine": 0.0895,
+      "chRed": 0.0099,
+      "nosePore": 0.0005,
+      "q": 1
+     },
+     "Sp": [
+      0.7932,
+      0.1034,
+      0.1034
+     ],
+     "idx": {
+      "tzOil": 89,
+      "noseOil": 88,
+      "pore": 10,
+      "cheekOil": 54,
+      "red": 10,
+      "flake": 10
+     },
+     "q": 1,
+     "types": {
+      "neutral": 0,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.3073,
+      "oily": 0.7381,
+      "dry": 0.1411,
+      "acne": 0.0318,
+      "oilyAcne": 0.4548
+     }
+    },
+    "bright20": {
+     "raw": {
+      "tzShine": 0.0565,
+      "chShine": 0.0287,
+      "noseShine": 0.0977,
+      "chRed": 0.01,
+      "nosePore": 0.0029,
+      "q": 0.984
+     },
+     "Sp": [
+      0.5351,
+      0.3786,
+      0.0863
+     ],
+     "idx": {
+      "tzOil": 72,
+      "noseOil": 91,
+      "pore": 61,
+      "cheekOil": 54,
+      "red": 10,
+      "flake": 39
+     },
+     "q": 0.984,
+     "types": {
+      "neutral": 0,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.0849,
+      "oily": 0.5209,
+      "dry": 0.3685,
+      "acne": 0.1479,
+      "oilyAcne": 0.3448
+     }
+    },
+    "gammaLo": {
+     "raw": {
+      "tzShine": 0.105,
+      "chShine": 0.0316,
+      "noseShine": 0.1016,
+      "chRed": 0.0128,
+      "nosePore": 0.0025,
+      "q": 0.787
+     },
+     "Sp": [
+      0.8084,
+      0.0958,
+      0.0958
+     ],
+     "idx": {
+      "tzOil": 94,
+      "noseOil": 93,
+      "pore": 55,
+      "cheekOil": 56,
+      "red": 10,
+      "flake": 43
+     },
+     "q": 0.787,
+     "types": {
+      "neutral": 0,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.255,
+      "oily": 0.7537,
+      "dry": 0.2591,
+      "acne": 0.1439,
+      "oilyAcne": 0.4238
+     }
+    },
+    "gammaHi": {
+     "raw": {
+      "tzShine": 0.0737,
+      "chShine": 0.0249,
+      "noseShine": 0.075,
+      "chRed": 0.0064,
+      "nosePore": 0.0016,
+      "q": 1
+     },
+     "Sp": [
+      0.6561,
+      0.2502,
+      0.0936
+     ],
+     "idx": {
+      "tzOil": 80,
+      "noseOil": 81,
+      "pore": 41,
+      "cheekOil": 51,
+      "red": 10,
+      "flake": 31
+     },
+     "q": 1,
+     "types": {
+      "neutral": 0,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.1894,
+      "oily": 0.6203,
+      "dry": 0.259,
+      "acne": 0.0893,
+      "oilyAcne": 0.3973
+     }
+    },
+    "warmWB": {
+     "raw": {
+      "tzShine": 0.065,
+      "chShine": 0.0137,
+      "noseShine": 0.0504,
+      "chRed": 0.0101,
+      "nosePore": 0.002,
+      "q": 0.96
+     },
+     "Sp": [
+      0.574,
+      0.3362,
+      0.0898
+     ],
+     "idx": {
+      "tzOil": 76,
+      "noseOil": 68,
+      "pore": 48,
+      "cheekOil": 40,
+      "red": 10,
+      "flake": 39
+     },
+     "q": 0.96,
+     "types": {
+      "neutral": 0,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.1158,
+      "oily": 0.5594,
+      "dry": 0.3448,
+      "acne": 0.1434,
+      "oilyAcne": 0.3584
+     }
+    },
+    "coolWB": {
+     "raw": {
+      "tzShine": 0.0454,
+      "chShine": 0.0264,
+      "noseShine": 0.0774,
+      "chRed": 0.0096,
+      "nosePore": 0.0021,
+      "q": 1
+     },
+     "Sp": [
+      0.4295,
+      0.4831,
+      0.0874
+     ],
+     "idx": {
+      "tzOil": 65,
+      "noseOil": 82,
+      "pore": 50,
+      "cheekOil": 52,
+      "red": 10,
+      "flake": 15
+     },
+     "q": 1,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.0016,
+      "oily": 0.3892,
+      "dry": 0.4837,
+      "acne": 0.1886,
+      "oilyAcne": 0.216
+     }
+    },
+    "noisy": {
+     "raw": {
+      "tzShine": 0.0916,
+      "chShine": 0.0288,
+      "noseShine": 0.0907,
+      "chRed": 0.0099,
+      "nosePore": 0.0028,
+      "q": 0.988
+     },
+     "Sp": [
+      0.7992,
+      0.1004,
+      0.1004
+     ],
+     "idx": {
+      "tzOil": 88,
+      "noseOil": 88,
+      "pore": 59,
+      "cheekOil": 54,
+      "red": 10,
+      "flake": 48
+     },
+     "q": 0.988,
+     "types": {
+      "neutral": 0,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.3075,
+      "oily": 0.7424,
+      "dry": 0.1447,
+      "acne": 0.0349,
+      "oilyAcne": 0.4564
+     }
+    },
+    "blur": {
+     "raw": {
+      "tzShine": 0.0938,
+      "chShine": 0.0279,
+      "noseShine": 0.082,
+      "chRed": 0.0089,
+      "nosePore": 0,
+      "q": 0.718
+     },
+     "Sp": [
+      0.7902,
+      0.1049,
+      0.1049
+     ],
+     "idx": {
+      "tzOil": 89,
+      "noseOil": 84,
+      "pore": 10,
+      "cheekOil": 53,
+      "red": 10,
+      "flake": 51
+     },
+     "q": 0.718,
+     "types": {
+      "neutral": 0,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.2265,
+      "oily": 0.7472,
+      "dry": 0.309,
+      "acne": 0.1924,
+      "oilyAcne": 0.4018
+     }
+    },
+    "tiltLight": {
+     "raw": {
+      "tzShine": 0.0941,
+      "chShine": 0.0263,
+      "noseShine": 0.0782,
+      "chRed": 0.0097,
+      "nosePore": 0.002,
+      "q": 0.972
+     },
+     "Sp": [
+      0.7922,
+      0.1039,
+      0.1039
+     ],
+     "idx": {
+      "tzOil": 90,
+      "noseOil": 83,
+      "pore": 49,
+      "cheekOil": 52,
+      "red": 10,
+      "flake": 37
+     },
+     "q": 0.972,
+     "types": {
+      "neutral": 0,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.2988,
+      "oily": 0.7385,
+      "dry": 0.1582,
+      "acne": 0.0481,
+      "oilyAcne": 0.449
+     }
+    },
+    "zoomIn": {
+     "raw": {
+      "tzShine": 0.104,
+      "chShine": 0.0281,
+      "noseShine": 0.0897,
+      "chRed": 0.0087,
+      "nosePore": 0.0014,
+      "q": 0.851
+     },
+     "Sp": [
+      0.8001,
+      0.1,
+      0.1
+     ],
+     "idx": {
+      "tzOil": 94,
+      "noseOil": 88,
+      "pore": 38,
+      "cheekOil": 53,
+      "red": 10,
+      "flake": 79
+     },
+     "q": 0.851,
+     "types": {
+      "neutral": 0,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.269,
+      "oily": 0.7474,
+      "dry": 0.2254,
+      "acne": 0.1121,
+      "oilyAcne": 0.4314
+     }
+    },
+    "shift": {
+     "raw": {
+      "tzShine": 0.0956,
+      "chShine": 0.0315,
+      "noseShine": 0.0861,
+      "chRed": 0.0095,
+      "nosePore": 0.0016,
+      "q": 0.887
+     },
+     "Sp": [
+      0.7953,
+      0.1024,
+      0.1024
+     ],
+     "idx": {
+      "tzOil": 90,
+      "noseOil": 86,
+      "pore": 41,
+      "cheekOil": 56,
+      "red": 10,
+      "flake": 75
+     },
+     "q": 0.887,
+     "types": {
+      "neutral": 0,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.2766,
+      "oily": 0.7435,
+      "dry": 0.2067,
+      "acne": 0.0944,
+      "oilyAcne": 0.4353
+     }
+    }
+   }
+  },
+  "oily": {
+   "retakeAgree": 1,
+   "marginSmallFrac": 0.092,
+   "agree": {
+    "neutral": 1,
+    "oily": 1,
+    "dry": 1,
+    "acne": 1,
+    "oilyAcne": 1
+   },
+   "agreeMean": 1,
+   "SpSpread": {
+    "oily": 0.3218,
+    "dry": 0.3247,
+    "acne": 0.0077
+   },
+   "idxSpread": {
+    "tzOil": 28,
+    "pore": 76,
+    "red": 0
+   },
+   "variants": {
+    "base": {
+     "raw": {
+      "tzShine": 0.1223,
+      "chShine": 0.0434,
+      "noseShine": 0.1341,
+      "chRed": 0.0109,
+      "nosePore": 0.0034,
+      "q": 0.996
+     },
+     "Sp": [
+      0.8158,
+      0.0921,
+      0.0921
+     ],
+     "idx": {
+      "tzOil": 96,
+      "noseOil": 96,
+      "pore": 66,
+      "cheekOil": 64,
+      "red": 10,
+      "flake": 48
+     },
+     "q": 0.996,
+     "types": {
+      "neutral": 0,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.3207,
+      "oily": 0.7527,
+      "dry": 0.1288,
+      "acne": 0.0189,
+      "oilyAcne": 0.469
+     }
+    },
+    "dark20": {
+     "raw": {
+      "tzShine": 0.1227,
+      "chShine": 0.0432,
+      "noseShine": 0.1365,
+      "chRed": 0.0109,
+      "nosePore": 0.0017,
+      "q": 0.996
+     },
+     "Sp": [
+      0.8117,
+      0.0942,
+      0.0942
+     ],
+     "idx": {
+      "tzOil": 96,
+      "noseOil": 96,
+      "pore": 43,
+      "cheekOil": 64,
+      "red": 10,
+      "flake": 37
+     },
+     "q": 0.996,
+     "types": {
+      "neutral": 0,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.318,
+      "oily": 0.7501,
+      "dry": 0.1316,
+      "acne": 0.0217,
+      "oilyAcne": 0.4663
+     }
+    },
+    "dark35": {
+     "raw": {
+      "tzShine": 0.1227,
+      "chShine": 0.043,
+      "noseShine": 0.1358,
+      "chRed": 0.0111,
+      "nosePore": 0.0008,
+      "q": 0.993
+     },
+     "Sp": [
+      0.8095,
+      0.0952,
+      0.0952
+     ],
+     "idx": {
+      "tzOil": 96,
+      "noseOil": 96,
+      "pore": 10,
+      "cheekOil": 64,
+      "red": 10,
+      "flake": 24
+     },
+     "q": 0.993,
+     "types": {
+      "neutral": 0,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.3158,
+      "oily": 0.7488,
+      "dry": 0.1347,
+      "acne": 0.0248,
+      "oilyAcne": 0.4643
+     }
+    },
+    "bright20": {
+     "raw": {
+      "tzShine": 0.0611,
+      "chShine": 0.042,
+      "noseShine": 0.1858,
+      "chRed": 0.0111,
+      "nosePore": 0.0055,
+      "q": 0.95
+     },
+     "Sp": [
+      0.5788,
+      0.3315,
+      0.0897
+     ],
+     "idx": {
+      "tzOil": 74,
+      "noseOil": 96,
+      "pore": 86,
+      "cheekOil": 63,
+      "red": 10,
+      "flake": 48
+     },
+     "q": 0.95,
+     "types": {
+      "neutral": 0,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.1186,
+      "oily": 0.5655,
+      "dry": 0.3453,
+      "acne": 0.1463,
+      "oilyAcne": 0.3595
+     }
+    },
+    "gammaLo": {
+     "raw": {
+      "tzShine": 0.1383,
+      "chShine": 0.0463,
+      "noseShine": 0.1613,
+      "chRed": 0.0139,
+      "nosePore": 0.0044,
+      "q": 0.819
+     },
+     "Sp": [
+      0.8181,
+      0.091,
+      0.091
+     ],
+     "idx": {
+      "tzOil": 96,
+      "noseOil": 96,
+      "pore": 76,
+      "cheekOil": 66,
+      "red": 10,
+      "flake": 53
+     },
+     "q": 0.819,
+     "types": {
+      "neutral": 0,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.2692,
+      "oily": 0.7579,
+      "dry": 0.2351,
+      "acne": 0.1206,
+      "oilyAcne": 0.4351
+     }
+    },
+    "gammaHi": {
+     "raw": {
+      "tzShine": 0.0979,
+      "chShine": 0.0351,
+      "noseShine": 0.1077,
+      "chRed": 0.0075,
+      "nosePore": 0.0026,
+      "q": 1
+     },
+     "Sp": [
+      0.8086,
+      0.0957,
+      0.0957
+     ],
+     "idx": {
+      "tzOil": 91,
+      "noseOil": 95,
+      "pore": 57,
+      "cheekOil": 59,
+      "red": 10,
+      "flake": 42
+     },
+     "q": 1,
+     "types": {
+      "neutral": 0,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.3171,
+      "oily": 0.748,
+      "dry": 0.1313,
+      "acne": 0.0216,
+      "oilyAcne": 0.465
+     }
+    },
+    "warmWB": {
+     "raw": {
+      "tzShine": 0.1188,
+      "chShine": 0.0207,
+      "noseShine": 0.097,
+      "chRed": 0.0112,
+      "nosePore": 0.0033,
+      "q": 0.947
+     },
+     "Sp": [
+      0.8106,
+      0.0947,
+      0.0947
+     ],
+     "idx": {
+      "tzOil": 96,
+      "noseOil": 91,
+      "pore": 66,
+      "cheekOil": 47,
+      "red": 10,
+      "flake": 49
+     },
+     "q": 0.947,
+     "types": {
+      "neutral": 0,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.3029,
+      "oily": 0.7506,
+      "dry": 0.1619,
+      "acne": 0.0508,
+      "oilyAcne": 0.456
+     }
+    },
+    "coolWB": {
+     "raw": {
+      "tzShine": 0.0507,
+      "chShine": 0.0382,
+      "noseShine": 0.1374,
+      "chRed": 0.0109,
+      "nosePore": 0.0038,
+      "q": 1
+     },
+     "Sp": [
+      0.4963,
+      0.4157,
+      0.088
+     ],
+     "idx": {
+      "tzOil": 68,
+      "noseOil": 96,
+      "pore": 70,
+      "cheekOil": 61,
+      "red": 10,
+      "flake": 30
+     },
+     "q": 1,
+     "types": {
+      "neutral": 0,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.0542,
+      "oily": 0.4851,
+      "dry": 0.3942,
+      "acne": 0.1588,
+      "oilyAcne": 0.3278
+     }
+    },
+    "noisy": {
+     "raw": {
+      "tzShine": 0.1196,
+      "chShine": 0.0427,
+      "noseShine": 0.1343,
+      "chRed": 0.0111,
+      "nosePore": 0.0042,
+      "q": 0.991
+     },
+     "Sp": [
+      0.8176,
+      0.0912,
+      0.0912
+     ],
+     "idx": {
+      "tzOil": 96,
+      "noseOil": 96,
+      "pore": 74,
+      "cheekOil": 64,
+      "red": 10,
+      "flake": 54
+     },
+     "q": 0.991,
+     "types": {
+      "neutral": 0,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.3202,
+      "oily": 0.754,
+      "dry": 0.1311,
+      "acne": 0.021,
+      "oilyAcne": 0.4691
+     }
+    },
+    "blur": {
+     "raw": {
+      "tzShine": 0.1225,
+      "chShine": 0.0413,
+      "noseShine": 0.1262,
+      "chRed": 0.0102,
+      "nosePore": 0.0001,
+      "q": 0.719
+     },
+     "Sp": [
+      0.8095,
+      0.0952,
+      0.0952
+     ],
+     "idx": {
+      "tzOil": 96,
+      "noseOil": 96,
+      "pore": 10,
+      "cheekOil": 63,
+      "red": 10,
+      "flake": 57
+     },
+     "q": 0.719,
+     "types": {
+      "neutral": 0,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.2356,
+      "oily": 0.7561,
+      "dry": 0.2996,
+      "acne": 0.1827,
+      "oilyAcne": 0.4112
+     }
+    },
+    "tiltLight": {
+     "raw": {
+      "tzShine": 0.1227,
+      "chShine": 0.0369,
+      "noseShine": 0.1271,
+      "chRed": 0.0109,
+      "nosePore": 0.0035,
+      "q": 0.983
+     },
+     "Sp": [
+      0.8161,
+      0.092,
+      0.092
+     ],
+     "idx": {
+      "tzOil": 96,
+      "noseOil": 96,
+      "pore": 68,
+      "cheekOil": 60,
+      "red": 10,
+      "flake": 47
+     },
+     "q": 0.983,
+     "types": {
+      "neutral": 0,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.3168,
+      "oily": 0.7532,
+      "dry": 0.1369,
+      "acne": 0.0266,
+      "oilyAcne": 0.4666
+     }
+    },
+    "zoomIn": {
+     "raw": {
+      "tzShine": 0.1412,
+      "chShine": 0.0381,
+      "noseShine": 0.1325,
+      "chRed": 0.013,
+      "nosePore": 0.0022,
+      "q": 0.842
+     },
+     "Sp": [
+      0.813,
+      0.0935,
+      0.0935
+     ],
+     "idx": {
+      "tzOil": 96,
+      "noseOil": 96,
+      "pore": 51,
+      "cheekOil": 61,
+      "red": 10,
+      "flake": 81
+     },
+     "q": 0.842,
+     "types": {
+      "neutral": 0,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.2734,
+      "oily": 0.7546,
+      "dry": 0.2238,
+      "acne": 0.11,
+      "oilyAcne": 0.4369
+     }
+    },
+    "shift": {
+     "raw": {
+      "tzShine": 0.123,
+      "chShine": 0.0429,
+      "noseShine": 0.1333,
+      "chRed": 0.0112,
+      "nosePore": 0.0027,
+      "q": 0.877
+     },
+     "Sp": [
+      0.8142,
+      0.0929,
+      0.0929
+     ],
+     "idx": {
+      "tzOil": 96,
+      "noseOil": 96,
+      "pore": 58,
+      "cheekOil": 64,
+      "red": 10,
+      "flake": 79
+     },
+     "q": 0.877,
+     "types": {
+      "neutral": 0,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 0
+     },
+     "margins": {
+      "neutral": 0.2846,
+      "oily": 0.7545,
+      "dry": 0.2017,
+      "acne": 0.0887,
+      "oilyAcne": 0.4446
+     }
+    }
+   }
+  },
+  "trouble": {
+   "retakeAgree": 0.969,
+   "marginSmallFrac": 0.077,
+   "agree": {
+    "neutral": 0.923,
+    "oily": 1,
+    "dry": 1,
+    "acne": 1,
+    "oilyAcne": 1
+   },
+   "agreeMean": 0.985,
+   "SpSpread": {
+    "oily": 0.2596,
+    "dry": 0.3203,
+    "acne": 0.1811
+   },
+   "idxSpread": {
+    "tzOil": 26,
+    "pore": 45,
+    "red": 27
+   },
+   "variants": {
+    "base": {
+     "raw": {
+      "tzShine": 0.0734,
+      "chShine": 0.0323,
+      "noseShine": 0.0761,
+      "chRed": 0.1003,
+      "nosePore": 0.0016,
+      "q": 0.99
+     },
+     "Sp": [
+      0.4397,
+      0.1758,
+      0.3845
+     ],
+     "idx": {
+      "tzOil": 80,
+      "noseOil": 82,
+      "pore": 42,
+      "cheekOil": 57,
+      "red": 75,
+      "flake": 46
+     },
+     "q": 0.99,
+     "types": {
+      "neutral": 2,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.0985,
+      "oily": 0.4749,
+      "dry": 0.3321,
+      "acne": 0.314,
+      "oilyAcne": 0.1765
+     }
+    },
+    "dark20": {
+     "raw": {
+      "tzShine": 0.0747,
+      "chShine": 0.0318,
+      "noseShine": 0.0732,
+      "chRed": 0.0991,
+      "nosePore": 0.0009,
+      "q": 0.99
+     },
+     "Sp": [
+      0.4438,
+      0.17,
+      0.3862
+     ],
+     "idx": {
+      "tzOil": 81,
+      "noseOil": 80,
+      "pore": 19,
+      "cheekOil": 56,
+      "red": 75,
+      "flake": 34
+     },
+     "q": 0.99,
+     "types": {
+      "neutral": 2,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.0997,
+      "oily": 0.4758,
+      "dry": 0.3277,
+      "acne": 0.3126,
+      "oilyAcne": 0.1776
+     }
+    },
+    "dark35": {
+     "raw": {
+      "tzShine": 0.0724,
+      "chShine": 0.0312,
+      "noseShine": 0.0754,
+      "chRed": 0.1001,
+      "nosePore": 0.0004,
+      "q": 1
+     },
+     "Sp": [
+      0.4312,
+      0.1827,
+      0.3861
+     ],
+     "idx": {
+      "tzOil": 80,
+      "noseOil": 81,
+      "pore": 10,
+      "cheekOil": 56,
+      "red": 75,
+      "flake": 19
+     },
+     "q": 1,
+     "types": {
+      "neutral": 2,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.0937,
+      "oily": 0.467,
+      "dry": 0.3343,
+      "acne": 0.3155,
+      "oilyAcne": 0.171
+     }
+    },
+    "bright20": {
+     "raw": {
+      "tzShine": 0.044,
+      "chShine": 0.0324,
+      "noseShine": 0.0816,
+      "chRed": 0.1015,
+      "nosePore": 0.0024,
+      "q": 0.999
+     },
+     "Sp": [
+      0.2869,
+      0.3473,
+      0.3658
+     ],
+     "idx": {
+      "tzOil": 64,
+      "noseOil": 84,
+      "pore": 55,
+      "cheekOil": 57,
+      "red": 76,
+      "flake": 47
+     },
+     "q": 0.999,
+     "types": {
+      "neutral": 2,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.0138,
+      "oily": 0.3765,
+      "dry": 0.4523,
+      "acne": 0.4006,
+      "oilyAcne": 0.0249
+     }
+    },
+    "gammaLo": {
+     "raw": {
+      "tzShine": 0.0867,
+      "chShine": 0.0383,
+      "noseShine": 0.0884,
+      "chRed": 0.1265,
+      "nosePore": 0.002,
+      "q": 0.763
+     },
+     "Sp": [
+      0.4626,
+      0.0798,
+      0.4576
+     ],
+     "idx": {
+      "tzOil": 86,
+      "noseOil": 87,
+      "pore": 49,
+      "cheekOil": 61,
+      "red": 86,
+      "flake": 50
+     },
+     "q": 0.763,
+     "types": {
+      "neutral": 2,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.0894,
+      "oily": 0.5332,
+      "dry": 0.3878,
+      "acne": 0.3947,
+      "oilyAcne": 0.1824
+     }
+    },
+    "gammaHi": {
+     "raw": {
+      "tzShine": 0.0602,
+      "chShine": 0.0256,
+      "noseShine": 0.0632,
+      "chRed": 0.0697,
+      "nosePore": 0.0013,
+      "q": 1
+     },
+     "Sp": [
+      0.4207,
+      0.3028,
+      0.2765
+     ],
+     "idx": {
+      "tzOil": 74,
+      "noseOil": 75,
+      "pore": 36,
+      "cheekOil": 51,
+      "red": 59,
+      "flake": 40
+     },
+     "q": 1,
+     "types": {
+      "neutral": 0,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.0633,
+      "oily": 0.4942,
+      "dry": 0.3851,
+      "acne": 0.2734,
+      "oilyAcne": 0.2131
+     }
+    },
+    "warmWB": {
+     "raw": {
+      "tzShine": 0.0528,
+      "chShine": 0.017,
+      "noseShine": 0.0438,
+      "chRed": 0.1035,
+      "nosePore": 0.0016,
+      "q": 0.951
+     },
+     "Sp": [
+      0.3187,
+      0.3117,
+      0.3696
+     ],
+     "idx": {
+      "tzOil": 70,
+      "noseOil": 64,
+      "pore": 41,
+      "cheekOil": 44,
+      "red": 76,
+      "flake": 47
+     },
+     "q": 0.951,
+     "types": {
+      "neutral": 2,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.0146,
+      "oily": 0.4059,
+      "dry": 0.4491,
+      "acne": 0.4075,
+      "oilyAcne": 0.0106
+     }
+    },
+    "coolWB": {
+     "raw": {
+      "tzShine": 0.0372,
+      "chShine": 0.0292,
+      "noseShine": 0.0663,
+      "chRed": 0.0974,
+      "nosePore": 0.0018,
+      "q": 1
+     },
+     "Sp": [
+      0.2436,
+      0.4001,
+      0.3563
+     ],
+     "idx": {
+      "tzOil": 60,
+      "noseOil": 77,
+      "pore": 45,
+      "cheekOil": 54,
+      "red": 74,
+      "flake": 32
+     },
+     "q": 1,
+     "types": {
+      "neutral": 2,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.0535,
+      "oily": 0.3373,
+      "dry": 0.5062,
+      "acne": 0.3402,
+      "oilyAcne": 0.0174
+     }
+    },
+    "noisy": {
+     "raw": {
+      "tzShine": 0.0719,
+      "chShine": 0.032,
+      "noseShine": 0.0764,
+      "chRed": 0.0984,
+      "nosePore": 0.0024,
+      "q": 0.976
+     },
+     "Sp": [
+      0.4405,
+      0.1858,
+      0.3737
+     ],
+     "idx": {
+      "tzOil": 80,
+      "noseOil": 82,
+      "pore": 54,
+      "cheekOil": 56,
+      "red": 74,
+      "flake": 51
+     },
+     "q": 0.976,
+     "types": {
+      "neutral": 2,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.1038,
+      "oily": 0.4843,
+      "dry": 0.3412,
+      "acne": 0.3132,
+      "oilyAcne": 0.1827
+     }
+    },
+    "blur": {
+     "raw": {
+      "tzShine": 0.0735,
+      "chShine": 0.0306,
+      "noseShine": 0.0691,
+      "chRed": 0.0974,
+      "nosePore": 0,
+      "q": 0.715
+     },
+     "Sp": [
+      0.4374,
+      0.1797,
+      0.3829
+     ],
+     "idx": {
+      "tzOil": 80,
+      "noseOil": 78,
+      "pore": 10,
+      "cheekOil": 55,
+      "red": 74,
+      "flake": 54
+     },
+     "q": 0.715,
+     "types": {
+      "neutral": 2,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.0916,
+      "oily": 0.5646,
+      "dry": 0.4449,
+      "acne": 0.3927,
+      "oilyAcne": 0.2028
+     }
+    },
+    "tiltLight": {
+     "raw": {
+      "tzShine": 0.0718,
+      "chShine": 0.0262,
+      "noseShine": 0.0675,
+      "chRed": 0.0997,
+      "nosePore": 0.0017,
+      "q": 0.962
+     },
+     "Sp": [
+      0.4351,
+      0.1882,
+      0.3767
+     ],
+     "idx": {
+      "tzOil": 79,
+      "noseOil": 77,
+      "pore": 43,
+      "cheekOil": 52,
+      "red": 75,
+      "flake": 45
+     },
+     "q": 0.962,
+     "types": {
+      "neutral": 2,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.1006,
+      "oily": 0.4852,
+      "dry": 0.3498,
+      "acne": 0.3207,
+      "oilyAcne": 0.1804
+     }
+    },
+    "zoomIn": {
+     "raw": {
+      "tzShine": 0.0855,
+      "chShine": 0.0288,
+      "noseShine": 0.0759,
+      "chRed": 0.0982,
+      "nosePore": 0.0012,
+      "q": 0.834
+     },
+     "Sp": [
+      0.5032,
+      0.1002,
+      0.3966
+     ],
+     "idx": {
+      "tzOil": 86,
+      "noseOil": 81,
+      "pore": 31,
+      "cheekOil": 54,
+      "red": 75,
+      "flake": 78
+     },
+     "q": 0.834,
+     "types": {
+      "neutral": 2,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.1227,
+      "oily": 0.5455,
+      "dry": 0.3472,
+      "acne": 0.339,
+      "oilyAcne": 0.2111
+     }
+    },
+    "shift": {
+     "raw": {
+      "tzShine": 0.0796,
+      "chShine": 0.0315,
+      "noseShine": 0.0732,
+      "chRed": 0.0986,
+      "nosePore": 0.0014,
+      "q": 0.866
+     },
+     "Sp": [
+      0.4768,
+      0.1381,
+      0.3852
+     ],
+     "idx": {
+      "tzOil": 83,
+      "noseOil": 80,
+      "pore": 37,
+      "cheekOil": 56,
+      "red": 74,
+      "flake": 75
+     },
+     "q": 0.866,
+     "types": {
+      "neutral": 2,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.1165,
+      "oily": 0.5295,
+      "dry": 0.3549,
+      "acne": 0.3349,
+      "oilyAcne": 0.2026
+     }
+    }
+   }
+  },
+  "dryRed": {
+   "retakeAgree": 0.969,
+   "marginSmallFrac": 0.154,
+   "agree": {
+    "neutral": 0.923,
+    "oily": 1,
+    "dry": 1,
+    "acne": 1,
+    "oilyAcne": 1
+   },
+   "agreeMean": 0.985,
+   "SpSpread": {
+    "oily": 0.0591,
+    "dry": 0.1338,
+    "acne": 0.1465
+   },
+   "idxSpread": {
+    "tzOil": 15,
+    "pore": 15,
+    "red": 25
+   },
+   "variants": {
+    "base": {
+     "raw": {
+      "tzShine": 0.018,
+      "chShine": 0.008,
+      "noseShine": 0.0082,
+      "chRed": 0.0813,
+      "nosePore": 0.0003,
+      "q": 0.984
+     },
+     "Sp": [
+      0.1395,
+      0.5576,
+      0.3028
+     ],
+     "idx": {
+      "tzOil": 45,
+      "noseOil": 33,
+      "pore": 10,
+      "cheekOil": 33,
+      "red": 66,
+      "flake": 10
+     },
+     "q": 0.984,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.1576,
+      "oily": 0.2378,
+      "dry": 0.593,
+      "acne": 0.2627,
+      "oilyAcne": 0.0045
+     }
+    },
+    "dark20": {
+     "raw": {
+      "tzShine": 0.0181,
+      "chShine": 0.0083,
+      "noseShine": 0.0083,
+      "chRed": 0.0803,
+      "nosePore": 0.0001,
+      "q": 0.984
+     },
+     "Sp": [
+      0.1393,
+      0.5597,
+      0.3011
+     ],
+     "idx": {
+      "tzOil": 45,
+      "noseOil": 34,
+      "pore": 10,
+      "cheekOil": 34,
+      "red": 66,
+      "flake": 10
+     },
+     "q": 0.984,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.1585,
+      "oily": 0.237,
+      "dry": 0.5945,
+      "acne": 0.2612,
+      "oilyAcne": 0.0038
+     }
+    },
+    "dark35": {
+     "raw": {
+      "tzShine": 0.0182,
+      "chShine": 0.0084,
+      "noseShine": 0.0083,
+      "chRed": 0.081,
+      "nosePore": 0.0001,
+      "q": 1
+     },
+     "Sp": [
+      0.1393,
+      0.5577,
+      0.303
+     ],
+     "idx": {
+      "tzOil": 45,
+      "noseOil": 34,
+      "pore": 10,
+      "cheekOil": 34,
+      "red": 66,
+      "flake": 10
+     },
+     "q": 1,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.1586,
+      "oily": 0.23,
+      "dry": 0.5893,
+      "acne": 0.2571,
+      "oilyAcne": 0.0068
+     }
+    },
+    "bright20": {
+     "raw": {
+      "tzShine": 0.0093,
+      "chShine": 0.0074,
+      "noseShine": 0.0074,
+      "chRed": 0.0812,
+      "nosePore": 0.0005,
+      "q": 1
+     },
+     "Sp": [
+      0.0986,
+      0.5948,
+      0.3066
+     ],
+     "idx": {
+      "tzOil": 35,
+      "noseOil": 32,
+      "pore": 10,
+      "cheekOil": 32,
+      "red": 66,
+      "flake": 10
+     },
+     "q": 1,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.1713,
+      "oily": 0.1975,
+      "dry": 0.602,
+      "acne": 0.2444,
+      "oilyAcne": 0.0267
+     }
+    },
+    "gammaLo": {
+     "raw": {
+      "tzShine": 0.0181,
+      "chShine": 0.009,
+      "noseShine": 0.0086,
+      "chRed": 0.1032,
+      "nosePore": 0.0004,
+      "q": 0.941
+     },
+     "Sp": [
+      0.1248,
+      0.508,
+      0.3672
+     ],
+     "idx": {
+      "tzOil": 45,
+      "noseOil": 34,
+      "pore": 10,
+      "cheekOil": 35,
+      "red": 77,
+      "flake": 10
+     },
+     "q": 0.941,
+     "types": {
+      "neutral": 2,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.1117,
+      "oily": 0.2696,
+      "dry": 0.5588,
+      "acne": 0.3212,
+      "oilyAcne": 0.031
+     }
+    },
+    "gammaHi": {
+     "raw": {
+      "tzShine": 0.0142,
+      "chShine": 0.0068,
+      "noseShine": 0.0066,
+      "chRed": 0.0575,
+      "nosePore": 0.0003,
+      "q": 1
+     },
+     "Sp": [
+      0.1375,
+      0.6418,
+      0.2207
+     ],
+     "idx": {
+      "tzOil": 41,
+      "noseOil": 31,
+      "pore": 10,
+      "cheekOil": 31,
+      "red": 52,
+      "flake": 10
+     },
+     "q": 1,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.1938,
+      "oily": 0.197,
+      "dry": 0.6567,
+      "acne": 0.1897,
+      "oilyAcne": 0.0276
+     }
+    },
+    "warmWB": {
+     "raw": {
+      "tzShine": 0.0084,
+      "chShine": 0.0039,
+      "noseShine": 0.0037,
+      "chRed": 0.0841,
+      "nosePore": 0.0003,
+      "q": 0.947
+     },
+     "Sp": [
+      0.0989,
+      0.5873,
+      0.3138
+     ],
+     "idx": {
+      "tzOil": 34,
+      "noseOil": 26,
+      "pore": 10,
+      "cheekOil": 26,
+      "red": 68,
+      "flake": 10
+     },
+     "q": 0.947,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.162,
+      "oily": 0.2276,
+      "dry": 0.6077,
+      "acne": 0.2694,
+      "oilyAcne": 0.0213
+     }
+    },
+    "coolWB": {
+     "raw": {
+      "tzShine": 0.0096,
+      "chShine": 0.0063,
+      "noseShine": 0.0069,
+      "chRed": 0.0792,
+      "nosePore": 0.0003,
+      "q": 1
+     },
+     "Sp": [
+      0.1034,
+      0.5968,
+      0.2998
+     ],
+     "idx": {
+      "tzOil": 35,
+      "noseOil": 32,
+      "pore": 10,
+      "cheekOil": 31,
+      "red": 65,
+      "flake": 10
+     },
+     "q": 1,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.175,
+      "oily": 0.1989,
+      "dry": 0.6057,
+      "acne": 0.2407,
+      "oilyAcne": 0.0216
+     }
+    },
+    "noisy": {
+     "raw": {
+      "tzShine": 0.0177,
+      "chShine": 0.0079,
+      "noseShine": 0.0081,
+      "chRed": 0.0803,
+      "nosePore": 0.001,
+      "q": 0.984
+     },
+     "Sp": [
+      0.1403,
+      0.5637,
+      0.296
+     ],
+     "idx": {
+      "tzOil": 45,
+      "noseOil": 33,
+      "pore": 25,
+      "cheekOil": 33,
+      "red": 65,
+      "flake": 30
+     },
+     "q": 0.984,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.1595,
+      "oily": 0.236,
+      "dry": 0.5982,
+      "acne": 0.2576,
+      "oilyAcne": 0.0012
+     }
+    },
+    "blur": {
+     "raw": {
+      "tzShine": 0.0179,
+      "chShine": 0.0077,
+      "noseShine": 0.0078,
+      "chRed": 0.0787,
+      "nosePore": 0,
+      "q": 0.709
+     },
+     "Sp": [
+      0.1397,
+      0.5658,
+      0.2945
+     ],
+     "idx": {
+      "tzOil": 45,
+      "noseOil": 33,
+      "pore": 10,
+      "cheekOil": 33,
+      "red": 65,
+      "flake": 35
+     },
+     "q": 0.709,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.1086,
+      "oily": 0.3662,
+      "dry": 0.6597,
+      "acne": 0.3537,
+      "oilyAcne": 0.0344
+     }
+    },
+    "tiltLight": {
+     "raw": {
+      "tzShine": 0.0156,
+      "chShine": 0.0071,
+      "noseShine": 0.0064,
+      "chRed": 0.0812,
+      "nosePore": 0.0003,
+      "q": 0.991
+     },
+     "Sp": [
+      0.1283,
+      0.5676,
+      0.3042
+     ],
+     "idx": {
+      "tzOil": 42,
+      "noseOil": 31,
+      "pore": 10,
+      "cheekOil": 32,
+      "red": 66,
+      "flake": 10
+     },
+     "q": 0.991,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.1614,
+      "oily": 0.2258,
+      "dry": 0.5947,
+      "acne": 0.2571,
+      "oilyAcne": 0.011
+     }
+    },
+    "zoomIn": {
+     "raw": {
+      "tzShine": 0.0223,
+      "chShine": 0.0087,
+      "noseShine": 0.0094,
+      "chRed": 0.0739,
+      "nosePore": 0.0003,
+      "q": 0.848
+     },
+     "Sp": [
+      0.1577,
+      0.5668,
+      0.2755
+     ],
+     "idx": {
+      "tzOil": 49,
+      "noseOil": 35,
+      "pore": 10,
+      "cheekOil": 34,
+      "red": 64,
+      "flake": 72
+     },
+     "q": 0.848,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.1285,
+      "oily": 0.3061,
+      "dry": 0.6364,
+      "acne": 0.297,
+      "oilyAcne": 0.0303
+     }
+    },
+    "shift": {
+     "raw": {
+      "tzShine": 0.0189,
+      "chShine": 0.0087,
+      "noseShine": 0.0079,
+      "chRed": 0.079,
+      "nosePore": 0.0003,
+      "q": 0.882
+     },
+     "Sp": [
+      0.1384,
+      0.5725,
+      0.2892
+     ],
+     "idx": {
+      "tzOil": 46,
+      "noseOil": 33,
+      "pore": 10,
+      "cheekOil": 34,
+      "red": 65,
+      "flake": 65
+     },
+     "q": 0.882,
+     "types": {
+      "neutral": 1,
+      "oily": 0,
+      "dry": 1,
+      "acne": 2,
+      "oilyAcne": 2
+     },
+     "margins": {
+      "neutral": 0.1442,
+      "oily": 0.2806,
+      "dry": 0.626,
+      "acne": 0.2879,
+      "oilyAcne": 0.0136
+     }
+    }
+   }
+  }
+ },
+ "photoConsistencySummary": {
+  "agreeMean": 0.972,
+  "retakeAgreeMean": 0.949,
+  "marginSmallMean": 0.099,
+  "worstProfile": "normal",
+  "tzOilIdxSpreadMax": 29
+ },
+ "typeMatrix": {
+  "veryDry": {
+   "neutral": "A건성",
+   "oily": "B지성",
+   "dry": "A건성",
+   "acne": "C트러블",
+   "oilyAcne": "A건성"
+  },
+  "dry": {
+   "neutral": "A건성",
+   "oily": "B지성",
+   "dry": "A건성",
+   "acne": "C트러블",
+   "oilyAcne": "B지성"
+  },
+  "normal": {
+   "neutral": "A건성",
+   "oily": "B지성",
+   "dry": "A건성",
+   "acne": "C트러블",
+   "oilyAcne": "B지성"
+  },
+  "oilyMild": {
+   "neutral": "B지성",
+   "oily": "B지성",
+   "dry": "A건성",
+   "acne": "C트러블",
+   "oilyAcne": "B지성"
+  },
+  "oily": {
+   "neutral": "B지성",
+   "oily": "B지성",
+   "dry": "A건성",
+   "acne": "C트러블",
+   "oilyAcne": "B지성"
+  },
+  "trouble": {
+   "neutral": "C트러블",
+   "oily": "B지성",
+   "dry": "A건성",
+   "acne": "C트러블",
+   "oilyAcne": "C트러블"
+  },
+  "dryRed": {
+   "neutral": "C트러블",
+   "oily": "B지성",
+   "dry": "A건성",
+   "acne": "C트러블",
+   "oilyAcne": "C트러블"
+  }
+ },
+ "strengthen": {
+  "flushed": {
+   "cheek": {
+    "redness": 0.211,
+    "redSpot": 0.002,
+    "redFlush": 0.207
+   },
+   "type": "A건성",
+   "flags": [
+    "홍조 주의"
+   ],
+   "SpAcne": 0.081
+  },
+  "contamination": {
+   "cleanRef": {
+    "redSpot": 0.0101,
+    "poreDen": 0.0006,
+    "shine": 0.0309
+   },
+   "dirtyDeviation": {
+    "red": 0.0005,
+    "pore": 0,
+    "shine": 0.0018
+   },
+   "withExcludeDeviation": {
+    "red": 0.0018,
+    "pore": 0,
+    "shine": 0.0014
+   }
+  },
+  "burst": {
+   "singleMeanDev": 0.0136,
+   "burstMeanDev": 0.0091
+  }
+ },
+ "retakeHysteresis": {
+  "pairs": 5460,
+  "flipRateNoPrev": 0.0509,
+  "flipRateWithPrev": 0.0509
+ }
+}

@@ -49,6 +49,8 @@ export const CAL = {
   relOilW: 0.55,    // 유분 판정에서 '부위 간 상대신호(T존-볼)' 가중 — 같은 사진 안 비교라 조명이 소거됨
   roughLo: 0.15,    // 거칠기(각질) 정규화 하한 — 합성 스윕(v2.2): 매끈 0.09·노이즈 0.17·중간각질 0.36·심함 0.62, 실기기 재확인 예정
   roughSpan: 0.55,  // 거칠기 정규화 폭
+  hystMargin: 0.03, // 재촬영 히스테리시스: 1·2위 격차가 이 미만이고 2위가 직전 타입이면 직전 타입 유지 (v2.3)
+  hystTrouble: 0.02,// 재촬영 히스테리시스: 직전이 C였고 F[2]가 troubleMin−이 값 이상이면 C 유지 (C 경계 절벽 튐 방지)
 };
 
 /* ===== 촬영 게이트 상수 (★팀 캘리브레이션 — 여기 숫자만 조정) ===== */
@@ -304,8 +306,10 @@ export function buildSurveyQuestions(photo) {
 /* 설문 점수 → 벡터. ans[i] = Q[i].opts 인덱스(-1 = 무응답) */
 export function scoreSurvey(Q, ans) { let o = 0, d = 0, a = 0; Q.forEach((q, i) => { const opt = q.opts[ans[i]] || {}; o += opt.o || 0; d += opt.d || 0; a += opt.a || 0; }); o += 1.5; d += 1.4; a += 1.0; return normalize([o, d, a]); } /* 세 축 공통 바닥값(동점 방지용 미세 차등) — 예전 o+=2는 유분만 가산해 지성 쏠림 */
 
-/* ===== 융합 판정 ===== */
-export function fuse(Sv, photo) {
+/* ===== 융합 판정 =====
+ * prev(선택): 같은 기기의 직전 진단 {primary, F} — 신선한(페이지가 2시간 이내만 전달) 재촬영에서
+ * 경계 마진 안의 타입 뒤집힘을 막는 히스테리시스. 명확한 신호(마진≥hystMargin)는 절대 덮지 않는다. */
+export function fuse(Sv, photo, prev) {
   /* 사진 가중을 q=0.35~0.65 구간에서 매끄럽게 올림 — 예전 "q≥0.5면 켜고 아니면 끔" 하드컷은
      경계 근처에서 조명 미세 변화만으로 사진 반영이 0↔0.45로 뒤집혀 재촬영 시 결과가 튀던 원인 */
   const qRamp = photo && photo.ok ? clamp((photo.q - 0.35) / 0.30, 0, 1) : 0;
@@ -315,8 +319,18 @@ export function fuse(Sv, photo) {
   if (usedPhoto && photo.flush > 0.10) flags.push('홍조 주의'); /* 대면적 붉은기 — 트러블 축과 분리된 민감 신호 */
   /* 트러블 우선 규칙 — C 처방은 '유분과 자극을 함께' 커버하므로, 트러블 신호가 임계 이상이면
      유분이 1위여도 C로 보낸다. (여드름 피부는 번들거림도 같이 답해 유분이 산술적으로 늘 이기던 문제) */
-  if (F[2] >= CAL.troubleMin) primary = 2;
+  const troubleForced = F[2] >= CAL.troubleMin;
+  if (troubleForced) primary = 2;
   else if (F[2] > 0.24 || (usedPhoto && photo.Sp[2] > 0.45)) flags.push('여드름 주의');
+  /* 재촬영 히스테리시스 — 같은 얼굴을 다시 찍었을 때 경계 근처에서 타입이 튀는 것 방지.
+     ① 1·2위 격차 < hystMargin 이고 2위가 직전 타입이면 직전 타입 유지(argmax 경계)
+     ② 직전이 C였고 F[2]가 troubleMin 바로 아래(−hystTrouble)면 C 유지(트러블 절벽 경계)
+     둘 다 "거의 동점일 때만" 작동 — 피부가 실제로 변했으면(마진 큼) 그대로 새 판정. */
+  if (prev && prev.primary != null && !troubleForced && prev.primary !== primary) {
+    const srt = [...F].sort((a, b) => b - a);
+    if (prev.primary === 2 && F[2] >= CAL.troubleMin - CAL.hystTrouble) primary = 2;
+    else if (srt[0] - srt[1] < CAL.hystMargin && F[prev.primary] >= srt[1] - 1e-9) primary = prev.primary;
+  }
   if (usedPhoto && photo.shine != null && photo.shine < 0.05 && primary === 0 && Sv[1] > 0.25) flags.push('부분 건성');
   const sorted = [...F].sort((a, b) => b - a); const margin = sorted[0] - sorted[1]; const agree = !usedPhoto ? 0.6 : (argmax(Sv) === argmax(photo.Sp) ? 1 : 0.4);
   const conf = (usedPhoto ? clamp(photo.q, 0, 1) : 0.55) * 0.4 + clamp(margin / 0.3, 0, 1) * 0.35 + agree * 0.25;
@@ -339,8 +353,8 @@ export function reasonText(r, photo) { let s = '';
  * 페이지에서 okRun >= VF.readyFrames 로 판단.
  * ctx: {region:'tzone'|'cheek'|'nose', motion:number, face:{active,posBad,far,good}} */
 export function assessRegionFrame(d, w, h, ctx) {
-  let brL = 0, brR = 0, nL = 0, nR = 0, clip = 0, tot = 0, skin = 0, fskin = 0;
-  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const i = (y * w + x) * 4; const R = d[i], G = d[i + 1], B = d[i + 2]; const lum = 0.299 * R + 0.587 * G + 0.114 * B; tot++; if (lum > 247) clip++; const mxp = Math.max(R, G, B), mnp = Math.min(R, G, B); if (isSkin(R, G, B) && (mxp - mnp) / (mxp || 1) >= 0.13) skin++; /* 채도 하한 — 따뜻한 벽지·천장이 피부로 잡히던 오탐 차단 */ if (isFaceSkin(R, G, B)) fskin++; if (x < w / 2) { brL += lum; nL++; } else { brR += lum; nR++; } }
+  let brL = 0, brR = 0, nL = 0, nR = 0, clip = 0, tot = 0, skin = 0, fskin = 0, sR = 0, sB = 0;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const i = (y * w + x) * 4; const R = d[i], G = d[i + 1], B = d[i + 2]; const lum = 0.299 * R + 0.587 * G + 0.114 * B; tot++; sR += R; sB += B; if (lum > 247) clip++; const mxp = Math.max(R, G, B), mnp = Math.min(R, G, B); if (isSkin(R, G, B) && (mxp - mnp) / (mxp || 1) >= 0.13) skin++; /* 채도 하한 — 따뜻한 벽지·천장이 피부로 잡히던 오탐 차단 */ if (isFaceSkin(R, G, B)) fskin++; if (x < w / 2) { brL += lum; nL++; } else { brR += lum; nR++; } }
   brL /= nL || 1; brR /= nR || 1; const br = (brL + brR) / 2, clipR = clip / (tot || 1), skinR = skin / (tot || 1), fskinR = fskin / (tot || 1);
   const gray = toGray(d, w, h), lap = laplacianVar(gray, w, h);
   const sym = (ctx.region === 'tzone' || ctx.region === 'nose') ? structSymmetry(gray, w, h) : 1;
@@ -357,9 +371,13 @@ export function assessRegionFrame(d, w, h, ctx) {
   else if (lap < VF.lapBlur) reason = '초점이 안 맞아요 — 살짝 멀리';
   else if (ctx.motion > VF.motionMax) reason = '잠깐 멈춰요 — 흔들리고 있어요';
   else if (sym < VF.symBlock && !face.good) reason = (ctx.region === 'nose' ? '코를' : '콧대를') + ' 세로 가운데 점선에 맞춰요';
-  const softNudge = (!reason && sym < VF.symCoach && !face.good) ? ((ctx.region === 'nose' ? '코가' : '콧대가') + ' 살짝 치우쳤어요 — 가운데면 더 좋아요') : null;
-  return { reason, softNudge, stats: { br, brL, brR, clipR, skinR, fskinR, lap, sym } };
+  /* 색온도 소프트 안내(차단 아님) — 강한 블루/웜 캐스트는 유분 측정을 흐린다(합성 coolWB에서 확인).
+     피부 R/B는 보통 1.4~2.2 — 그 밖이면 조명색이 강한 것 */
+  const cast = sR / (sB || 1);
+  let softNudge = (!reason && sym < VF.symCoach && !face.good) ? ((ctx.region === 'nose' ? '코가' : '콧대가') + ' 살짝 치우쳤어요 — 가운데면 더 좋아요') : null;
+  if (!reason && !softNudge && (cast < 1.15 || cast > 2.6)) softNudge = '조명 색이 강해요 — 흰 불빛에서 더 정확해요';
+  return { reason, softNudge, stats: { br, brL, brR, clipR, skinR, fskinR, lap, sym, cast } };
 }
 
 /* 엔진 버전 — 판정 로직이 바뀌면 올릴 것 (결과 재현·데이터 수집 시 함께 기록) */
-export const ENGINE_VERSION = '2.2.1';
+export const ENGINE_VERSION = '2.3.0';
