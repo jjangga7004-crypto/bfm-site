@@ -12,8 +12,8 @@ export const W = 720, H = 960;
 /* 피부 프로필 → 부위별 렌더 파라미터
    shineArea: 스페큘러(거의 흰색) 커버리지, redArea: 붉은 블로치 커버리지, poreDen: 모공 점 밀도 */
 export const PROFILES = {
-  veryDry: { tzone: { shineArea: 0.00, redArea: 0.005, poreDen: 0.001 }, cheek: { shineArea: 0.00, redArea: 0.005, poreDen: 0.001 }, nose: { shineArea: 0.00, redArea: 0.005, poreDen: 0.002 } },
-  dry:     { tzone: { shineArea: 0.01, redArea: 0.01, poreDen: 0.002 }, cheek: { shineArea: 0.005, redArea: 0.01, poreDen: 0.001 }, nose: { shineArea: 0.01, redArea: 0.01, poreDen: 0.003 } },
+  veryDry: { tzone: { shineArea: 0.00, redArea: 0.005, poreDen: 0.001, flakeArea: 0.10 }, cheek: { shineArea: 0.00, redArea: 0.005, poreDen: 0.001, flakeArea: 0.12 }, nose: { shineArea: 0.00, redArea: 0.005, poreDen: 0.002, flakeArea: 0.06 } },
+  dry:     { tzone: { shineArea: 0.01, redArea: 0.01, poreDen: 0.002, flakeArea: 0.05 }, cheek: { shineArea: 0.005, redArea: 0.01, poreDen: 0.001, flakeArea: 0.06 }, nose: { shineArea: 0.01, redArea: 0.01, poreDen: 0.003, flakeArea: 0.03 } },
   normal:  { tzone: { shineArea: 0.03, redArea: 0.01, poreDen: 0.004 }, cheek: { shineArea: 0.015, redArea: 0.01, poreDen: 0.002 }, nose: { shineArea: 0.03, redArea: 0.01, poreDen: 0.006 } },
   oilyMild:{ tzone: { shineArea: 0.07, redArea: 0.01, poreDen: 0.008 }, cheek: { shineArea: 0.02, redArea: 0.01, poreDen: 0.003 }, nose: { shineArea: 0.07, redArea: 0.01, poreDen: 0.012 } },
   oily:    { tzone: { shineArea: 0.14, redArea: 0.01, poreDen: 0.012 }, cheek: { shineArea: 0.03, redArea: 0.01, poreDen: 0.004 }, nose: { shineArea: 0.13, redArea: 0.015, poreDen: 0.018 } },
@@ -47,6 +47,18 @@ export function makeRegion(params, region, seed = 1) {
       [0.30, 0.33, 0.06, 0.030, [70, 52, 45], 0.85], [0.70, 0.33, 0.06, 0.030, [70, 52, 45], 0.85], // 눈
       [0.50, 0.74, 0.12, 0.05, [196, 92, 92], 0.75], // 입술(볼·코 클로즈업에선 프레임 안에 들어옴)
     ]) paintEllipse(d, fx * W, fy * H, frx * W, fry * H, col, st);
+  }
+  // 각질(플레이크): 2~5px 크기의 살짝 밝은 조각들 — 건조 피부의 들뜬 각질 재현
+  if (params.flakeArea) {
+    const nF = Math.round(params.flakeArea * W * H / 28);
+    for (let k = 0; k < nF; k++) {
+      const fx = 10 + (r() * (W - 20)) | 0, fy = 10 + (r() * (H - 20)) | 0, fr = 1.5 + r() * 2.5, lift = 10 + r() * 12;
+      for (let dy = -4; dy <= 4; dy++) for (let dx = -4; dx <= 4; dx++) {
+        const dist = Math.hypot(dx, dy); if (dist > fr) continue;
+        const i = ((fy + dy) * W + fx + dx) * 4;
+        d[i] += lift; d[i + 1] += lift * 0.97; d[i + 2] += lift * 0.95;
+      }
+    }
   }
   // 모공: 어두운 점
   const nPores = Math.round(params.poreDen * W * H / 30);

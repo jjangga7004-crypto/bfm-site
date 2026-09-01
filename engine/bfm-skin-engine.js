@@ -47,6 +47,8 @@ export const CAL = {
   poreDenLo: 0.0008, // 모공 국소최소점 밀도 하한 — 링 대비(반경4px)+노이즈 적응 문턱 척도로 2026-09 재보정(합성 스윕 기준, 실기기 9회 측정으로 재확인 예정)
   poreDenSpan: 0.006,// 모공 밀도 정규화 폭 — 위와 동일 근거
   relOilW: 0.55,    // 유분 판정에서 '부위 간 상대신호(T존-볼)' 가중 — 같은 사진 안 비교라 조명이 소거됨
+  roughLo: 0.15,    // 거칠기(각질) 정규화 하한 — 합성 스윕(v2.2): 매끈 0.09·노이즈 0.17·중간각질 0.36·심함 0.62, 실기기 재확인 예정
+  roughSpan: 0.55,  // 거칠기 정규화 폭
 };
 
 /* ===== 촬영 게이트 상수 (★팀 캘리브레이션 — 여기 숫자만 조정) ===== */
@@ -190,6 +192,27 @@ export function analyzeRegionShot(c, region, opts = {}) { const ctx = c.getConte
       + ag[p - 3 * AW - 3] + ag[p - 3 * AW + 3] + ag[p + 3 * AW - 3] + ag[p + 3 * AW + 3]) / 8;
     if (ring - ag[p] > nthr) pits++; }
   const poreDen = pitN ? pits / pitN : 0;
+  /* 거칠기(각질·피부결) — 3px vs 9px 박스평균 차의 절대값 평균(밴드패스 3~9px).
+     각질 조각(수 px 스케일)만 잡고, 픽셀 단위 센서 노이즈와 완만한 음영은 양쪽 박스에서
+     상쇄된다. 노이즈 기여분(≈0.3×이웃차평균)을 빼서 고감도 사진 편향 억제. (v2.2 — 건조 축의
+     직접 신호: 이전엔 건조를 '광택 없음'으로만 간접 추론) */
+  let rough = 0;
+  { const box = (src, r) => { const tmp = new Float32Array(AW * AH), out2 = new Float32Array(AW * AH);
+      for (let y = 0; y < AH; y++) { const off = y * AW; let acc = 0;
+        for (let x = 0; x <= Math.min(r, AW - 1); x++) acc += src[off + x];
+        for (let x = 0; x < AW; x++) { const lo = Math.max(0, x - r), hi = Math.min(AW - 1, x + r);
+          tmp[off + x] = acc / (hi - lo + 1);
+          if (x + r + 1 < AW) acc += src[off + x + r + 1]; if (x - r >= 0) acc -= src[off + x - r]; } }
+      for (let x = 0; x < AW; x++) { let acc = 0;
+        for (let y = 0; y <= Math.min(r, AH - 1); y++) acc += tmp[y * AW + x];
+        for (let y = 0; y < AH; y++) { const lo = Math.max(0, y - r), hi = Math.min(AH - 1, y + r);
+          out2[y * AW + x] = acc / (hi - lo + 1);
+          if (y + r + 1 < AH) acc += tmp[(y + r + 1) * AW + x]; if (y - r >= 0) acc -= tmp[(y - r) * AW + x]; } }
+      return out2; };
+    const b3 = box(ag, 1), b9 = box(ag, 4); let rs = 0, rn = 0;
+    for (let p = 0; p < AW * AH; p += 2) { if (!mask[p]) continue; rs += Math.abs(b3[p] - b9[p]); rn++; }
+    const mad = madN ? madSum / madN : 0;
+    rough = Math.max(0, (rn ? rs / rn : 0) - 0.45 * mad); } /* 0.45×이웃차: 노이즈만 있는 사진의 rough가 0 근처가 되도록 합성 스윕으로 맞춤 */
   const skinRatio = skinLoose / (tot || 1), faceSkinRatio = fskin / (tot || 1);
   const light = clamp((bright - 45) / 30, 0, 1) * clamp((225 - bright) / 30, 0, 1);
   const glareOk = clamp((0.15 - clipR) / 0.15, 0.3, 1); /* 클리핑 많으면 신뢰 하락 */
@@ -199,7 +222,7 @@ export function analyzeRegionShot(c, region, opts = {}) { const ctx = c.getConte
   else if (faceSkinRatio < VF.faceSkinMin && skinRatio < 0.5) reason = 'noskin';
   else if (skinRatio < VF.skinFar) reason = 'far'; else if (lap < VF.lapBlur) reason = 'blur';
   else if (sym < VF.symBlock && (region === 'tzone' || region === 'nose')) reason = 'offcenter';
-  return { shine, redness: redN ? red / redN : 0, redSpot, redFlush, lap, bright, skinRatio, faceSkinRatio, sym, q, reason, poreDen, clipR }; }
+  return { shine, redness: redN ? red / redN : 0, redSpot, redFlush, rough, lap, bright, skinRatio, faceSkinRatio, sym, q, reason, poreDen, clipR }; }
 
 /* ===== 연사 종합 =====
  * 같은 부위를 잇달아 3장 찍은 측정 결과의 숫자 필드별 중앙값 — 한 장짜리 측정의
@@ -229,7 +252,11 @@ export function combineRegions(regionData) { const tz = regionData.tzone, n = re
   const oily = clamp(0.45 * oilSig + 0.30 * (noseOil ?? oilSig) + 0.10 * (pore ?? oilSig) + 0.15 * oilSig, 0, 1); /* 모공 가중 0.25→0.10 (모공은 유분의 간접 신호일 뿐) */
   const shineTz = tz ? tz.shine : (n ? n.shine : 0);
   const dryBase = clamp((CAL.dryZero - shineTz) / CAL.dryZero, 0, 1); /* 0.05 절벽 완화 — shine 0.05만 넘으면 건성 신호가 0이 되던 문제, oily 정규화와 대칭에 가깝게 */
-  const dry = clamp(0.55 * dryBase + 0.45 * (cheekOil != null ? clamp((1 - cheekOil) * dryBase * 1.6, 0, 1) : dryBase), 0, 1);
+  let dry = clamp(0.55 * dryBase + 0.45 * (cheekOil != null ? clamp((1 - cheekOil) * dryBase * 1.6, 0, 1) : dryBase), 0, 1);
+  /* 각질(거칠기) — 건조의 직접 증거. 무광일 때만(dryBase 게이트) 최대 +18% 보정: 유분 피부의 결은 건조 신호가 아님 */
+  const roughVals = [tz, ch].filter(r => r && r.rough != null).map(r => clamp((r.rough - CAL.roughLo) / CAL.roughSpan, 0, 1));
+  const flakeN = roughVals.length ? roughVals.reduce((a, b) => a + b, 0) / roughVals.length : null;
+  if (flakeN != null) dry = clamp(dry * (1 + 0.18 * flakeN * dryBase), 0, 1);
   const acne = clamp(cheekRed ?? (n ? clamp((redOf(n) - CAL.redOffset) / CAL.redFull, 0, 1) : 0), 0, 1); /* 볼 없을 때 코 폴백도 같은 상수 사용 */
   const flush = Math.max(ch ? ch.redFlush || 0 : 0, n ? n.redFlush || 0 : 0, tz ? tz.redFlush || 0 : 0); /* 대면적 홍조 — 타입 축이 아니라 플래그로 */
   const parts = [tz, n, ch].filter(Boolean); const rq = parts.reduce((s, p) => s + p.q, 0) / (parts.length || 1);
@@ -241,7 +268,7 @@ export function combineRegions(regionData) { const tz = regionData.tzone, n = re
     /* 축별 사진 신뢰도 — 사진은 유분(스페큘러)엔 강하고, 건조는 '광택 없음'의 간접 추론이라 약하다.
        설문이 건조(당김·각질 체감)를 더 잘 재므로 dry 축은 사진 가중을 낮춘다. fuse에서 사용. */
     axisRel: [1, 0.85, 0.95],
-    idx: { tzOil: PIDX(tzOilC), noseOil: PIDX(noseOil), pore: PIDX(pore), cheekOil: PIDX(cheekOil), red: PIDX(cheekRed) } }; }
+    idx: { tzOil: PIDX(tzOilC), noseOil: PIDX(noseOil), pore: PIDX(pore), cheekOil: PIDX(cheekOil), red: PIDX(cheekRed), flake: flakeN != null ? PIDX(flakeN) : null } }; }
 
 /* ===== 설문 ===== */
 export const CORE = [
@@ -293,6 +320,7 @@ export function reasonText(r, photo) { let s = '';
   if (r.usedPhoto) { s += photo.regions ? 'T존·볼·코 부위 사진과 설문을 함께 분석했어요. ' : '셀카와 설문을 함께 분석했어요. ';
     if (photo.shineDiff > 0.06) s += '<b>T존 광택이 높아</b> 유분이 많은 편이고, '; else if (photo.shine < 0.05) s += '광택이 적어 유분은 낮은 편이고, ';
     if (photo.redness > 0.06) s += '볼에 약한 붉은기가 보여 <b>진정 케어</b>도 함께 고려했어요. ';
+    if (photo.idx && photo.idx.flake != null && photo.idx.flake >= 50) s += '피부결에 <b>각질 신호</b>가 보여 수분 보강을 우선했어요. ';
     if (photo.regions && photo.idx) { const i = photo.idx; s += `부위 지수 — T존 유분 <b>${i.tzOil}</b>${i.pore != null ? ` · 코 모공 <b>${i.pore}</b>` : ''}${i.red != null ? ` · 볼 붉은기 <b>${i.red}</b>` : ''}. `; }
     s += '이 신호에 가장 맞는 처방을 매칭했습니다.'; }
   else s += '설문 답변을 분석해, 당신에게 <b>가장 맞는 처방</b>을 매칭했어요.'; return s; }
@@ -326,4 +354,4 @@ export function assessRegionFrame(d, w, h, ctx) {
 }
 
 /* 엔진 버전 — 판정 로직이 바뀌면 올릴 것 (결과 재현·데이터 수집 시 함께 기록) */
-export const ENGINE_VERSION = '2.1.0';
+export const ENGINE_VERSION = '2.2.0';

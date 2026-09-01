@@ -68,6 +68,13 @@ const fr = ENGINE.assessRegionFrame(imageData100x128.data, 100, 128,
 - `VF` — 촬영 게이트(밝기·초점·거리 등). 촬영이 너무 깐깐하다/헐겁다 할 때 조정.
 - 문항·보기 문구는 `CORE`/`FOCUS` — 문구만 바꾸는 건 자유, `|o2d1` 같은 배점 코드를 바꾸면 판정이 변함.
 
+## 계속 진화시키는 방법
+
+- 로드맵: `engine/ROADMAP.md` — 완료(v2.0~2.2)와 다음 단계(실측 재보정→업로드 검증→세션 간 일관성→데이터 플라이휠).
+- 실측 재보정: 폰에서 `?bfmdebug`로 진단 → 결과 화면 [측정로그 복사] → JSON 저장 →
+  `node test/harness/calibrate.mjs 로그.json` 이 CAL 제안값과 troubleMin↔C비율 표를 출력.
+- 판정 근거 지수: `photo.idx` = {tzOil, noseOil, pore, cheekOil, red, flake(각질)} — 전부 0~100 표시용.
+
 ## 지켜야 할 것
 
 - **사진을 서버로 보내지 않는다** — 전부 브라우저 안에서 처리(제품 약속).
