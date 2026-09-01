@@ -37,8 +37,17 @@ export function makeRegion(params, region, seed = 1) {
   }
   // 스페큘러(광택): 타원 패치를 흰색 쪽으로 블렌드 — T존은 세로 밴드 위주
   paintPatches(d, r, params.shineArea, region === 'tzone' ? 'band' : 'spots', [255, 255, 250], 0.85);
-  // 붉은기: 블로치를 붉은색 쪽으로
+  // 붉은기: 블로치(점상) 또는 대면적 홍조(flushArea)
   paintPatches(d, r, params.redArea, 'spots', [214, 105, 95], 0.55);
+  if (params.flushArea) paintPatches(d, r, params.flushArea, 'flush', [214, 108, 98], 0.45);
+  // 얼굴 특징 오염원(선택): 어두운 눈썹·눈, 붉은 입술 — 고정 ROI 측정을 오염시키는 원인 재현
+  if (params.features) {
+    for (const [fx, fy, frx, fry, col, st] of [
+      [0.30, 0.26, 0.09, 0.020, [60, 42, 32], 0.9], [0.70, 0.26, 0.09, 0.020, [60, 42, 32], 0.9], // 눈썹
+      [0.30, 0.33, 0.06, 0.030, [70, 52, 45], 0.85], [0.70, 0.33, 0.06, 0.030, [70, 52, 45], 0.85], // 눈
+      [0.50, 0.74, 0.12, 0.05, [196, 92, 92], 0.75], // 입술(볼·코 클로즈업에선 프레임 안에 들어옴)
+    ]) paintEllipse(d, fx * W, fy * H, frx * W, fry * H, col, st);
+  }
   // 모공: 어두운 점
   const nPores = Math.round(params.poreDen * W * H / 30);
   for (let k = 0; k < nPores; k++) {
@@ -51,12 +60,21 @@ export function makeRegion(params, region, seed = 1) {
   }
   return c;
 }
+function paintEllipse(d, cx, cy, rx, ry, color, strength) {
+  for (let y = Math.max(0, cy - ry | 0); y < Math.min(H, cy + ry | 0); y++)
+    for (let x = Math.max(0, cx - rx | 0); x < Math.min(W, cx + rx | 0); x++) {
+      const e = ((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2; if (e > 1) continue;
+      const f = strength * (1 - e) ** 1.2, i = (y * W + x) * 4;
+      d[i] += (color[0] - d[i]) * f; d[i + 1] += (color[1] - d[i + 1]) * f; d[i + 2] += (color[2] - d[i + 2]) * f;
+    }
+}
 function paintPatches(d, r, areaFrac, mode, color, strength) {
   if (areaFrac <= 0) return;
   const total = areaFrac * W * H; let painted = 0; let guard = 0;
   while (painted < total && guard++ < 400) {
     let cx, cy, rx, ry;
     if (mode === 'band') { cx = W * (0.42 + r() * 0.16); cy = H * (0.15 + r() * 0.6); rx = W * (0.03 + r() * 0.05); ry = H * (0.05 + r() * 0.10); }
+    else if (mode === 'flush') { cx = W * (0.40 + r() * 0.2); cy = H * (0.35 + r() * 0.25); rx = W * (0.28 + r() * 0.10); ry = H * (0.22 + r() * 0.08); }
     else { cx = W * (0.15 + r() * 0.7); cy = H * (0.15 + r() * 0.7); rx = W * (0.02 + r() * 0.05); ry = rx * (0.7 + r() * 0.6); }
     for (let y = Math.max(0, cy - ry | 0); y < Math.min(H, cy + ry | 0); y++)
       for (let x = Math.max(0, cx - rx | 0); x < Math.min(W, cx + rx | 0); x++) {

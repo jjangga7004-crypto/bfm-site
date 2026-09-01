@@ -82,10 +82,15 @@ export const P100 = x => Math.round(clamp(x, 0, 1) * 100);
 export const PIDX = x => x == null ? null : Math.round(10 + 86 * Math.sqrt(clamp(x, 0, 1)));
 
 /* ===== 부위 원시 측정 (룰베이스 지수) =====
- * c: 부위 사진 캔버스(중앙 68%가 ROI), region: 'tzone'|'cheek'|'nose'
- * 반환: {shine, redness, lap, bright, skinRatio, faceSkinRatio, sym, q, reason, poreDen, clipR} */
-export function analyzeRegionShot(c, region) { const ctx = c.getContext('2d', { willReadFrequently: true });
-  const w = c.width, h = c.height, rx = (w * 0.16) | 0, ry = (h * 0.16) | 0, rw = (w * 0.68) | 0, rh = (h * 0.68) | 0;
+ * c: 부위 사진 캔버스, region: 'tzone'|'cheek'|'nose'
+ * opts.roi: [x,y,w,h] (0~1 정규화) — 촬영 순간 얼굴 키포인트로 잡은 측정 영역. 없으면 중앙 68%.
+ * opts.exclude: [{x,y,r}] (소스 px) — 눈·눈썹·입술 등 측정 오염원 제외 원.
+ * 반환: {shine, redness, redSpot, redFlush, lap, bright, skinRatio, faceSkinRatio, sym, q, reason, poreDen, clipR} */
+export function analyzeRegionShot(c, region, opts = {}) { const ctx = c.getContext('2d', { willReadFrequently: true });
+  const w = c.width, h = c.height;
+  const R0 = opts.roi || [0.16, 0.16, 0.68, 0.68];
+  const rx = clamp((w * R0[0]) | 0, 0, w - 32), ry = clamp((h * R0[1]) | 0, 0, h - 32);
+  const rw = clamp((w * R0[2]) | 0, 32, w - rx), rh = clamp((h * R0[3]) | 0, 32, h - ry);
   /* 게이트용(원본 해상도 유지 — lapBlur 등 기존 임계값과 호환) */
   const d = ctx.getImageData(rx, ry, rw, rh); const dd = d.data; const bright = brightnessOf(dd);
   const gray = toGray(dd, rw, rh), lap = laplacianVar(gray, rw, rh);
@@ -96,13 +101,21 @@ export function analyzeRegionShot(c, region) { const ctx = c.getContext('2d', { 
   ac.width = AW; ac.height = AH; const actx = ac.getContext('2d', { willReadFrequently: true });
   actx.imageSmoothingQuality = 'high'; actx.drawImage(c, rx, ry, rw, rh, 0, 0, AW, AH);
   const ad = actx.getImageData(0, 0, AW, AH).data;
+  /* 제외 마스크 — 눈·눈썹·입술 원(소스 px)을 분석 좌표로 사상. 어두운 눈썹은 모공 오탐,
+     입술은 붉은기 오탐의 주 오염원이라 측정 자체에서 뺀다(키포인트 있을 때만 작동). */
+  let allow = null;
+  if (opts.exclude && opts.exclude.length) { allow = new Uint8Array(AW * AH).fill(1);
+    for (const e of opts.exclude) { const ex = (e.x - rx) * AW / rw, ey = (e.y - ry) * AH / rh, er = e.r * AW / rw;
+      const x0 = Math.max(0, ex - er | 0), x1 = Math.min(AW - 1, ex + er | 0), y0 = Math.max(0, ey - er | 0), y1 = Math.min(AH - 1, ey + er | 0);
+      for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if ((x - ex) ** 2 + (y - ey) ** 2 <= er * er) allow[y * AW + x] = 0; } }
+  const ok = allow ? (p => allow[p]) : (() => 1);
   /* 1차: 피부 마스크(색도 기반 isFaceSkin — 조명에 강함) + 평균 휘도 */
   let tot = 0, fskin = 0, skinLoose = 0, sumLum = 0; const mask = new Uint8Array(AW * AH);
-  for (let p = 0; p < AW * AH; p++) { const i = p * 4; tot++; const R = ad[i], G = ad[i + 1], B = ad[i + 2];
+  for (let p = 0; p < AW * AH; p++) { const i = p * 4; tot++; if (!ok(p)) continue; const R = ad[i], G = ad[i + 1], B = ad[i + 2];
     if (isSkin(R, G, B)) skinLoose++;
     if (isFaceSkin(R, G, B)) { fskin++; mask[p] = 1; sumLum += 0.299 * R + 0.587 * G + 0.114 * B; } }
   const useLoose = fskin < 500; /* 초근접 등으로 색도 마스크가 빈약하면 느슨한 마스크로 폴백 */
-  if (useLoose) { sumLum = 0; let n = 0; for (let p = 0; p < AW * AH; p++) { const i = p * 4; const R = ad[i], G = ad[i + 1], B = ad[i + 2]; mask[p] = isSkin(R, G, B) ? 1 : 0; if (mask[p]) { sumLum += 0.299 * R + 0.587 * G + 0.114 * B; n++ } } fskin = n; }
+  if (useLoose) { sumLum = 0; let n = 0; for (let p = 0; p < AW * AH; p++) { const i = p * 4; if (!ok(p)) { mask[p] = 0; continue; } const R = ad[i], G = ad[i + 1], B = ad[i + 2]; mask[p] = isSkin(R, G, B) ? 1 : 0; if (mask[p]) { sumLum += 0.299 * R + 0.587 * G + 0.114 * B; n++ } } fskin = n; }
   const meanSkinLum = fskin ? sumLum / fskin : bright;
   const gain = clamp(165 / (meanSkinLum || 1), 0.75, 1.35); /* 휘도 게인 — 회색세계 가정 대신 피부 평균 밝기 기준 */
   /* 2차: 광택 = 스페큘러(정반사) 픽셀 — "평균 피부보다 확 밝고(V>meanV×1.12) 색이 빠진(S<0.26)" 픽셀 비율.
@@ -128,7 +141,7 @@ export function analyzeRegionShot(c, region) { const ctx = c.getContext('2d', { 
         if (mask[p]) { if ((V > vthr && S < 0.26) || (rawMx >= 252 && S < 0.20)) spec = true; if (V >= 0.985) cl++; }
         /* rawMx≥252: 과노출로 클리핑된 스페큘러 — 피부가 밝아지면 상대 문턱(meanV×1.12)에 헤드룸이
            없어져 광택이 0으로 붕괴하던 문제(합성 bright20에서 확인) 보정 */
-        else if (S < 0.20 && (rawMx >= 252 || (V > Math.max(vthr, 0.70) && S < 0.18)) && skinBlock(p)) spec = true;
+        else if (ok(p) && S < 0.20 && (rawMx >= 252 || (V > Math.max(vthr, 0.70) && S < 0.18)) && skinBlock(p)) spec = true;
         if (spec) s++; }
       shine = Math.min(s / sk, 0.5); clipR = cl / sk; } }
   /* 붉은기 = rg-색도 오프셋 — 느슨한 피부 마스크(isSkin) 위에서 nr=R/(R+G+B)가
@@ -136,13 +149,33 @@ export function analyzeRegionShot(c, region) { const ctx = c.getContext('2d', { 
      색도 마스크(isFaceSkin nr<0.475)에서 탈락해 블로치의 가장자리만 재고 ② 감마 변화에
      0.05→0.001로 붕괴했다(2026-09 합성 스윕). 색도는 노출(곱셈) 불변, 오프셋 기준이라
      "전부 균일하게 붉은" 얼굴에서도 0으로 수렴하는 성질은 유지(블로치 탐지 목적). */
-  let red = 0, redN = 0;
-  { const nrs = [];
-    for (let p = 0; p < AW * AH; p++) { const i = p * 4; const R = ad[i], G = ad[i + 1], B = ad[i + 2];
-      if (!isSkin(R, G, B)) continue; nrs.push(R / ((R + G + B) || 1)); }
+  let red = 0, redN = 0, redSpot = 0, redFlush = 0;
+  { /* stride-2 격자에서 붉은 픽셀 비트맵을 만들고 연결요소로 블롭을 나눈다.
+       점상(작은 블롭 여러 개)=트러블 신호, 대면적(한 덩어리)=홍조/민감 신호 — 이전엔 합산이라
+       넓은 홍조도 여드름으로 오판했다. */
+    const GS = 2, GW = (AW / GS) | 0, GH = (AH / GS) | 0;
+    const nrs = []; const grid = new Uint8Array(GW * GH); const gskin = new Uint8Array(GW * GH);
+    for (let gy = 0; gy < GH; gy++) for (let gx = 0; gx < GW; gx++) { const p = gy * GS * AW + gx * GS; const i = p * 4;
+      if (!ok(p)) continue; const R = ad[i], G = ad[i + 1], B = ad[i + 2];
+      if (!isSkin(R, G, B)) continue; gskin[gy * GW + gx] = 1; nrs.push(R / ((R + G + B) || 1)); }
     redN = nrs.length;
     if (redN) { const srt = nrs.slice().sort((a, b) => a - b); const med = srt[(srt.length / 2) | 0];
-      for (const nr of nrs) if (nr > med + 0.030) red++; } }
+      let k = 0;
+      for (let g = 0; g < GW * GH; g++) { if (!gskin[g]) continue; if (nrs[k++] > med + 0.030) { grid[g] = 1; red++; } }
+      /* 연결요소(BFS) — 블롭 크기로 점상/대면적 분리. 경계값: 피부격자수 대비 2%(스팟 상한)·0.02%(노이즈 하한) */
+      const minCell = Math.max(3, redN * 0.0002), spotMax = redN * 0.02;
+      const seen = new Uint8Array(GW * GH); const qx = new Int32Array(GW * GH);
+      for (let g0 = 0; g0 < GW * GH; g0++) { if (!grid[g0] || seen[g0]) continue;
+        let head = 0, tail = 0; qx[tail++] = g0; seen[g0] = 1; let size = 0;
+        while (head < tail) { const g = qx[head++]; size++;
+          const x = g % GW, y = (g / GW) | 0;
+          if (x > 0 && grid[g - 1] && !seen[g - 1]) { seen[g - 1] = 1; qx[tail++] = g - 1; }
+          if (x < GW - 1 && grid[g + 1] && !seen[g + 1]) { seen[g + 1] = 1; qx[tail++] = g + 1; }
+          if (y > 0 && grid[g - GW] && !seen[g - GW]) { seen[g - GW] = 1; qx[tail++] = g - GW; }
+          if (y < GH - 1 && grid[g + GW] && !seen[g + GW]) { seen[g + GW] = 1; qx[tail++] = g + GW; } }
+        if (size < minCell) continue; /* 노이즈 점 무시 */
+        if (size <= spotMax) redSpot += size; else redFlush += size; }
+      redSpot /= redN; redFlush /= redN; } }
   /* 모공: 국소최소점 밀도 — 자기 휘도를 "반경 4px 링의 평균"과 비교.
      예전 5×5 창 평균은 모공 크기(2~3px)와 창 크기가 비슷해 창 평균이 모공 자체가 되어
      대비가 늘 0에 수렴했다(합성 모공에서 poreDen=0 확인). 링 비교는 모공 밖 피부와 비교. */
@@ -166,7 +199,20 @@ export function analyzeRegionShot(c, region) { const ctx = c.getContext('2d', { 
   else if (faceSkinRatio < VF.faceSkinMin && skinRatio < 0.5) reason = 'noskin';
   else if (skinRatio < VF.skinFar) reason = 'far'; else if (lap < VF.lapBlur) reason = 'blur';
   else if (sym < VF.symBlock && (region === 'tzone' || region === 'nose')) reason = 'offcenter';
-  return { shine, redness: redN ? red / redN : 0, lap, bright, skinRatio, faceSkinRatio, sym, q, reason, poreDen, clipR }; }
+  return { shine, redness: redN ? red / redN : 0, redSpot, redFlush, lap, bright, skinRatio, faceSkinRatio, sym, q, reason, poreDen, clipR }; }
+
+/* ===== 연사 종합 =====
+ * 같은 부위를 잇달아 3장 찍은 측정 결과의 숫자 필드별 중앙값 — 한 장짜리 측정의
+ * 순간 노이즈(센서 노이즈·미세 흔들림·자동노출 출렁임)를 지운다. reason은 다수결. */
+export function aggregateBurst(list) {
+  if (!list || !list.length) return null; if (list.length === 1) return list[0];
+  const med = a => { const s = a.slice().sort((x, y) => x - y); return s[(s.length / 2) | 0]; };
+  const out = { ...list[(list.length / 2) | 0] };
+  for (const k of Object.keys(list[0])) if (typeof list[0][k] === 'number') out[k] = med(list.map(m => m[k] ?? 0));
+  const rc = {}; for (const m of list) rc[m.reason] = (rc[m.reason] || 0) + 1;
+  out.reason = Object.entries(rc).sort((a, b) => b[1] - a[1])[0][0]; if (out.reason === 'null') out.reason = null;
+  return out;
+}
 
 /* ===== 부위 종합 =====
  * regionData: {tzone?, cheek?, nose?} — 각각 analyzeRegionShot 결과(+faceSeen 선택)
@@ -174,7 +220,9 @@ export function analyzeRegionShot(c, region) { const ctx = c.getContext('2d', { 
 export function combineRegions(regionData) { const tz = regionData.tzone, n = regionData.nose, ch = regionData.cheek; if (!tz && !n && !ch) return null;
   const tzOilC = tz ? clamp(tz.shine / CAL.shineFull, 0, 1) : null, noseOil = n ? clamp(n.shine / CAL.shineFull, 0, 1) : null;
   const pore = n ? (n.poreDen != null ? clamp((n.poreDen - CAL.poreDenLo) / CAL.poreDenSpan, 0, 1) : clamp((n.lap - CAL.poreLo) / CAL.poreHi, 0, 1)) : null; /* 국소최소점 밀도 우선, 구버전 데이터만 lap 폴백 */
-  const cheekOil = ch ? clamp(ch.shine / CAL.shineFull, 0, 1) : null, cheekRed = ch ? clamp((ch.redness - CAL.redOffset) / CAL.redFull, 0, 1) : null;
+  /* 트러블 신호는 '점상' 붉은기(redSpot)만 사용 — 넓은 홍조(redFlush)는 민감 신호로 분리(구데이터는 redness 폴백) */
+  const redOf = r => r ? (r.redSpot != null ? r.redSpot : r.redness) : null;
+  const cheekOil = ch ? clamp(ch.shine / CAL.shineFull, 0, 1) : null, cheekRed = ch ? clamp((redOf(ch) - CAL.redOffset) / CAL.redFull, 0, 1) : null;
   let oilSig = tzOilC ?? noseOil ?? 0.3;
   /* 상대 측정: T존 vs 볼은 같은 조명을 받으므로 둘의 차이는 촬영 조건에 거의 불변 — 절대값보다 신뢰도 높음 */
   if (tz && ch) { const rel = clamp((tz.shine - ch.shine) / 0.05, 0, 1); oilSig = CAL.relOilW * rel + (1 - CAL.relOilW) * oilSig; }
@@ -182,13 +230,17 @@ export function combineRegions(regionData) { const tz = regionData.tzone, n = re
   const shineTz = tz ? tz.shine : (n ? n.shine : 0);
   const dryBase = clamp((CAL.dryZero - shineTz) / CAL.dryZero, 0, 1); /* 0.05 절벽 완화 — shine 0.05만 넘으면 건성 신호가 0이 되던 문제, oily 정규화와 대칭에 가깝게 */
   const dry = clamp(0.55 * dryBase + 0.45 * (cheekOil != null ? clamp((1 - cheekOil) * dryBase * 1.6, 0, 1) : dryBase), 0, 1);
-  const acne = clamp(cheekRed ?? (n ? clamp((n.redness - CAL.redOffset) / CAL.redFull, 0, 1) : 0), 0, 1); /* 볼 없을 때 코 폴백도 같은 상수 사용(예전엔 0.05/0.12로 세대가 달랐음) */
+  const acne = clamp(cheekRed ?? (n ? clamp((redOf(n) - CAL.redOffset) / CAL.redFull, 0, 1) : 0), 0, 1); /* 볼 없을 때 코 폴백도 같은 상수 사용 */
+  const flush = Math.max(ch ? ch.redFlush || 0 : 0, n ? n.redFlush || 0 : 0, tz ? tz.redFlush || 0 : 0); /* 대면적 홍조 — 타입 축이 아니라 플래그로 */
   const parts = [tz, n, ch].filter(Boolean); const rq = parts.reduce((s, p) => s + p.q, 0) / (parts.length || 1);
   const anyFace = parts.some(p => p.faceSeen); // 촬영 중 얼굴 감지된 부위 있으면 실사람 확인 → 신뢰↑
   const q = clamp(rq * (0.55 + 0.45 * parts.length / 3) * (anyFace ? 1.08 : 1), 0, 1); // 찍은 부위 많을수록·얼굴 잡힐수록 신뢰↑
   const shineDiff = (tz && ch) ? Math.max(0, tz.shine - ch.shine) : (oily > 0.5 ? 0.08 : 0); // T존 vs 볼 = 복합성 판단
   return { ok: true, regions: true, q, Sp: normalize([oily + 0.12, dry + 0.12, acne + 0.12]), shine: shineTz, shineDiff, /* 세 축 동일 가산 — argmax 보존, [1,0,0] 포화·oily 단독 특혜 제거 */
-    redness: ch ? ch.redness : (n ? n.redness : 0),
+    redness: ch ? ch.redness : (n ? n.redness : 0), flush,
+    /* 축별 사진 신뢰도 — 사진은 유분(스페큘러)엔 강하고, 건조는 '광택 없음'의 간접 추론이라 약하다.
+       설문이 건조(당김·각질 체감)를 더 잘 재므로 dry 축은 사진 가중을 낮춘다. fuse에서 사용. */
+    axisRel: [1, 0.85, 0.95],
     idx: { tzOil: PIDX(tzOilC), noseOil: PIDX(noseOil), pore: PIDX(pore), cheekOil: PIDX(cheekOil), red: PIDX(cheekRed) } }; }
 
 /* ===== 설문 ===== */
@@ -222,8 +274,10 @@ export function fuse(Sv, photo) {
   /* 사진 가중을 q=0.35~0.65 구간에서 매끄럽게 올림 — 예전 "q≥0.5면 켜고 아니면 끔" 하드컷은
      경계 근처에서 조명 미세 변화만으로 사진 반영이 0↔0.45로 뒤집혀 재촬영 시 결과가 튀던 원인 */
   const qRamp = photo && photo.ok ? clamp((photo.q - 0.35) / 0.30, 0, 1) : 0;
-  const usedPhoto = qRamp > 0; const w_p = usedPhoto ? (photo.regions ? 0.45 : 0.30) * clamp(photo.q, 0, 1) * qRamp : 0; const w_v = 1 - w_p; const Sp = usedPhoto ? photo.Sp : [0, 0, 0];
-  const F = [0, 1, 2].map(i => w_v * Sv[i] + w_p * Sp[i]); let primary = argmax(F); const flags = [];
+  const usedPhoto = qRamp > 0; const w_p = usedPhoto ? (photo.regions ? 0.45 : 0.30) * clamp(photo.q, 0, 1) * qRamp : 0; const Sp = usedPhoto ? photo.Sp : [0, 0, 0];
+  const rel = (usedPhoto && photo.axisRel) || [1, 1, 1]; /* 축별 사진 신뢰도(유분>트러블>건조) — 없으면 기존 동작 */
+  const F = [0, 1, 2].map(i => { const wi = w_p * rel[i]; return (1 - wi) * Sv[i] + wi * Sp[i]; }); let primary = argmax(F); const flags = [];
+  if (usedPhoto && photo.flush > 0.10) flags.push('홍조 주의'); /* 대면적 붉은기 — 트러블 축과 분리된 민감 신호 */
   /* 트러블 우선 규칙 — C 처방은 '유분과 자극을 함께' 커버하므로, 트러블 신호가 임계 이상이면
      유분이 1위여도 C로 보낸다. (여드름 피부는 번들거림도 같이 답해 유분이 산술적으로 늘 이기던 문제) */
   if (F[2] >= CAL.troubleMin) primary = 2;
@@ -272,4 +326,4 @@ export function assessRegionFrame(d, w, h, ctx) {
 }
 
 /* 엔진 버전 — 판정 로직이 바뀌면 올릴 것 (결과 재현·데이터 수집 시 함께 기록) */
-export const ENGINE_VERSION = '2.0.0';
+export const ENGINE_VERSION = '2.1.0';

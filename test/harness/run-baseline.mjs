@@ -130,6 +130,54 @@ function runSurvey(photo, kind) {
   console.log('[3] 타입 매트릭스'); console.table(matrix);
 }
 
+/* ───────── 4. 강화 검증 — 홍조 구분·오염원 제외·연사 ───────── */
+{
+  const out = {};
+  // 4a. 넓은 홍조(flushed) — 점상 트러블이 아니므로 C가 되면 안 되고 '홍조 주의' 플래그가 떠야 함
+  {
+    const prof = { tzone: { shineArea: 0.01, redArea: 0.005, poreDen: 0.002 },
+      cheek: { shineArea: 0.005, redArea: 0.005, poreDen: 0.002, flushArea: 0.30 },
+      nose: { shineArea: 0.01, redArea: 0.005, poreDen: 0.003 } };
+    const rd = {}; for (const rk of ['tzone', 'cheek', 'nose']) rd[rk] = E.analyzeRegionShot(makeRegion(prof[rk], rk, 44), rk);
+    const photo = E.combineRegions(rd);
+    const r = E.fuse(runSurvey(photo, 'neutral'), photo);
+    out.flushed = { cheek: { redness: +rd.cheek.redness.toFixed(3), redSpot: +rd.cheek.redSpot.toFixed(3), redFlush: +rd.cheek.redFlush.toFixed(3) },
+      type: ['B지성', 'A건성', 'C트러블'][r.primary], flags: r.flags, SpAcne: +photo.Sp[2].toFixed(3) };
+    console.log('[4a] flushed(넓은 홍조):', JSON.stringify(out.flushed));
+  }
+  // 4b. 오염원(눈썹·눈·입술)이 프레임에 들어온 사진 — 키포인트 ROI·제외 원이 측정 순도를 회복하는가
+  {
+    const base = { shineArea: 0.02, redArea: 0.01, poreDen: 0.003 };
+    const clean = E.analyzeRegionShot(makeRegion(base, 'cheek', 55), 'cheek');
+    const dirtyImg = makeRegion({ ...base, features: true }, 'cheek', 55);
+    const dirty = E.analyzeRegionShot(dirtyImg, 'cheek');
+    const ex = [ // 합성 특징 위치(synth.mjs) 그대로 — 실제로는 촬영 순간 BlazeFace 키포인트가 제공
+      { x: 0.30 * 720, y: 0.28 * 960, r: 0.11 * 720 }, { x: 0.70 * 720, y: 0.28 * 960, r: 0.11 * 720 },
+      { x: 0.50 * 720, y: 0.74 * 960, r: 0.14 * 720 }];
+    const fixed = E.analyzeRegionShot(dirtyImg, 'cheek', { exclude: ex });
+    const dev = (m) => ({ red: +Math.abs(m.redSpot - clean.redSpot).toFixed(4), pore: +Math.abs(m.poreDen - clean.poreDen).toFixed(4), shine: +Math.abs(m.shine - clean.shine).toFixed(4) });
+    out.contamination = { cleanRef: { redSpot: +clean.redSpot.toFixed(4), poreDen: +clean.poreDen.toFixed(4), shine: +clean.shine.toFixed(4) },
+      dirtyDeviation: dev(dirty), withExcludeDeviation: dev(fixed) };
+    console.log('[4b] 오염원 편차 — 제외 전:', JSON.stringify(out.contamination.dirtyDeviation), '→ 제외 후:', JSON.stringify(out.contamination.withExcludeDeviation));
+  }
+  // 4c. 연사(3장) 중앙값 — 노이즈 사진에서 단일 촬영 대비 흔들림 감소
+  {
+    const prof = PROFILES.normal;
+    const cleanRef = {}; for (const rk of ['tzone', 'cheek', 'nose']) cleanRef[rk] = E.analyzeRegionShot(makeRegion(prof[rk], rk, 11), rk);
+    const single = [], burst = [];
+    for (let t = 0; t < 6; t++) {
+      const shots = [0, 1, 2].map(k => E.analyzeRegionShot(TRANSFORMS.noisy(makeRegion(prof.tzone, 'tzone', 11 + t * 3 + k)), 'tzone'));
+      single.push(Math.abs(shots[0].shine - cleanRef.tzone.shine) + Math.abs(shots[0].poreDen - cleanRef.tzone.poreDen) * 10);
+      const agg = E.aggregateBurst(shots);
+      burst.push(Math.abs(agg.shine - cleanRef.tzone.shine) + Math.abs(agg.poreDen - cleanRef.tzone.poreDen) * 10);
+    }
+    const mean = a => a.reduce((x, y) => x + y, 0) / a.length;
+    out.burst = { singleMeanDev: +mean(single).toFixed(4), burstMeanDev: +mean(burst).toFixed(4) };
+    console.log('[4c] 연사 효과 — 단일 편차', out.burst.singleMeanDev, '→ 3장 중앙값', out.burst.burstMeanDev);
+  }
+  res.strengthen = out;
+}
+
 const file = path.join(OUT_DIR, LABEL + '.json');
 fs.writeFileSync(file, JSON.stringify(res, null, 1));
 console.log('저장:', file);

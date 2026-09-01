@@ -346,7 +346,7 @@ function goSurvey(){buildSurvey();renderQ();$('#stepLabel').textContent='설문'
 
 /* ===== camera ===== */
 let stream=null,rafId=null,detLive=null,detFailed=false;
-let prevTiny=null,faceSeen=false,faceSeenAt=0,dframe=0;
+let prevTiny=null,faceSeen=false,faceSeenAt=0,dframe=0,lastDet=null,lastDetAt=0;
 const tinyC=document.createElement('canvas');tinyC.width=32;tinyC.height=40;const tinyX=tinyC.getContext('2d',{willReadFrequently:true});
 async function startCamera(mode='tzone'){stepMode=mode;show('#s-cam');
   $('#stepLabel').textContent=RSTEP[mode].label;
@@ -405,7 +405,7 @@ function updateGuideTransform(v,det){
   if(a){gTf.tx+=(t.tx-gTf.tx)*a;gTf.ty+=(t.ty-gTf.ty)*a;gTf.s+=(t.s-gTf.s)*a;
     svg.style.transform=`translate(${gTf.tx.toFixed(1)}px,${gTf.ty.toFixed(1)}px) scale(${gTf.s.toFixed(3)})`;}
 }
-function loopRegion(){const v=$('#video'),pill=$('#coachPill'),txt=$('#coachText'),c=$('#work'),cx=c.getContext('2d',{willReadFrequently:true});let okRun=0,facePos=null,lastDet=null;prevTiny=null;faceSeen=false;gTf={tx:0,ty:0,s:1};
+function loopRegion(){const v=$('#video'),pill=$('#coachPill'),txt=$('#coachText'),c=$('#work'),cx=c.getContext('2d',{willReadFrequently:true});let okRun=0,facePos=null;lastDet=null;prevTiny=null;faceSeen=false;gTf={tx:0,ty:0,s:1};
   function step(){if(!stream)return;if(!v.videoWidth){txt.textContent='카메라 켜는 중…';rafId=requestAnimationFrame(step);return;}
     const zs=1/RZOOM,zw=v.videoWidth*zs,zh=v.videoHeight*zs,zx=(v.videoWidth-zw)/2,zy=(v.videoHeight-zh)/2;
     c.width=140;c.height=180;cx.drawImage(v,zx,zy,zw,zh,0,0,140,180);const d=cx.getImageData(20,26,100,128).data;
@@ -415,7 +415,7 @@ function loopRegion(){const v=$('#video'),pill=$('#coachPill'),txt=$('#coachText
     // 얼굴감지 기회주의적 활용 (5프레임마다) — 잡히면 실사람 확인 + 능동형 가이드 앵커, 안 잡히면(초근접) 휴리스틱 폴백
     if(detLive&&((dframe++%5)===0)){try{const r=detLive.detectForVideo(v,performance.now()).detections||[];
       if(r.length){faceSeen=true;faceSeenAt=performance.now();
-        const det=r.slice().sort((a,b)=>b.boundingBox.width*b.boundingBox.height-a.boundingBox.width*a.boundingBox.height)[0];lastDet=det;
+        const det=r.slice().sort((a,b)=>b.boundingBox.width*b.boundingBox.height-a.boundingBox.width*a.boundingBox.height)[0];lastDet=det;lastDetAt=performance.now();
         const bb=det.boundingBox;
         facePos={cx:(bb.originX+bb.width/2)/(v.videoWidth||1),cy:(bb.originY+bb.height/2)/(v.videoHeight||1),frac:(bb.width*bb.height)/((v.videoWidth*v.videoHeight)||1)};}
       else{facePos=null;lastDet=null;}}catch(e){}}
@@ -431,14 +431,39 @@ function loopRegion(){const v=$('#video'),pill=$('#coachPill'),txt=$('#coachText
     rafId=requestAnimationFrame(step);}
   step();}
 function stopCamera(){if(rafId)cancelAnimationFrame(rafId);rafId=null;if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}}
-function captureStill(){const v=$('#video'),c=$('#work'),W=Math.min(1080,v.videoWidth||640),H=Math.round(W*((v.videoHeight/v.videoWidth)||1.33));
-  c.width=W;c.height=H;c.getContext('2d',{willReadFrequently:true}).drawImage(v,0,0,W,H);stopCamera();
-  // 디지털 줌 크롭: 미리보기에서 보이던 중앙부만 잘라 분석
-  const zs=1/RZOOM,sw=(W*zs)|0,sh=(H*zs)|0,sx=((W-sw)/2)|0,sy=((H-sh)/2)|0;
-  const cp=document.createElement('canvas');cp.width=sw;cp.height=sh;cp.getContext('2d').drawImage(c,sx,sy,sw,sh,0,0,sw,sh);
-  storeRegion(stepMode,cp);
-  const rd=regionData[stepMode];rd.faceSeen=faceSeen;
-  if(rd.reason==='noskin'||rd.reason==='dark')goRegionRetake(stepMode);else nextAfterRegion();}
+/* 촬영 순간의 얼굴 키포인트 → 측정 ROI·제외 원(눈·입술) — 엔진 opts.
+   고정 중앙박스 대신 실제 부위 위치에서 재고, 측정 오염원(눈썹·눈·입술)을 뺀다.
+   키포인트가 없거나 오래됐으면 {} → 엔진이 기존 중앙 68% 박스로 폴백. */
+function regionOptsFromDet(det,W,H){
+  if(!det||!det.keypoints||det.keypoints.length<6)return{};
+  const kp=det.keypoints.map(k=>({x:k.x*W,y:k.y*H}));
+  const [eyeR,eyeL,nose,mouth,earR,earL]=kp;
+  const ed=Math.hypot(eyeL.x-eyeR.x,eyeL.y-eyeR.y);if(ed<W*0.06)return{};
+  const mid={x:(eyeL.x+eyeR.x)/2,y:(eyeL.y+eyeR.y)/2};
+  const box=(cx,cy,hw,hh)=>[clamp((cx-hw)/W,0.02,0.6),clamp((cy-hh)/H,0.02,0.6),Math.min(2*hw/W,0.96),Math.min(2*hh/H,0.96)];
+  const eyes=[{x:eyeR.x,y:eyeR.y,r:ed*0.42},{x:eyeL.x,y:eyeL.y,r:ed*0.42}];
+  const mo={x:mouth.x,y:mouth.y,r:ed*0.52};
+  if(stepMode==='tzone')return{roi:box(mid.x,mid.y-ed*0.15,ed*1.15,ed*1.7),exclude:[...eyes,mo]};
+  if(stepMode==='nose')return{roi:box(nose.x,nose.y,ed*0.95,ed*1.05),exclude:[...eyes,mo]};
+  const cl={x:earL.x*0.45+nose.x*0.55,y:(earL.y*0.45+nose.y*0.55)+ed*0.12};
+  const cr={x:earR.x*0.45+nose.x*0.55,y:(earR.y*0.45+nose.y*0.55)+ed*0.12};
+  const pt=Math.abs(cl.x-W/2)<Math.abs(cr.x-W/2)?cl:cr;
+  return{roi:box(pt.x,pt.y,ed*0.85,ed*0.9),exclude:[...eyes,mo,{x:nose.x,y:nose.y,r:ed*0.38}]};}
+/* 연사 3장 → 필드별 중앙값(aggregateBurst): 센서 노이즈·미세 흔들림·자동노출 출렁임 제거 */
+async function captureStill(){const v=$('#video'),W=Math.min(1080,v.videoWidth||640),H=Math.round(W*((v.videoHeight/v.videoWidth)||1.33));
+  $('#shoot').disabled=true;
+  const opts=(performance.now()-lastDetAt<1500)?regionOptsFromDet(lastDet,W,H):{};
+  const shots=[];
+  for(let k=0;k<3;k++){
+    const cp=document.createElement('canvas');cp.width=W;cp.height=H;
+    cp.getContext('2d',{willReadFrequently:true}).drawImage(v,0,0,W,H);shots.push(cp);
+    if(k<2)await new Promise(r=>setTimeout(r,110));}
+  stopCamera();
+  const meas=shots.map(cp=>ENGINE.analyzeRegionShot(cp,stepMode,opts));
+  const agg=ENGINE.aggregateBurst(meas);
+  let best=0;for(let k=1;k<shots.length;k++)if(meas[k].q>meas[best].q)best=k;
+  regionData[stepMode]={...agg,thumb:makeThumb(shots[best]),cv:shots[best],faceSeen};
+  if(agg.reason==='noskin'||agg.reason==='dark')goRegionRetake(stepMode);else nextAfterRegion();}
 
 /* ===== v2 부위 분석 — 측정은 엔진이 담당 ===== */
 function makeThumb(c){const t=document.createElement('canvas');t.width=160;t.height=Math.round(160*c.height/c.width);t.getContext('2d').drawImage(c,0,0,t.width,t.height);return t.toDataURL('image/jpeg',0.72);}
