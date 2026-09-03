@@ -37,7 +37,7 @@ export function configure(opts = {}) { if (opts.createCanvas) createCanvas = opt
 
 /* ===== 판정 상수 — 값 바꿀 땐 근거를 주석으로 남길 것 ===== */
 export const CAL = {
-  troubleMin: 0.28, // 트러블 합성점수가 이 값 이상이면 타입 C(트러블) 유지 — 초기 0.34에서 하향('여드름 있는 지성' 응답이 경계에서 B로 쏠려서). A/B/C 목표 배분에 따라 대표가 조정
+  troubleMin: 0.27, // 트러블 임계 — 대표 배분 결정(2026-09-02: A20/B50/C30)에 맞춰 모의 집단(population.mjs, 문헌 프라이어 기반)으로 탐색. 실측 런로그가 쌓이면 calibrate.mjs --target-c 0.3 으로 재조정
   shineFull: 0.11,  // 유분: 광택 픽셀 비율이 이 값이면 지수 최대 — 근거 없음, 손으로 맞춘 값(실기기 재보정 예정)
   dryZero: 0.09,    // 건성: 광택이 이 값 이상이면 건성 신호 0 — shineFull과 대칭에 가깝게(근거 동일)
   redOffset: 0.02,  // 붉은기 하한(이 이하는 정상 혈색으로 봄) — 근거 없음, 손으로 맞춘 값
@@ -49,8 +49,11 @@ export const CAL = {
   relOilW: 0.55,    // 유분 판정에서 '부위 간 상대신호(T존-볼)' 가중 — 같은 사진 안 비교라 조명이 소거됨
   roughLo: 0.15,    // 거칠기(각질) 정규화 하한 — 합성 스윕(v2.2): 매끈 0.09·노이즈 0.17·중간각질 0.36·심함 0.62, 실기기 재확인 예정
   roughSpan: 0.55,  // 거칠기 정규화 폭
-  hystMargin: 0.03, // 재촬영 히스테리시스: 1·2위 격차가 이 미만이고 2위가 직전 타입이면 직전 타입 유지 (v2.3)
+  hystMargin: 0.05, // 재촬영 히스테리시스: 1·2위 격차가 이 미만이고 2위가 직전 타입이면 직전 타입 유지 (v2.3)
   hystTrouble: 0.02,// 재촬영 히스테리시스: 직전이 C였고 F[2]가 troubleMin−이 값 이상이면 C 유지 (C 경계 절벽 튐 방지)
+  abTilt: 0.12,     // A/B 경계 기울임(조건부 — 사진 건조신호 강하면 무효). 대표 배분 결정(A20/B50/C30, 2026-09-02): 애매하면 B.
+                    // 0.16은 배분이 0.8pp 좋아지는 대신 재촬영 일치가 2.8pp 나빠져 0.12 채택(일관성 우선) — 모의 집단 A24.3/B45.4/C30.4.
+                    // 모의 집단 자체가 건성계 25%(문헌)라 A는 ~23%가 구조적 하한 — 최종 배분은 실측 런로그(calibrate.mjs --target-c)로 재조정
 };
 
 /* ===== 촬영 게이트 상수 (★팀 캘리브레이션 — 여기 숫자만 조정) ===== */
@@ -315,11 +318,18 @@ export function fuse(Sv, photo, prev) {
   const qRamp = photo && photo.ok ? clamp((photo.q - 0.35) / 0.30, 0, 1) : 0;
   const usedPhoto = qRamp > 0; const w_p = usedPhoto ? (photo.regions ? 0.45 : 0.30) * clamp(photo.q, 0, 1) * qRamp : 0; const Sp = usedPhoto ? photo.Sp : [0, 0, 0];
   const rel = (usedPhoto && photo.axisRel) || [1, 1, 1]; /* 축별 사진 신뢰도(유분>트러블>건조) — 없으면 기존 동작 */
-  const F = [0, 1, 2].map(i => { const wi = w_p * rel[i]; return (1 - wi) * Sv[i] + wi * Sp[i]; }); let primary = argmax(F); const flags = [];
+  const F = [0, 1, 2].map(i => { const wi = w_p * rel[i]; return (1 - wi) * Sv[i] + wi * Sp[i]; });
+  /* 판정 공간 Fd: A/B/C 목표 배분(대표 결정 2026-09-02: A20/B50/C30)을 위한 경계 기울임 —
+     표시용 F(막대그래프)는 그대로 두고 타입 결정·마진·히스테리시스만 Fd 기준.
+     "애매하면 B(지성 케어가 범용 안전)"가 취지이므로, 사진이 건조를 강하게 말하면(Sp[1]≥0.70)
+     기울임을 끈다 — 명백한 건성·홍조 피부가 B로 밀리는 부작용 방지. */
+  const dryEvid = usedPhoto ? clamp((photo.Sp[1] - 0.45) / 0.25, 0, 1) : 0;
+  const tiltEff = (CAL.abTilt || 0) * (1 - dryEvid);
+  const Fd = [F[0], F[1] - tiltEff, F[2]]; let primary = argmax(Fd); const flags = [];
   if (usedPhoto && photo.flush > 0.10) flags.push('홍조 주의'); /* 대면적 붉은기 — 트러블 축과 분리된 민감 신호 */
   /* 트러블 우선 규칙 — C 처방은 '유분과 자극을 함께' 커버하므로, 트러블 신호가 임계 이상이면
      유분이 1위여도 C로 보낸다. (여드름 피부는 번들거림도 같이 답해 유분이 산술적으로 늘 이기던 문제) */
-  const troubleForced = F[2] >= CAL.troubleMin;
+  const troubleForced = Fd[2] >= CAL.troubleMin;
   if (troubleForced) primary = 2;
   else if (F[2] > 0.24 || (usedPhoto && photo.Sp[2] > 0.45)) flags.push('여드름 주의');
   /* 재촬영 히스테리시스 — 같은 얼굴을 다시 찍었을 때 경계 근처에서 타입이 튀는 것 방지.
@@ -327,12 +337,12 @@ export function fuse(Sv, photo, prev) {
      ② 직전이 C였고 F[2]가 troubleMin 바로 아래(−hystTrouble)면 C 유지(트러블 절벽 경계)
      둘 다 "거의 동점일 때만" 작동 — 피부가 실제로 변했으면(마진 큼) 그대로 새 판정. */
   if (prev && prev.primary != null && !troubleForced && prev.primary !== primary) {
-    const srt = [...F].sort((a, b) => b - a);
-    if (prev.primary === 2 && F[2] >= CAL.troubleMin - CAL.hystTrouble) primary = 2;
-    else if (srt[0] - srt[1] < CAL.hystMargin && F[prev.primary] >= srt[1] - 1e-9) primary = prev.primary;
+    const srt = [...Fd].sort((a, b) => b - a);
+    if (prev.primary === 2 && Fd[2] >= CAL.troubleMin - CAL.hystTrouble) primary = 2;
+    else if (srt[0] - srt[1] < CAL.hystMargin && Fd[prev.primary] >= srt[1] - 1e-9) primary = prev.primary;
   }
   if (usedPhoto && photo.shine != null && photo.shine < 0.05 && primary === 0 && Sv[1] > 0.25) flags.push('부분 건성');
-  const sorted = [...F].sort((a, b) => b - a); const margin = sorted[0] - sorted[1]; const agree = !usedPhoto ? 0.6 : (argmax(Sv) === argmax(photo.Sp) ? 1 : 0.4);
+  const sorted = [...Fd].sort((a, b) => b - a); const margin = sorted[0] - sorted[1]; const agree = !usedPhoto ? 0.6 : (argmax(Sv) === argmax(photo.Sp) ? 1 : 0.4);
   const conf = (usedPhoto ? clamp(photo.q, 0, 1) : 0.55) * 0.4 + clamp(margin / 0.3, 0, 1) * 0.35 + agree * 0.25;
   return { F, primary, typeKey: TYPE_KEY[TYPES[primary]], flags, band: conf > 0.7 ? '높은 확신' : conf > 0.45 ? '보통 확신' : '낮은 확신', usedPhoto };
 }
@@ -380,4 +390,4 @@ export function assessRegionFrame(d, w, h, ctx) {
 }
 
 /* 엔진 버전 — 판정 로직이 바뀌면 올릴 것 (결과 재현·데이터 수집 시 함께 기록) */
-export const ENGINE_VERSION = '2.3.0';
+export const ENGINE_VERSION = '2.4.0';
